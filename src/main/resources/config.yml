@@ -1,0 +1,34 @@
+BiomeEvents:
+  Biomes:
+    Swamp:
+      OnEnter:
+        Commands:
+          - "msg @p You have entered the swamp!"
+        Sounds:
+          - SoundConfiguration:
+            Sound: "minecraft:BLOCK_END_PORTAL_SPAWN"
+            Volume: 0.1
+      OnLeave:
+        Commands:
+          - "msg @p You have left the swamp!"
+        Sounds:
+          - SoundConfiguration:
+            Sound: "minecraft:BLOCK_END_PORTAL_FRAME_FILL"
+            Volume: 0.1
+    Desert:
+      OnEnter:
+        Commands:
+          - "msg @p You have entered the desert!"
+        Sounds:
+          - SoundConfiguration:
+            Sound: "minecraft:BLOCK_END_PORTAL_SPAWN"
+            Volume: 0.1
+      OnLeave:
+        Commands:
+          - "msg @p You have left the desert!"
+        Sounds:
+          - SoundConfiguration:
+            Sound: "minecraft:BLOCK_END_PORTAL_FRAME_FILL"
+            Volume: 0.1
+  Settings:
+    PositionChecksInTicks: 20
