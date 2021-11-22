@@ -51,4 +51,24 @@ public class Parser {
 
         return returnValue;
     }
+
+    /**
+     * Try to parse a float from string
+     * Fallback value will be taken if parsing was unsuccessful
+     * @param value The value to parse
+     * @param fallbackValue The value to take as fallback if parameter 'value' cannot be parsed
+     * @return Integer, either parsed from parameter 'value' or fallback
+     */
+    public static Float parse(String value, Float fallbackValue) {
+        var returnValue = fallbackValue;
+
+        try {
+            if (value != null && !value.isBlank())
+                returnValue = Float.parseFloat(value);
+        }  catch (NumberFormatException ex) {
+            Bukkit.getLogger().warning("Error parsing Float... Using fallback value... Error: " + ex.getMessage());
+        }
+
+        return returnValue;
+    }
 }

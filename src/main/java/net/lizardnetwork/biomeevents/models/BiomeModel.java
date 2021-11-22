@@ -1,7 +1,7 @@
 package net.lizardnetwork.biomeevents.models;
 
 public class BiomeModel {
-    //public String BiomeName;
-    public BiomeEventModel OnEnter;
-    public BiomeEventModel OnLeave;
+    public String BiomeId;
+    public BiomeEventModel OnEnter = new BiomeEventModel();
+    public BiomeEventModel OnLeave = new BiomeEventModel();
 }
