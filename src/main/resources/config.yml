@@ -28,10 +28,11 @@
 #    If you don't want to use PlaceholderAPI, you can use these placeholders instead!
 #
 #    Placeholders:
-#       - %world%    => [String] The world in which the treasure spawned
-#       - %x%        => [String] The x coordinates of the treasure
-#       - %y%        => [String] The y coordinates of the treasure
-#       - %z%        => [String] The z coordinates of the treasure
+#       - %world%    => [String] The world of the player
+#       - %biome%    => [String] The biome of the player
+#       - %x%        => [String] The x coordinates of the player
+#       - %y%        => [String] The y coordinates of the player
+#       - %z%        => [String] The z coordinates of the player
 #       - %player%   => [String] The players' name
 #
 # ---
@@ -65,15 +66,18 @@ BiomeEvents:
             # The pitch of the sound
             Pitch: 1.0
             # Whether the sound will follow the player or stays at the last location of the player
-            IsFollowingPlayer: true
+            IsServerWide: true
             # The permission the user needs to have in order to play the sound for him
             Permission: ''
+            # Randomize the location by this much in X and Z directions (e.g.: +10 and -10)
+            # This will also overwrite 'IsServerWide' to true
+            MaxRandomOffset: 10
           - Chance: 20
             Sound: 'minecraft:ambient.crimson_forest.additions'
             Category: Ambient
             Volume: 0.1
             Pitch: 1.0
-            IsFollowingPlayer: true
+            IsServerWide: true
             Permission: ''
     Desert:
       WhileIn:
@@ -85,7 +89,7 @@ BiomeEvents:
             Category: Ambient
             Volume: 0.1
             Pitch: 0.5
-            IsFollowingPlayer: false
+            IsServerWide: false
             Permission: ''
   Settings:
     # The time in ticks in which the plugin should check the current biomes of all players

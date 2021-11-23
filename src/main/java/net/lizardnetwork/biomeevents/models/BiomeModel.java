@@ -9,8 +9,6 @@ import java.util.Map;
 
 public class BiomeModel {
     public String BiomeId;
-    public BiomeEventModel OnEnter = new BiomeEventModel();
-    public BiomeEventModel OnLeave = new BiomeEventModel();
     public BiomeEventModel WhileIn = new BiomeEventModel();
     private final Map<String, Object> valueMap;
 
@@ -34,8 +32,11 @@ public class BiomeModel {
             whileInSound.Category = Parser.parse(soundModelMap.get("Category").toString(), SoundCategory.AMBIENT).toString();
             whileInSound.Volume = Parser.parse(soundModelMap.get("Volume").toString(), 0.5f);
             whileInSound.Pitch = Parser.parse(soundModelMap.get("Pitch").toString(), 0.5f);
-            whileInSound.IsFollowingPlayer = Parser.parse(soundModelMap.get("IsFollowingPlayer").toString(), false);
+            whileInSound.IsServerWide = Parser.parse(soundModelMap.get("IsServerWide").toString(), false);
             whileInSound.Permission = soundModelMap.get("Permission").toString();
+            whileInSound.MaxRandomOffset =
+                // Special case of null handling since it is not needed and can be left out by the user
+                soundModelMap.get("MaxRandomOffset") == null ? -1f : Parser.parse(String.valueOf(soundModelMap.get("MaxRandomOffset")), -1f);
         }
 
         WhileIn.Sounds = List.of(whileInSound);

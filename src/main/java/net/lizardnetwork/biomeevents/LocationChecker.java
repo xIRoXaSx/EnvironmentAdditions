@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -69,16 +70,32 @@ public class LocationChecker {
 
                     Location soundLocation = player.getLocation();
 
-                    if (!soundModel.IsFollowingPlayer)
-                        soundLocation = soundLocation.clone();
+                    // Add random offset if configured
+                    if (soundModel.MaxRandomOffset > 0) {
+                        double randomOffsetX = ThreadLocalRandom.current()
+                            .nextDouble(soundModel.MaxRandomOffset * -1, soundModel.MaxRandomOffset);
+                        double randomOffsetZ = ThreadLocalRandom.current()
+                                .nextDouble(soundModel.MaxRandomOffset * -1, soundModel.MaxRandomOffset);
+                        soundLocation.add(new Vector(randomOffsetX, 0, randomOffsetZ));
+                    }
 
-                    player.playSound(
-                        soundLocation,
-                        soundModel.Sound,
-                        Parser.parse(soundModel.Category, SoundCategory.AMBIENT),
-                        soundModel.Volume,
-                        soundModel.Pitch
-                    );
+                    if (soundModel.IsServerWide || soundModel.MaxRandomOffset > 0) {
+                        player.getWorld().playSound(
+                            soundLocation,
+                            soundModel.Sound,
+                            Parser.parse(soundModel.Category, SoundCategory.AMBIENT),
+                            soundModel.Volume,
+                            soundModel.Pitch
+                        );
+                    } else {
+                        player.playSound(
+                            soundLocation,
+                            soundModel.Sound,
+                            Parser.parse(soundModel.Category, SoundCategory.AMBIENT),
+                            soundModel.Volume,
+                            soundModel.Pitch
+                        );
+                    }
                 }
             }
         }.runTaskTimer(plugin, 0, BiomeEvents.getPositionChecksInTicks());
