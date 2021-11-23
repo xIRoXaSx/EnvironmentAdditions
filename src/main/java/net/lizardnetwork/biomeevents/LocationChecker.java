@@ -30,7 +30,9 @@ public class LocationChecker {
                 var onlinePlayers = plugin.getServer().getOnlinePlayers();
 
                 for (Player player : onlinePlayers) {
-                    String biomeNameOfPlayer = new PlaceholderApiHook().getPlaceholder(player, papiBiomePlaceholder);
+                    boolean biomePlaceholderEmpty = papiBiomePlaceholder == null || papiBiomePlaceholder.isBlank();
+                    String biomePlaceholder = biomePlaceholderEmpty ? "%biome%" : papiBiomePlaceholder;
+                    String biomeNameOfPlayer = new PlaceholderApiHook(biomePlaceholderEmpty).getPlaceholder(player, biomePlaceholder);
 
                     var matchedBiome = BiomeEvents.getBiomeModels().stream()
                         .filter(x -> x.BiomeId.equalsIgnoreCase(biomeNameOfPlayer))
@@ -43,7 +45,6 @@ public class LocationChecker {
                     for (String command : matchedBiome.WhileIn.Commands.Commands) {
                         String replacedCommand = new PlaceholderApiHook().getPlaceholder(player, command);
                         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), replacedCommand);
-                        Bukkit.getLogger().info("Executed \"" + command + "\"");
                     }
 
                     int randomSoundIndex = 0;
