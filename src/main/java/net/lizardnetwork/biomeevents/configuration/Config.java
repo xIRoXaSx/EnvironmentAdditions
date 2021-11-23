@@ -1,17 +1,12 @@
 package net.lizardnetwork.biomeevents.configuration;
 
-import net.lizardnetwork.biomeevents.BiomeEvents;
-import net.lizardnetwork.biomeevents.helper.Parser;
-import net.lizardnetwork.biomeevents.models.BiomeEventModel;
 import net.lizardnetwork.biomeevents.models.BiomeModel;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.yaml.snakeyaml.representer.Representer;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -71,10 +66,9 @@ public class Config {
      */
     public String getConfigProperty(String propertyName) {
         String returnValue = "";
-        FileConfiguration configFile = plugin.getConfig();
 
-        if (configFile.contains(propertyName)) {
-            returnValue = configFile.getString(propertyName);
+        if (config.contains(propertyName)) {
+            returnValue = config.getString(propertyName);
         }
 
         return returnValue;
@@ -104,26 +98,9 @@ public class Config {
 
             // Append biome name / ID
             valueMap.put("BiomeId", biomeModelKey);
-            BiomeModel biomeModel = loadBiomeModel(valueMap);
+            BiomeModel biomeModel = new BiomeModel(valueMap).loadBiomeModel();
             returnValue.add(biomeModel);
         }
-
-        return returnValue;
-    }
-
-    /**
-     * Load values from a map into a new BiomeModel instance
-     * @param valueMap Map&lt;String, Object&gt; - Map containing all data for a BiomeModel
-     * @return BiomeModel
-     */
-    private BiomeModel loadBiomeModel(Map<String, Object> valueMap) {
-        BiomeModel returnValue = new BiomeModel();
-        returnValue.OnEnter.Commands.Commands = (String[]) valueMap.getOrDefault("OnLeave.Sounds.Sound", null);
-        returnValue.OnLeave.Commands.Commands = (String[]) valueMap.getOrDefault("OnLeave.Sounds.Sound", null);
-        returnValue.OnEnter.Sounds.Sound = valueMap.getOrDefault("OnLeave.Sounds.Sound", "").toString();
-        returnValue.OnLeave.Sounds.Sound = valueMap.getOrDefault("OnLeave.Sounds.Sound", "").toString();
-        returnValue.OnEnter.Sounds.Volume = Parser.parse(valueMap.getOrDefault("OnLeave.Sounds.Sound", 1.0f).toString(), 1.0f);
-        returnValue.OnLeave.Sounds.Volume = Parser.parse(valueMap.getOrDefault("OnLeave.Sounds.Sound", 1.0f).toString(), 1.0f);
 
         return returnValue;
     }

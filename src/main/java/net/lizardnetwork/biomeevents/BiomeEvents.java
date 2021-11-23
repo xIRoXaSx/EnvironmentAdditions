@@ -11,6 +11,7 @@ import java.util.List;
 public class BiomeEvents extends JavaPlugin implements Listener {
     private final Config config = new Config(this);
     private static int positionChecksInTicks = -1;
+    static List<BiomeModel> biomeModels;
 
     @Override
     public void onEnable() {
@@ -24,9 +25,12 @@ public class BiomeEvents extends JavaPlugin implements Listener {
             return;
         }
 
-        List<BiomeModel> biomeModels = config.getBiomeConfigs();
-        Bukkit.getLogger().info("BiomeModels: " + biomeModels.size());
+        biomeModels = config.getBiomeConfigs();
+
+        Bukkit.getLogger().info("Found " + biomeModels.size() + " biomes in the config!");
         positionChecksInTicks = Parser.parse(config.getConfigProperty("BiomeEvents.Settings.PositionChecksInTicks"), 20);
+        LocationChecker locationChecker = new LocationChecker(this, config.getConfigProperty("BiomeEvents.Settings.PapiBiomePlaceholder"));
+        locationChecker.initializeTimeDrivenSystem();
     }
 
     /**
@@ -43,5 +47,13 @@ public class BiomeEvents extends JavaPlugin implements Listener {
      */
     Config getCurrentConfig() {
         return config;
+    }
+
+    /**
+     * Return the current set BiomeModel list
+     * @return List&lt;BiomeModel&gt; - List containing all BiomeModels from the config
+     */
+    static List<BiomeModel> getBiomeModels() {
+        return biomeModels;
     }
 }

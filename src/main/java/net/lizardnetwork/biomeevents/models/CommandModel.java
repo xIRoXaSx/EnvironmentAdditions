@@ -1,5 +1,7 @@
 package net.lizardnetwork.biomeevents.models;
 
+import java.util.List;
+
 public class CommandModel {
-    public String[] Commands;
+    public List<String> Commands;
 }

@@ -2,6 +2,9 @@ package net.lizardnetwork.biomeevents.helper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.SoundCategory;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,7 +14,7 @@ public class Parser {
     /**
      * Gets a colorized string from either hex or alternate color codes
      * @param text String, The string containing either hex or alternate color codes
-     * @return String, The colorized text
+     * @return String - The colorized text
      */
     public static String getColorizedText(String text) {
         String returnValue = ChatColor.translateAlternateColorCodes('&', text);
@@ -37,7 +40,7 @@ public class Parser {
      * Fallback value will be taken if parsing was unsuccessful
      * @param value The value to parse
      * @param fallbackValue The value to take as fallback if parameter 'value' cannot be parsed
-     * @return Integer, either parsed from parameter 'value' or fallback
+     * @return Integer - Either parsed from parameter 'value' or fallback
      */
     public static Integer parse(String value, Integer fallbackValue) {
         var returnValue = fallbackValue;
@@ -57,7 +60,7 @@ public class Parser {
      * Fallback value will be taken if parsing was unsuccessful
      * @param value The value to parse
      * @param fallbackValue The value to take as fallback if parameter 'value' cannot be parsed
-     * @return Integer, either parsed from parameter 'value' or fallback
+     * @return Integer - Either parsed from parameter 'value' or fallback
      */
     public static Float parse(String value, Float fallbackValue) {
         var returnValue = fallbackValue;
@@ -67,6 +70,44 @@ public class Parser {
                 returnValue = Float.parseFloat(value);
         }  catch (NumberFormatException ex) {
             Bukkit.getLogger().warning("Error parsing Float... Using fallback value... Error: " + ex.getMessage());
+        }
+
+        return returnValue;
+    }
+
+    /**
+     * Try to parse a boolean from string
+     * Fallback value will be taken if parsing was unsuccessful
+     * @param value The value to parse
+     * @param fallbackValue The value to take as fallback if parameter 'value' cannot be parsed
+     * @return Boolean - Either parsed from parameter 'value' or fallback
+     */
+    public static Boolean parse(@Nullable String value, Boolean fallbackValue) {
+        var returnValue = fallbackValue;
+
+        try {
+            if (value != null && !value.isBlank())
+                returnValue = Boolean.parseBoolean(value);
+        } catch (NumberFormatException ex) {
+            Bukkit.getLogger().warning("Error parsing Boolean... Using fallback value... Error: " + ex.getMessage());
+        }
+
+        return returnValue;
+    }
+
+    /**
+     * Try to parse a sound category from string
+     * @param value The value to parse
+     * @return SoundCategory - Either parsed from parameter 'value' or fallback
+     */
+    public static SoundCategory parse(@Nullable String value, SoundCategory soundCategory) {
+        SoundCategory returnValue = null;
+
+        try {
+            if (value != null && !value.isBlank())
+                returnValue = SoundCategory.valueOf(value.toUpperCase());
+        } catch (Exception ex) {
+            Bukkit.getLogger().warning("Error parsing SoundCategory: " + ex.getMessage());
         }
 
         return returnValue;

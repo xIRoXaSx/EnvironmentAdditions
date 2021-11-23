@@ -9,6 +9,7 @@ commands:
     usage: /<command>
     permission: biomeevents.admin
     permission-message: ""
+    softdepend: [PlaceholderAPI]
     aliases:
       - "biomeev"
       - "be"

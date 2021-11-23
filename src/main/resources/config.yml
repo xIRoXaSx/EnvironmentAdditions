@@ -1,34 +1,29 @@
 BiomeEvents:
   Biomes:
     Swamp:
-      OnEnter:
+      WhileIn:
         Commands:
-          - "msg @p You have entered the swamp!"
+          - 'msg @p You are currently in the swamp!'
         Sounds:
-          - SoundConfiguration:
-            Sound: "minecraft:BLOCK_END_PORTAL_SPAWN"
+          - Chance: 20
+            Sound: 'minecraft:block.end_portal_frame.spawn'
+            Category: Ambient
             Volume: 0.1
-      OnLeave:
-        Commands:
-          - "msg @p You have left the swamp!"
-        Sounds:
-          - SoundConfiguration:
-            Sound: "minecraft:BLOCK_END_PORTAL_FRAME_FILL"
-            Volume: 0.1
+            Pitch: 1.0
+            IsFollowingPlayer: true
+            Permission: ''
     Desert:
-      OnEnter:
+      WhileIn:
         Commands:
-          - "msg @p You have entered the desert!"
+          - 'msg @p You are currently in the swamp!'
         Sounds:
-          - SoundConfiguration:
-            Sound: "minecraft:BLOCK_END_PORTAL_SPAWN"
+          - Chance: 10
+            Sound: 'minecraft:block.end_portal_frame.fill'
+            Category: Ambient
             Volume: 0.1
-      OnLeave:
-        Commands:
-          - "msg @p You have left the desert!"
-        Sounds:
-          - SoundConfiguration:
-            Sound: "minecraft:BLOCK_END_PORTAL_FRAME_FILL"
-            Volume: 0.1
+            Pitch: 0.5
+            IsFollowingPlayer: false
+            Permission: ''
   Settings:
     PositionChecksInTicks: 20
+    PapiBiomePlaceholder: '%player_biome%'
