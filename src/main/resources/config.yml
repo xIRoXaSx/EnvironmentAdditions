@@ -1,12 +1,75 @@
+# ========
+#
+# Check out the sound list / sound category list from spigot for all available vanilla sounds / categories
+#    => Sounds:        https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+#    => SoundCategory: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/SoundCategory.html
+#
+# ---
+#
+# Bring your own resource - custom sounds and biomes:
+#
+#    If you want to use custom sounds, you can just go ahead and use the full name (including the namespace).
+#    You want to ditch Minecraft's vanilla biomes and have custom ones?
+#    Make use of the PlaceholderAPI integration and have a look at the Placeholder description below!
+#
+# ---
+#
+# Placeholders:
+#
+#    This plugin is capable of PlaceholderAPI (https://www.spigotmc.org/resources/placeholderapi.6245/) placeholders!
+#    If you want to use PlaceholderAPI placeholders for biomes (certain world generators hook into PAPI for custom biomes),
+#       you can set the placeholder of your choice in Settings.PapiBiomePlaceholder.
+#    E.g.: '%player_biome%' will use the placeholder from the PAPI Extension "Player".
+#    YOU NEED TO MAKE SURE THAT YOU HAVE THE CORRESPONDING EXTENSION INSTALLED IF NEEDED!
+#
+# ---
+#
+# Internal placeholder:
+#    If you don't want to use PlaceholderAPI, you can use these placeholders instead!
+#
+#    Placeholders:
+#       - %world%    => [String] The world in which the treasure spawned
+#       - %x%        => [String] The x coordinates of the treasure
+#       - %y%        => [String] The y coordinates of the treasure
+#       - %z%        => [String] The z coordinates of the treasure
+#       - %player%   => [String] The players' name
+#
+# ---
+#
+# Color Codes:
+#    For commands you can also use color and hex codes (long and short version) like:
+#       Color codes: &a - &f, &0 - &9, &k - &o, &r
+#       Hex codes:   {#123456}, {#123}
+#
+# ========
 BiomeEvents:
   Biomes:
+    # The name of the biome (either vanilla or returned from PapiBiomePlaceholder)
     Swamp:
+      # The commands and sounds that should be executed while players are in this specific biome
       WhileIn:
+        # A list of commands to execute
         Commands:
-          - 'msg @p You are currently in the swamp!'
+          - 'msg @p You are currently in the swamp biome!'
+          - 'msg @p Be aware of swamp creatures!'
         Sounds:
+          # A list of sound object. You can add multiple sound objects as shown below
+          # The chance that this sound will be played. Chance is 1 to x
           - Chance: 20
+            # The sound (with namespace) to play
             Sound: 'minecraft:block.end_portal_frame.spawn'
+            # The sound category for the sound
+            Category: Ambient
+            # The volume of the sound
+            Volume: 0.1
+            # The pitch of the sound
+            Pitch: 1.0
+            # Whether the sound will follow the player or stays at the last location of the player
+            IsFollowingPlayer: true
+            # The permission the user needs to have in order to play the sound for him
+            Permission: ''
+          - Chance: 20
+            Sound: 'minecraft:ambient.crimson_forest.additions'
             Category: Ambient
             Volume: 0.1
             Pitch: 1.0
@@ -15,7 +78,7 @@ BiomeEvents:
     Desert:
       WhileIn:
         Commands:
-          - 'msg @p You are currently in the swamp!'
+          - 'msg @p You are currently in the desert biome!'
         Sounds:
           - Chance: 10
             Sound: 'minecraft:block.end_portal_frame.fill'
@@ -25,5 +88,10 @@ BiomeEvents:
             IsFollowingPlayer: false
             Permission: ''
   Settings:
+    # The time in ticks in which the plugin should check the current biomes of all players
+    # The HIGHER this integer is, the FEWER checks will be made => Better performance, poorer experience
+    # The LOWER this integer is, the HIGHER checks will be made => Poorer performance, better experience
     PositionChecksInTicks: 20
+    # Have a look at the Placeholder description section!
+    # Leave it as it is or empty to use for vanilla worlds
     PapiBiomePlaceholder: '%player_biome%'
