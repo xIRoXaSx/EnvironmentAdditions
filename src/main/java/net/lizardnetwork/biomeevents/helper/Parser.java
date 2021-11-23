@@ -41,11 +41,11 @@ public class Parser {
      * @param fallbackValue The value to take as fallback if parameter 'value' cannot be parsed
      * @return Integer - Either parsed from parameter 'value' or fallback
      */
-    public static Integer parse(String value, Integer fallbackValue) {
+    public static Integer parse(@Nullable String value, Integer fallbackValue) {
         var returnValue = fallbackValue;
 
         try {
-            if (value != null && !value.isBlank())
+            if (value != null && !value.isBlank() && !value.equals("null"))
                 returnValue = Integer.parseInt(value);
         } catch (NumberFormatException ex) {
             Bukkit.getLogger().warning(ex.getMessage());
@@ -61,11 +61,11 @@ public class Parser {
      * @param fallbackValue The value to take as fallback if parameter 'value' cannot be parsed
      * @return Integer - Either parsed from parameter 'value' or fallback
      */
-    public static Float parse(String value, Float fallbackValue) {
+    public static Float parse(@Nullable String value, Float fallbackValue) {
         var returnValue = fallbackValue;
 
         try {
-            if (value != null && !value.isBlank())
+            if (value != null && !value.isBlank() && !value.equals("null"))
                 returnValue = Float.parseFloat(value);
         }  catch (NumberFormatException ex) {
             Bukkit.getLogger().warning("Error parsing Float... Using fallback value... Error: " + ex.getMessage());
@@ -85,7 +85,7 @@ public class Parser {
         var returnValue = fallbackValue;
 
         try {
-            if (value != null && !value.isBlank())
+            if (value != null && !value.isBlank() && !value.equals("null"))
                 returnValue = Boolean.parseBoolean(value);
         } catch (NumberFormatException ex) {
             Bukkit.getLogger().warning("Error parsing Boolean... Using fallback value... Error: " + ex.getMessage());
