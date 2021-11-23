@@ -3,13 +3,13 @@ main: net.lizardnetwork.biomeevents.BiomeEvents
 version: 1.0
 api-version: 1.17
 author: xIRoXaSx
+softdepend: [PlaceholderAPI]
 commands:
   biomeevents:
     description: Main command for BiomeEvents
     usage: /<command>
     permission: biomeevents.admin
     permission-message: ""
-    softdepend: [PlaceholderAPI]
     aliases:
       - "biomeev"
       - "be"
