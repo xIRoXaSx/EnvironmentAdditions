@@ -26,12 +26,12 @@ public class BiomeModel {
         for (Map<String, Object> soundModelMap : whileInSounds) {
             whileInSound.Chance = Parser.parse(String.valueOf(soundModelMap.get("Chance")), 1);
             whileInSound.Sound = String.valueOf(soundModelMap.get("Sound"));
-            whileInSound.Category = Parser.parse(String.valueOf(soundModelMap.get("Category")), SoundCategory.AMBIENT).toString();
+            whileInSound.Category = String.valueOf(Parser.parse(String.valueOf(soundModelMap.get("Category")), SoundCategory.AMBIENT));
             whileInSound.Volume = Parser.parse(String.valueOf(soundModelMap.get("Volume")), 0.5f);
             whileInSound.Pitch = Parser.parse(String.valueOf(soundModelMap.get("Pitch")), 0.5f);
             whileInSound.IsServerWide = Parser.parse(String.valueOf(soundModelMap.get("IsServerWide")), false);
-            whileInSound.Permission = soundModelMap.get("Permission").toString();
-            whileInSound.MaxRandomOffset = Parser.parse(String.valueOf( soundModelMap.get("MaxRandomOffset")), -1f);
+            whileInSound.Permission = String.valueOf(soundModelMap.get("Permission"));
+            whileInSound.MaxRandomOffset = Parser.parse(String.valueOf(soundModelMap.get("MaxRandomOffset")), -1f);
         }
 
         WhileIn.Sounds = List.of(whileInSound);

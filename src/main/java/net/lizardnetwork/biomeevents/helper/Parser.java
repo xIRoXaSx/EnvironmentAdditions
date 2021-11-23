@@ -100,10 +100,10 @@ public class Parser {
      * @return SoundCategory - Either parsed from parameter 'value' or fallback
      */
     public static SoundCategory parse(@Nullable String value, SoundCategory soundCategory) {
-        SoundCategory returnValue = null;
+        SoundCategory returnValue = soundCategory;
 
         try {
-            if (value != null && !value.isBlank())
+            if (value != null && !value.isBlank() && !value.equals("null"))
                 returnValue = SoundCategory.valueOf(value.toUpperCase());
         } catch (Exception ex) {
             Bukkit.getLogger().warning("Error parsing SoundCategory: " + ex.getMessage());
