@@ -1,6 +1,6 @@
 package net.lizardnetwork.biomeevents.helper;
 
-import org.bukkit.Bukkit;
+import net.lizardnetwork.biomeevents.Logging;
 import org.bukkit.ChatColor;
 import org.bukkit.SoundCategory;
 import org.jetbrains.annotations.Nullable;
@@ -10,6 +10,27 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Parser {
+    /**
+     * Gets a string in gradient colors
+     * @param text String, The string to colorize
+     * @param startHexCode String, The hex code to start the gradient from
+     * @return String - The colorized text
+     */
+    public static String getGradientText(String text, String startHexCode) {
+        StringBuilder returnValue = new StringBuilder();
+        startHexCode = startHexCode.startsWith("#") && startHexCode.length() > 1 ? startHexCode.substring(1) : "000000";
+        int hexInteger = Integer.parseInt(startHexCode, 16);
+
+        for (Character character : text.toCharArray()) {
+            returnValue.append(getColorizedText("{#" + Integer.toHexString(hexInteger) + "}" + character));
+            hexInteger = hexInteger + 8;
+        }
+
+        // Reset color code at end of string
+        returnValue.append(getColorizedText("&r"));
+        return returnValue.toString();
+    }
+
     /**
      * Gets a colorized string from either hex or alternate color codes
      * @param text String, The string containing either hex or alternate color codes
@@ -48,7 +69,7 @@ public class Parser {
             if (value != null && !value.isBlank() && !value.equals("null"))
                 returnValue = Integer.parseInt(value);
         } catch (NumberFormatException ex) {
-            Bukkit.getLogger().warning(ex.getMessage());
+            Logging.warning(ex.getMessage());
         }
 
         return returnValue;
@@ -68,7 +89,7 @@ public class Parser {
             if (value != null && !value.isBlank() && !value.equals("null"))
                 returnValue = Float.parseFloat(value);
         }  catch (NumberFormatException ex) {
-            Bukkit.getLogger().warning("Error parsing Float... Using fallback value... Error: " + ex.getMessage());
+            Logging.warning("Error parsing Float... Using fallback value... Error: " + ex.getMessage());
         }
 
         return returnValue;
@@ -88,7 +109,7 @@ public class Parser {
             if (value != null && !value.isBlank() && !value.equals("null"))
                 returnValue = Boolean.parseBoolean(value);
         } catch (NumberFormatException ex) {
-            Bukkit.getLogger().warning("Error parsing Boolean... Using fallback value... Error: " + ex.getMessage());
+            Logging.warning("Error parsing Boolean... Using fallback value... Error: " + ex.getMessage());
         }
 
         return returnValue;
@@ -106,7 +127,7 @@ public class Parser {
             if (value != null && !value.isBlank() && !value.equals("null"))
                 returnValue = SoundCategory.valueOf(value.toUpperCase());
         } catch (Exception ex) {
-            Bukkit.getLogger().warning("Error parsing SoundCategory: " + ex.getMessage());
+            Logging.warning("Error parsing SoundCategory: " + ex.getMessage());
         }
 
         return returnValue;

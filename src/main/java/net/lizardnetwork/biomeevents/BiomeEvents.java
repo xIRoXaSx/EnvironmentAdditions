@@ -3,7 +3,6 @@ package net.lizardnetwork.biomeevents;
 import net.lizardnetwork.biomeevents.configuration.Config;
 import net.lizardnetwork.biomeevents.helper.Parser;
 import net.lizardnetwork.biomeevents.models.BiomeModel;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,6 +15,8 @@ import java.util.List;
 
 public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor {
     private final String pluginName = this.getDescription().getName();
+    private static BiomeEvents instance;
+    private static String consolePrefix;
     private static int positionChecksInTicks = -1;
     private Config config = new Config(this);
     private BukkitTask locationCheckerTask;
@@ -23,10 +24,12 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
 
     @Override
     public void onEnable() {
+        instance = this;
+        consolePrefix = Parser.getGradientText(getInstance().getName(), "#5ee68b");
         long startTime = System.nanoTime();
 
         if (config.createConfig()) {
-            this.getLogger().info("Created config file. Disabling plugin... " +
+            Logging.info("Created config file. Disabling plugin... " +
                 "Modify the config file to your liking and restart the server to test it out!");
 
             this.getPluginLoader().disablePlugin(this);
@@ -34,7 +37,7 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
         }
 
         start();
-        Bukkit.getLogger().info("Enabled " + pluginName + " within " + getFormattedTime(startTime));
+        Logging.info("Enabled " + pluginName + " within " + getFormattedTime(startTime));
     }
 
     @Override
@@ -46,12 +49,12 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
             if (!sender.hasPermission(pluginName.toLowerCase() + ".admin"))
                 return false;
 
-            String elapsedTime = reload();
+            String returnText = "&aReloaded &rwithin " + reload();
 
             if (sender instanceof Player)
-                Bukkit.getLogger().info(elapsedTime);
+                sender.sendMessage(Parser.getColorizedText(consolePrefix + "&8» " + returnText));
 
-            sender.sendMessage(elapsedTime);
+            Logging.info(Parser.getColorizedText(returnText));
 
             return true;
         }
@@ -64,7 +67,7 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
      */
     private void start() {
         biomeModels = config.getBiomeConfigs();
-        Bukkit.getLogger().info("Found " + biomeModels.size() + " biomes in the config!");
+        Logging.info("Found " + biomeModels.size() + " biomes in the config!");
         positionChecksInTicks = Parser.parse(config.getConfigProperty("BiomeEvents.Settings.PositionChecksInTicks"), 20);
         locationCheckerTask = startLocationChecker();
     }
@@ -80,7 +83,7 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
         config = new Config(this);
         start();
 
-        return Parser.getColorizedText("&aReloaded " + pluginName + "&f within " + getFormattedTime(startTime));
+        return getFormattedTime(startTime);
     }
 
     /**
@@ -100,6 +103,22 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
     private BukkitTask startLocationChecker() {
         return new LocationChecker(this, config.getConfigProperty("BiomeEvents.Settings.PapiBiomePlaceholder"))
             .initializeTimeDrivenSystem();
+    }
+
+    /**
+     * Get the plugins colored console prefix
+     * @return String - The colored console prefix of this plugin
+     */
+    static String getConsolePrefix() {
+        return consolePrefix;
+    }
+
+    /**
+     * Get the current instance of this plugin
+     * @return BiomeEvents - The current instance of this plugin
+     */
+    static BiomeEvents getInstance() {
+        return instance;
     }
 
     /**
