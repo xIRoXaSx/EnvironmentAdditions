@@ -3,6 +3,7 @@ package net.lizardnetwork.biomeevents.external;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.lizardnetwork.biomeevents.enums.Dependency;
 import net.lizardnetwork.biomeevents.helper.DependencyChecker;
+import net.lizardnetwork.biomeevents.helper.Parser;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class PlaceholderApiHook implements Listener {
 
     public String getPlaceholder(Player player, String text) {
         if (isEnabled && !forceDefaultCheck) {
-            return PlaceholderAPI.setPlaceholders(player, text);
+            return Parser.getColorizedText(PlaceholderAPI.setPlaceholders(player, text));
         } else {
             Map<String, String> replacements = Map.of(
                 "player", player.getName(),
