@@ -28,7 +28,7 @@ public class BiomeModel {
             whileInSound.Sound = String.valueOf(soundModelMap.get("Sound"));
             whileInSound.Category = String.valueOf(Parser.parse(String.valueOf(soundModelMap.get("Category")), SoundCategory.AMBIENT));
             whileInSound.Volume = Parser.parse(String.valueOf(soundModelMap.get("Volume")), 0.5f);
-            whileInSound.Pitch = Parser.parse(String.valueOf(soundModelMap.get("Pitch")), 0.5f);
+            whileInSound.Pitch = Parser.parse(String.valueOf(soundModelMap.get("Pitch")), 1f);
             whileInSound.IsServerWide = Parser.parse(String.valueOf(soundModelMap.get("IsServerWide")), false);
             whileInSound.Permission = String.valueOf(soundModelMap.get("Permission"));
             whileInSound.MaxRandomOffset = Parser.parse(String.valueOf(soundModelMap.get("MaxRandomOffset")), -1f);
