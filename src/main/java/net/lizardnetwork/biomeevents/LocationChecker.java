@@ -51,7 +51,7 @@ public class LocationChecker {
                     int randomSoundIndex = 0;
 
                     if (matchedBiome.WhileIn.Sounds.size() > 1) {
-                        randomSoundIndex = ThreadLocalRandom.current().nextInt(0, matchedBiome.WhileIn.Sounds.size() - 1);
+                        randomSoundIndex = ThreadLocalRandom.current().nextInt(0, matchedBiome.WhileIn.Sounds.size());
                     }
 
                     SoundModel soundModel = matchedBiome.WhileIn.Sounds.get(randomSoundIndex);

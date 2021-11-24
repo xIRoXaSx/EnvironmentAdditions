@@ -1,5 +1,6 @@
 package net.lizardnetwork.biomeevents.models;
 
+import net.lizardnetwork.biomeevents.configuration.Config;
 import net.lizardnetwork.biomeevents.helper.Parser;
 import org.bukkit.SoundCategory;
 import java.util.*;
@@ -20,10 +21,20 @@ public class BiomeModel {
     public BiomeModel loadBiomeModel() {
         BiomeId = String.valueOf(valueMap.get("BiomeId"));
         WhileIn.Commands.Commands = convertObjectToList(valueMap.getOrDefault("WhileIn.Commands", new ArrayList<>()));
+        WhileIn.Sounds = new ArrayList<>();
+
         List<Map<String, Object>> whileInSounds = convertObjectToMap(valueMap.getOrDefault("WhileIn.Sounds", List.of(Collections.emptyMap())));
         SoundModel whileInSound = new SoundModel();
 
         for (Map<String, Object> soundModelMap : whileInSounds) {
+            // Check if the map contains a reference to another biome
+            SoundModel soundModel = getSoundModelFromReference(soundModelMap);
+
+            if (soundModel != null) {
+                WhileIn.Sounds.add(soundModel);
+                continue;
+            }
+
             whileInSound.Chance = Parser.parse(String.valueOf(soundModelMap.get("Chance")), 1);
             whileInSound.Sound = String.valueOf(soundModelMap.get("Sound"));
             whileInSound.Category = String.valueOf(Parser.parse(String.valueOf(soundModelMap.get("Category")), SoundCategory.AMBIENT));
@@ -32,10 +43,38 @@ public class BiomeModel {
             whileInSound.IsServerWide = Parser.parse(String.valueOf(soundModelMap.get("IsServerWide")), false);
             whileInSound.Permission = String.valueOf(soundModelMap.get("Permission"));
             whileInSound.MaxRandomOffset = Parser.parse(String.valueOf(soundModelMap.get("MaxRandomOffset")), -1f);
+            WhileIn.Sounds.add(whileInSound);
         }
 
-        WhileIn.Sounds = List.of(whileInSound);
         return this;
+    }
+
+    /**
+     * Gets the SoundModel via reference inside a Map
+     * @param soundModelMap Map&lt;String, Object&gt; - Map containing all information of one SoundModel block
+     * @return SoundModel - Either a new SoundModel with all data configured, or null
+     */
+    private SoundModel getSoundModelFromReference(Map<String, Object> soundModelMap) {
+        var referencedEntry = soundModelMap.entrySet().stream()
+            .filter(x -> x.getKey().equalsIgnoreCase("reference") || x.getKey().equalsIgnoreCase("ref"))
+            .findFirst().orElse(null);
+
+        if (referencedEntry != null) {
+            Map<String, Object> biomeConfigs = Config.getBiomes();
+
+            Map.Entry<String, Object> foundValue = biomeConfigs.entrySet().stream()
+                .filter(x -> x.getKey().equalsIgnoreCase(referencedEntry.getValue().toString()))
+                .findFirst().orElse(null);
+
+            if (foundValue == null)
+                return null;
+
+            var biomeModel = new BiomeModel(convertObjectToMap(List.of(foundValue.getValue())).get(0)).loadBiomeModel();
+
+            return biomeModel.WhileIn.Sounds.get(0);
+        }
+
+        return null;
     }
 
     /**
