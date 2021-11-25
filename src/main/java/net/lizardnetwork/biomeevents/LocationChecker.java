@@ -7,6 +7,7 @@ import net.lizardnetwork.biomeevents.models.SoundModel;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
+import org.bukkit.WeatherType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -45,6 +46,20 @@ public class LocationChecker {
 
                     if (matchedBiome == null)
                         continue;
+
+                    // Check if conditions meet
+                    if (matchedBiome.WhileIn.Conditions != null && matchedBiome.WhileIn.Conditions.getEnableCondition()) {
+                        WeatherType worldWeatherCondition = player.getWorld().isClearWeather() ? WeatherType.CLEAR : WeatherType.DOWNFALL;
+
+                        if (!matchedBiome.WhileIn.Conditions.getWeatherCondition().equals(worldWeatherCondition))
+                            return;
+
+                        if (matchedBiome.WhileIn.Conditions.getStartTimeCondition() > player.getWorld().getTime())
+                            return;
+
+                        if (matchedBiome.WhileIn.Conditions.getEndTimeCondition() < player.getWorld().getTime())
+                            return;
+                    }
 
                     // Replace placeholders and execute given command
                     for (String command : matchedBiome.WhileIn.Commands.Commands) {

@@ -4,6 +4,8 @@ import net.lizardnetwork.biomeevents.Logging;
 import net.lizardnetwork.biomeevents.configuration.Config;
 import net.lizardnetwork.biomeevents.helper.Parser;
 import org.bukkit.SoundCategory;
+import org.bukkit.WeatherType;
+import org.bukkit.configuration.MemorySection;
 import java.util.*;
 
 public class BiomeModel {
@@ -11,18 +13,23 @@ public class BiomeModel {
     public BiomeEventModel WhileIn = new BiomeEventModel();
     private final Map<String, Object> valueMap;
 
+    /**
+     * Create an instance which represents a biome in the configuration
+     * @param valueMap <code>Map&lt;String, Object&gt;</code> - Map containing all data from a biome in the config
+     */
     public BiomeModel(Map<String, Object> valueMap) {
         this.valueMap = valueMap;
     }
 
     /**
      * Load values from a map into a new BiomeModel instance
-     * @return BiomeModel
+     * @return <code>BiomeModel</code> - The loaded BiomeModel
      */
     public BiomeModel loadBiomeModel() {
         BiomeId = String.valueOf(valueMap.get("BiomeId"));
-        WhileIn.Commands.Commands = convertObjectToList(valueMap.getOrDefault("WhileIn.Commands", new ArrayList<>()));
         WhileIn.Sounds = new ArrayList<>();
+        WhileIn.Commands.Commands = convertObjectToList(valueMap.getOrDefault("WhileIn.Commands", new ArrayList<>()));
+        WhileIn.Conditions = convertObjectToConditionModel(valueMap.getOrDefault("WhileIn.Conditions", null));
 
         List<Map<String, Object>> whileInSounds = convertObjectToMap(valueMap.getOrDefault("WhileIn.Sounds", List.of(Collections.emptyMap())));
         for (Map<String, Object> soundModelMap : whileInSounds) {
@@ -50,9 +57,32 @@ public class BiomeModel {
     }
 
     /**
+     * Convert an <code>WhileIn.Conditions</code> object from <code>valueMap</code> to a <code>ConditionModel</code>
+     * @return <code>ConditionModel</code> - A ConditionModel which represents conditions for a WhileIn block of a BiomeModel
+     */
+    private ConditionModel convertObjectToConditionModel(Object conditions) {
+        ConditionModel returnValue = new ConditionModel();
+
+        if (conditions == null)
+            return null;
+
+        try {
+            Map<String, Object> conditionsMap = ((MemorySection) conditions).getValues(false);
+            returnValue.EnableCondition = Parser.parse(String.valueOf(conditionsMap.get("EnableCondition")), false);
+            returnValue.Weather = Parser.parse(String.valueOf(conditionsMap.get("Weather")), WeatherType.CLEAR);
+            returnValue.FromTimeInTicks = Parser.parse(String.valueOf(conditionsMap.get("FromTimeInTicks")), 1000);
+            returnValue.UntilTimeInTicks = Parser.parse(String.valueOf(conditionsMap.get("UntilTimeInTicks")), 13000);
+        } catch (ClassCastException ex) {
+            Logging.warning("ERROR: " + ex);
+        }
+
+        return returnValue;
+    }
+
+    /**
      * Gets the SoundModel via reference inside a Map
-     * @param soundModelMap Map&lt;String, Object&gt; - Map containing all information of one SoundModel block
-     * @return SoundModel - Either a new SoundModel with all data configured, or null
+     * @param soundModelMap <code>Map&lt;String, Object&gt;</code> - Map containing all information of one SoundModel block
+     * @return <code>SoundModel</code> - Either a new <code>SoundModel</code> with all data configured, or <code>null</code>
      */
     private List<SoundModel> getSoundModelFromReference(Map<String, Object> soundModelMap) {
         var referencedEntry = soundModelMap.entrySet().stream()
@@ -79,8 +109,8 @@ public class BiomeModel {
 
     /**
      * Convert object to list
-     * @param object Object - The object to convert
-     * @return List&lt;?&gt; - List containing unknown types
+     * @param object <code>Object</code> - The object to convert
+     * @return <code>List&lt;?&gt;</code> - List containing unknown types
      */
     @SuppressWarnings("unchecked")
     private List<String> convertObjectToList(Object object) {
@@ -95,8 +125,8 @@ public class BiomeModel {
 
     /**
      * Convert object to list of map
-     * @param object Object - The object to convert
-     * @return List&lt;Map&lt;String, Object&gt;&gt; - List containing map of Strings and Objects
+     * @param object <code>Object</code> - The object to convert
+     * @return <code>List&lt;Map&lt;String, Object&gt;&gt;</code> - List containing map of Strings and Objects
      */
     @SuppressWarnings("unchecked")
     private List<Map<String, Object>> convertObjectToMap(Object object) {

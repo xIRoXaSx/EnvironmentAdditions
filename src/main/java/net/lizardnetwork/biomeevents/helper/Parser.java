@@ -3,6 +3,7 @@ package net.lizardnetwork.biomeevents.helper;
 import net.lizardnetwork.biomeevents.Logging;
 import org.bukkit.ChatColor;
 import org.bukkit.SoundCategory;
+import org.bukkit.WeatherType;
 import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.regex.Matcher;
@@ -130,6 +131,19 @@ public class Parser {
                 returnValue = SoundCategory.valueOf(value.toUpperCase());
         } catch (Exception ex) {
             Logging.warning("Error parsing SoundCategory: " + ex.getMessage());
+        }
+
+        return returnValue;
+    }
+
+    public static WeatherType parse(@Nullable String value, WeatherType fallbackValue) {
+        WeatherType returnValue = fallbackValue;
+
+        try {
+            if (value != null && !value.isBlank() && !value.equals("null"))
+                returnValue = WeatherType.valueOf(value.toUpperCase());
+        } catch (Exception ex) {
+            Logging.warning("Error parsing WeatherType: " + ex.getMessage());
         }
 
         return returnValue;
