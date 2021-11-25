@@ -14,7 +14,7 @@ public class PlaceholderApiHook implements Listener {
     private boolean forceDefaultCheck = false;
 
     /**
-     * Replace placeholder by either internal checks or PlaceholderAPI if installed
+     * Replace placeholder by either internal checks or PlaceholderAPI if available
      */
     public PlaceholderApiHook() {
         DependencyChecker dependencyChecker = new DependencyChecker();
@@ -24,7 +24,7 @@ public class PlaceholderApiHook implements Listener {
 
     /**
      * Replace placeholder by either internal checks or PlaceholderAPI if installed
-     * @param forceDefaultCheck Boolean - Whether to default to internal placeholder check or not
+     * @param forceDefaultCheck <code>Boolean</code> - <code>True</code> if internal placeholders should be preferred.
      */
     public PlaceholderApiHook(boolean forceDefaultCheck) {
         DependencyChecker dependencyChecker = new DependencyChecker();
@@ -33,6 +33,12 @@ public class PlaceholderApiHook implements Listener {
         this.forceDefaultCheck = forceDefaultCheck;
     }
 
+    /**
+     * Get either the corresponding PlaceholderAPI placeholder(s) or the internal one(s)
+     * @param player <code>Player</code> - The corresponding player for the placeholder
+     * @param text <code>String</code> - The text which contains the placeholder
+     * @return <code>String</code> - The string which got the placeholder(s) replaced
+     */
     public String getPlaceholder(Player player, String text) {
         if (isEnabled && !forceDefaultCheck) {
             return Parser.getColorizedText(PlaceholderAPI.setPlaceholders(player, text));

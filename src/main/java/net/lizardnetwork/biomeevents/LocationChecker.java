@@ -12,7 +12,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
-
 import java.util.concurrent.ThreadLocalRandom;
 
 public class LocationChecker {
@@ -24,6 +23,11 @@ public class LocationChecker {
         this.papiBiomePlaceholder = papiBiomePlaceholder;
     }
 
+    /**
+     * Start the BukkitRunnable which will check player positions for biomes to execute commands and sounds
+     * depending on the players current location
+     * @return <code>BukkitTask</code> - The running BukkitTask
+     */
     BukkitTask initializeTimeDrivenSystem() {
         return new BukkitRunnable() {
             @Override

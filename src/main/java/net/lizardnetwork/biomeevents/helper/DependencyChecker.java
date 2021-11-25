@@ -7,8 +7,8 @@ import java.util.Arrays;
 
 public class DependencyChecker {
     /**
-     * Get dependencies (from installed plugins)
-     * @return Dependencies
+     * Get dependencies from the installed plugins
+     * @return <code>Dependencies</code> - Dependency enum which represents the installed (soft) dependencies
      */
     public Dependency getEnabledDependencies() {
         Dependency returnValue = Dependency.None;

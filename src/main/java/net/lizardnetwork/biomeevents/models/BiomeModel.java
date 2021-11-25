@@ -1,5 +1,6 @@
 package net.lizardnetwork.biomeevents.models;
 
+import net.lizardnetwork.biomeevents.Logging;
 import net.lizardnetwork.biomeevents.configuration.Config;
 import net.lizardnetwork.biomeevents.helper.Parser;
 import org.bukkit.SoundCategory;
@@ -24,17 +25,16 @@ public class BiomeModel {
         WhileIn.Sounds = new ArrayList<>();
 
         List<Map<String, Object>> whileInSounds = convertObjectToMap(valueMap.getOrDefault("WhileIn.Sounds", List.of(Collections.emptyMap())));
-        SoundModel whileInSound = new SoundModel();
-
         for (Map<String, Object> soundModelMap : whileInSounds) {
             // Check if the map contains a reference to another biome
-            SoundModel soundModel = getSoundModelFromReference(soundModelMap);
+            List<SoundModel> soundReferences = getSoundModelFromReference(soundModelMap);
 
-            if (soundModel != null) {
-                WhileIn.Sounds.add(soundModel);
+            if (soundReferences != null) {
+                WhileIn.Sounds.addAll(soundReferences);
                 continue;
             }
 
+            SoundModel whileInSound = new SoundModel();
             whileInSound.Chance = Parser.parse(String.valueOf(soundModelMap.get("Chance")), 1);
             whileInSound.Sound = String.valueOf(soundModelMap.get("Sound"));
             whileInSound.Category = String.valueOf(Parser.parse(String.valueOf(soundModelMap.get("Category")), SoundCategory.AMBIENT));
@@ -54,7 +54,7 @@ public class BiomeModel {
      * @param soundModelMap Map&lt;String, Object&gt; - Map containing all information of one SoundModel block
      * @return SoundModel - Either a new SoundModel with all data configured, or null
      */
-    private SoundModel getSoundModelFromReference(Map<String, Object> soundModelMap) {
+    private List<SoundModel> getSoundModelFromReference(Map<String, Object> soundModelMap) {
         var referencedEntry = soundModelMap.entrySet().stream()
             .filter(x -> x.getKey().equalsIgnoreCase("reference") || x.getKey().equalsIgnoreCase("ref"))
             .findFirst().orElse(null);
@@ -71,7 +71,7 @@ public class BiomeModel {
 
             var biomeModel = new BiomeModel(convertObjectToMap(List.of(foundValue.getValue())).get(0)).loadBiomeModel();
 
-            return biomeModel.WhileIn.Sounds.get(0);
+            return biomeModel.WhileIn.Sounds;
         }
 
         return null;

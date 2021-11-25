@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor {
-    private final String pluginName = this.getDescription().getName();
     private static BiomeEvents instance;
     private static String consolePrefix;
     private static int positionChecksInTicks = -1;
@@ -37,7 +36,7 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
         }
 
         start();
-        Logging.info("Enabled " + pluginName + " within " + getFormattedTime(startTime));
+        Logging.info("Enabled " + instance.getDescription().getName() + " within " + getFormattedTime(startTime));
     }
 
     @Override
@@ -46,7 +45,7 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
             return true;
 
         if (args[0].equalsIgnoreCase("reload")) {
-            if (!sender.hasPermission(pluginName.toLowerCase() + ".admin"))
+            if (!sender.hasPermission(instance.getDescription().getName().toLowerCase() + ".admin"))
                 return false;
 
             String returnText = "&aReloaded &rwithin " + reload();
@@ -74,7 +73,7 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
 
     /**
      * Reload the configuration and restart the BukkitTask
-     * @return String - The time taken to reload
+     * @return <code>String</code> - The time taken to reload
      */
     private String reload() {
         long startTime = System.nanoTime();
@@ -88,8 +87,8 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
 
     /**
      * Get the elapsed time formatted in ms or s depending on the length
-     * @param startTime long - The start time
-     * @return String - Formatted string link '10ms'
+     * @param startTime <code>long</code> - The start time
+     * @return <code>String</code> - Formatted string like '10ms'
      */
     private String getFormattedTime(long startTime) {
         long elapsed = (System.nanoTime() - startTime) / 1000000;
@@ -98,7 +97,7 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
 
     /**
      * Start the LocationChecker BukkitTask
-     * @return BukkitTask - Running BukkitTask of LocationChecker
+     * @return <code>BukkitTask</code> - Start the BukkitTask of LocationChecker
      */
     private BukkitTask startLocationChecker() {
         return new LocationChecker(this, config.getConfigProperty("BiomeEvents.Settings.PapiBiomePlaceholder"))
@@ -107,7 +106,7 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
 
     /**
      * Get the plugins colored console prefix
-     * @return String - The colored console prefix of this plugin
+     * @return <code>String</code> - The colored console prefix of this plugin
      */
     static String getConsolePrefix() {
         return consolePrefix;
@@ -115,7 +114,7 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
 
     /**
      * Get the current instance of this plugin
-     * @return BiomeEvents - The current instance of this plugin
+     * @return <code>BiomeEvents</code> - The current instance of this plugin
      */
     static BiomeEvents getInstance() {
         return instance;
@@ -123,7 +122,7 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
 
     /**
      * Get the current integer for PositionChecksInTicks
-     * @return Integer - PositionChecksInTicks
+     * @return <code>Integer</code> - PositionChecksInTicks
      */
     public static Integer getPositionChecksInTicks() {
         return positionChecksInTicks;
@@ -131,7 +130,7 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
 
     /**
      * Return the current set BiomeModel list
-     * @return List&lt;BiomeModel&gt; - List containing all BiomeModels from the config
+     * @return <code>List&lt;BiomeModel&gt;</code> - List containing all BiomeModels from the config
      */
     static List<BiomeModel> getBiomeModels() {
         return biomeModels;

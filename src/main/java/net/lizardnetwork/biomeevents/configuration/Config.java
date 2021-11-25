@@ -36,8 +36,8 @@ public class Config {
     }
 
     /**
-     * Creates the net.lizardnetwork.wildtreasures.config file
-     * @return Boolean, True if config has been created or false if it hasn't
+     * Creates the config file
+     * @return <code>Boolean</code> - <code>True</code> if config has been created or <code>false</code> if it hasn't
      */
     public boolean createConfig() {
         boolean returnValue = false;
@@ -61,9 +61,9 @@ public class Config {
     }
 
     /**
-     * Gets a property from the config (eg: "BiomeEvents.CheckInterval")
-     * @param propertyName The property (path) to get
-     * @return String, either containing the value of the property or empty ("")
+     * Gets a property from the current config
+     * @param propertyName <code>String</code> - The property (path) to get
+     * @return <code>String</code> - Either containing the value of the property or empty ("")
      */
     public String getConfigProperty(String propertyName) {
         String returnValue = "";
@@ -76,8 +76,8 @@ public class Config {
     }
 
     /**
-     * Get the current biome configurations from config file
-     * @return BiomeModel[] - Array containing all BiomeModels
+     * Get the current biome configurations from the current config
+     * @return <code>List&lt;BiomeModel&gt;</code> - List containing all BiomeModels
      */
     public List<BiomeModel> getBiomeConfigs() {
         List<BiomeModel> returnValue = new ArrayList<>();
@@ -107,8 +107,8 @@ public class Config {
     }
 
     /**
-     * Get the biomes section from the current config
-     * @return Map&lt;String, Object&gt; - Map containing BiomeId as key and the biome entries as its value
+     * Get the biome sections from the current config
+     * @return <code>Map&lt;String</code> - Object&gt; - Map containing BiomeId as key and the biome entries as its value
      */
     public static Map<String, Object> getBiomes() {
         Map<String, Object> returnValue = new HashMap<>();

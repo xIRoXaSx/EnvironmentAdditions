@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 public class Parser {
     /**
      * Gets a string in gradient colors
-     * @param text String, The string to colorize
-     * @param startHexCode String, The hex code to start the gradient from
-     * @return String - The colorized text
+     * @param text <code>String</code> - The string to colorize
+     * @param startHexCode <code>String</code> - The hex code to start the gradient from
+     * @return <code>String</code> - The colorized text
      */
     public static String getGradientText(String text, String startHexCode) {
         StringBuilder returnValue = new StringBuilder();
@@ -33,8 +33,8 @@ public class Parser {
 
     /**
      * Gets a colorized string from either hex or alternate color codes
-     * @param text String, The string containing either hex or alternate color codes
-     * @return String - The colorized text
+     * @param text <code>String</code> - The string containing either hex or alternate color codes
+     * @return <code>String</code> - The colorized text
      */
     public static String getColorizedText(String text) {
         String returnValue = ChatColor.translateAlternateColorCodes('&', text);
@@ -57,10 +57,10 @@ public class Parser {
 
     /**
      * Try to parse an integer from string
-     * Fallback value will be taken if parsing was unsuccessful
-     * @param value The value to parse
-     * @param fallbackValue The value to take as fallback if parameter 'value' cannot be parsed
-     * @return Integer - Either parsed from parameter 'value' or fallback
+     * Fallback value will be returned if parsing was unsuccessful
+     * @param value <code>Integer</code> - The value to parse
+     * @param fallbackValue <code>Integer</code> - The value to return as fallback if parameter <code>value</code> cannot be parsed
+     * @return <code>Integer</code> - Either parsed from parameter <code>value</code> or fallback
      */
     public static Integer parse(@Nullable String value, Integer fallbackValue) {
         var returnValue = fallbackValue;
@@ -77,10 +77,10 @@ public class Parser {
 
     /**
      * Try to parse a float from string
-     * Fallback value will be taken if parsing was unsuccessful
-     * @param value The value to parse
-     * @param fallbackValue The value to take as fallback if parameter 'value' cannot be parsed
-     * @return Integer - Either parsed from parameter 'value' or fallback
+     * Fallback value will be returned if parsing was unsuccessful
+     * @param value <code>Float</code> - The value to parse
+     * @param fallbackValue <code>Float</code> - The value to return as fallback if parameter <code>value</code> cannot be parsed
+     * @return <code>Float</code> - Either parsed from parameter <code>value</code> or fallback
      */
     public static Float parse(@Nullable String value, Float fallbackValue) {
         var returnValue = fallbackValue;
@@ -97,10 +97,10 @@ public class Parser {
 
     /**
      * Try to parse a boolean from string
-     * Fallback value will be taken if parsing was unsuccessful
-     * @param value The value to parse
-     * @param fallbackValue The value to take as fallback if parameter 'value' cannot be parsed
-     * @return Boolean - Either parsed from parameter 'value' or fallback
+     * Fallback value will be returned if parsing was unsuccessful
+     * @param value <code>Boolean</code> - The value to parse
+     * @param fallbackValue <code>Boolean</code> - The value to return as fallback if parameter <code>value</code> cannot be parsed
+     * @return <code>Boolean</code> - Either parsed from parameter <code>value</code> or fallback
      */
     public static Boolean parse(@Nullable String value, Boolean fallbackValue) {
         var returnValue = fallbackValue;
@@ -117,11 +117,13 @@ public class Parser {
 
     /**
      * Try to parse a sound category from string
-     * @param value The value to parse
-     * @return SoundCategory - Either parsed from parameter 'value' or fallback
+     * Fallback value will be returned if parsing was unsuccessful
+     * @param value <code>String</code> - The value to parse
+     * @param fallbackValue <code>SoundCategory</code> - The value to return as fallback if parameter <code>value</code> cannot be parsed
+     * @return <code>SoundCategory</code> - Either parsed from parameter <code>value</code> or fallback
      */
-    public static SoundCategory parse(@Nullable String value, SoundCategory soundCategory) {
-        SoundCategory returnValue = soundCategory;
+    public static SoundCategory parse(@Nullable String value, SoundCategory fallbackValue) {
+        SoundCategory returnValue = fallbackValue;
 
         try {
             if (value != null && !value.isBlank() && !value.equals("null"))

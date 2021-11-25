@@ -15,8 +15,8 @@ public class Placeholder {
     }
 
     /**
-     * Replace the placeholderString with the passed replacements
-     * @return String, Containing the replacements instead of placeholders if applicable
+     * Replace the placeholder text with the corresponding replacements
+     * @return <code>String</code> - Containing the replacements instead of placeholders if applicable
      */
     public String replace() {
         Character placeholderSeparatorChar = '%';
