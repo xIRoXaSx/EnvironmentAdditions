@@ -9,4 +9,5 @@ public class SoundModel {
     public boolean IsServerWide = false;
     public String Permission = "";
     public double MaxRandomOffset = -1d;
+    public ConditionModel Conditions = new ConditionModel();
 }

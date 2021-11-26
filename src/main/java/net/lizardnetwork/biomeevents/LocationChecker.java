@@ -3,6 +3,7 @@ package net.lizardnetwork.biomeevents;
 import net.lizardnetwork.biomeevents.external.PlaceholderApiHook;
 import net.lizardnetwork.biomeevents.helper.ChanceCalculation;
 import net.lizardnetwork.biomeevents.helper.Parser;
+import net.lizardnetwork.biomeevents.models.ConditionModel;
 import net.lizardnetwork.biomeevents.models.SoundModel;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -48,18 +49,8 @@ public class LocationChecker {
                         continue;
 
                     // Check if conditions meet
-                    if (matchedBiome.WhileIn.Conditions != null && matchedBiome.WhileIn.Conditions.getEnableCondition()) {
-                        WeatherType worldWeatherCondition = player.getWorld().isClearWeather() ? WeatherType.CLEAR : WeatherType.DOWNFALL;
-
-                        if (!matchedBiome.WhileIn.Conditions.getWeatherCondition().equals(worldWeatherCondition))
-                            return;
-
-                        if (matchedBiome.WhileIn.Conditions.getStartTimeCondition() > player.getWorld().getTime())
-                            return;
-
-                        if (matchedBiome.WhileIn.Conditions.getEndTimeCondition() < player.getWorld().getTime())
-                            return;
-                    }
+                    if (!passedConditionChecks(matchedBiome.WhileIn.Conditions, player))
+                        return;
 
                     // Replace placeholders and execute given command
                     for (String command : matchedBiome.WhileIn.Commands.Commands) {
@@ -77,6 +68,10 @@ public class LocationChecker {
 
                     // Return only if the permission node is set and player does not have the permission
                     if (!soundModel.Permission.isBlank() && !player.hasPermission(soundModel.Permission))
+                        return;
+
+                    // Check if conditions meet
+                    if (!passedConditionChecks(soundModel.Conditions, player))
                         return;
 
                     int randomIndex = ThreadLocalRandom.current().nextInt(0, soundModel.Chance);
@@ -118,5 +113,29 @@ public class LocationChecker {
                 }
             }
         }.runTaskTimer(plugin, 0, BiomeEvents.getPositionChecksInTicks());
+    }
+
+    /**
+     * Check if the target passed its condition checks
+     * @param conditions <code>ConditionModel</code> - The ConditionModel for which the checks should be executed
+     * @param currentPlayer <code>Player</code> - The Player for which the check should be executed
+     * @return <code>Boolean</code> - <code>True</code> if all checks (if enabled) passed or nothing needed to be checked,
+     *         otherwise <code>false</code>
+     */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean passedConditionChecks(ConditionModel conditions, Player currentPlayer) {
+        if (conditions != null && conditions.getEnableCondition()) {
+            WeatherType worldWeatherCondition = currentPlayer.getWorld().isClearWeather() ? WeatherType.CLEAR : WeatherType.DOWNFALL;
+
+            if (!conditions.getWeatherCondition().equals(worldWeatherCondition))
+                return false;
+
+            if (conditions.getStartTimeCondition() > currentPlayer.getWorld().getTime())
+                return false;
+
+            return conditions.getEndTimeCondition() >= currentPlayer.getWorld().getTime();
+        }
+
+        return true;
     }
 }

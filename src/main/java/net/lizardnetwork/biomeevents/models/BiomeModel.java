@@ -50,6 +50,7 @@ public class BiomeModel {
             whileInSound.IsServerWide = Parser.parse(String.valueOf(soundModelMap.get("IsServerWide")), false);
             whileInSound.Permission = String.valueOf(soundModelMap.get("Permission"));
             whileInSound.MaxRandomOffset = Parser.parse(String.valueOf(soundModelMap.get("MaxRandomOffset")), -1f);
+            whileInSound.Conditions = convertObjectToConditionModel(soundModelMap.get("Conditions"));
             WhileIn.Sounds.add(whileInSound);
         }
 
@@ -60,21 +61,30 @@ public class BiomeModel {
      * Convert an <code>WhileIn.Conditions</code> object from <code>valueMap</code> to a <code>ConditionModel</code>
      * @return <code>ConditionModel</code> - A ConditionModel which represents conditions for a WhileIn block of a BiomeModel
      */
+    @SuppressWarnings("unchecked")
     private ConditionModel convertObjectToConditionModel(Object conditions) {
         ConditionModel returnValue = new ConditionModel();
 
         if (conditions == null)
             return null;
 
-        try {
-            Map<String, Object> conditionsMap = ((MemorySection) conditions).getValues(false);
-            returnValue.EnableCondition = Parser.parse(String.valueOf(conditionsMap.get("EnableCondition")), false);
-            returnValue.Weather = Parser.parse(String.valueOf(conditionsMap.get("Weather")), WeatherType.CLEAR);
-            returnValue.FromTimeInTicks = Parser.parse(String.valueOf(conditionsMap.get("FromTimeInTicks")), 1000);
-            returnValue.UntilTimeInTicks = Parser.parse(String.valueOf(conditionsMap.get("UntilTimeInTicks")), 13000);
-        } catch (ClassCastException ex) {
-            Logging.warning("ERROR: " + ex);
+        Map<String, Object> conditionsMap;
+
+        if (conditions.getClass().equals(LinkedHashMap.class)) {
+            conditionsMap = (Map<String, Object>) conditions;
+        } else {
+            try {
+                conditionsMap = ((MemorySection) conditions).getValues(false);
+            } catch (ClassCastException ex) {
+                Logging.warning("ERROR: " + ex);
+                return returnValue;
+            }
         }
+
+        returnValue.EnableCondition = Parser.parse(String.valueOf(conditionsMap.get("EnableCondition")), false);
+        returnValue.Weather = Parser.parse(String.valueOf(conditionsMap.get("Weather")), WeatherType.CLEAR);
+        returnValue.FromTimeInTicks = Parser.parse(String.valueOf(conditionsMap.get("FromTimeInTicks")), 1000);
+        returnValue.UntilTimeInTicks = Parser.parse(String.valueOf(conditionsMap.get("UntilTimeInTicks")), 13000);
 
         return returnValue;
     }
