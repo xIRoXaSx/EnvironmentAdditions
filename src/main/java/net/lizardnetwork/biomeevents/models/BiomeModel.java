@@ -9,8 +9,8 @@ import org.bukkit.configuration.MemorySection;
 import java.util.*;
 
 public class BiomeModel {
-    public String BiomeId;
-    public BiomeEventModel WhileIn = new BiomeEventModel();
+    private String biomeId;
+    private final BiomeEventModel whileIn = new BiomeEventModel();
     private final Map<String, Object> valueMap;
 
     /**
@@ -26,10 +26,10 @@ public class BiomeModel {
      * @return <code>BiomeModel</code> - The loaded BiomeModel
      */
     public BiomeModel loadBiomeModel() {
-        BiomeId = String.valueOf(valueMap.get("BiomeId"));
-        WhileIn.Sounds = new ArrayList<>();
-        WhileIn.Commands.Commands = convertObjectToList(valueMap.getOrDefault("WhileIn.Commands", new ArrayList<>()));
-        WhileIn.Conditions = convertObjectToConditionModel(valueMap.getOrDefault("WhileIn.Conditions", null));
+        biomeId = String.valueOf(valueMap.get("BiomeId"));
+        whileIn.Sounds = new ArrayList<>();
+        whileIn.Commands.Commands = convertObjectToList(valueMap.getOrDefault("WhileIn.Commands", new ArrayList<>()));
+        whileIn.Conditions = convertObjectToConditionModel(valueMap.getOrDefault("WhileIn.Conditions", null));
 
         List<Map<String, Object>> whileInSounds = convertObjectToMap(valueMap.getOrDefault("WhileIn.Sounds", List.of(Collections.emptyMap())));
         for (Map<String, Object> soundModelMap : whileInSounds) {
@@ -37,24 +37,40 @@ public class BiomeModel {
             List<SoundModel> soundReferences = getSoundModelFromReference(soundModelMap);
 
             if (soundReferences != null) {
-                WhileIn.Sounds.addAll(soundReferences);
+                whileIn.Sounds.addAll(soundReferences);
                 continue;
             }
 
             SoundModel whileInSound = new SoundModel();
-            whileInSound.Chance = Parser.parse(String.valueOf(soundModelMap.get("Chance")), 1);
-            whileInSound.Sound = String.valueOf(soundModelMap.get("Sound"));
-            whileInSound.Category = String.valueOf(Parser.parse(String.valueOf(soundModelMap.get("Category")), SoundCategory.AMBIENT));
-            whileInSound.Volume = Parser.parse(String.valueOf(soundModelMap.get("Volume")), 0.5f);
-            whileInSound.Pitch = Parser.parse(String.valueOf(soundModelMap.get("Pitch")), 1f);
-            whileInSound.IsServerWide = Parser.parse(String.valueOf(soundModelMap.get("IsServerWide")), false);
-            whileInSound.Permission = String.valueOf(soundModelMap.get("Permission"));
-            whileInSound.MaxRandomOffset = Parser.parse(String.valueOf(soundModelMap.get("MaxRandomOffset")), -1f);
-            whileInSound.Conditions = convertObjectToConditionModel(soundModelMap.get("Conditions"));
-            WhileIn.Sounds.add(whileInSound);
+            whileInSound.setChance(Parser.parse(String.valueOf(soundModelMap.get("Chance")), 1));
+            whileInSound.setSound(String.valueOf(soundModelMap.get("Sound")));
+            whileInSound.setCategory(String.valueOf(Parser.parse(String.valueOf(soundModelMap.get("Category")), SoundCategory.AMBIENT)));
+            whileInSound.setVolume(Parser.parse(String.valueOf(soundModelMap.get("Volume")), 0.5f));
+            whileInSound.setPitch(Parser.parse(String.valueOf(soundModelMap.get("Pitch")), 1f));
+            whileInSound.setIsServerWide(Parser.parse(String.valueOf(soundModelMap.get("IsServerWide")), false));
+            whileInSound.setPermission(String.valueOf(soundModelMap.get("Permission")));
+            whileInSound.setMaxRandomOffset(Parser.parse(String.valueOf(soundModelMap.get("MaxRandomOffset")), -1f));
+            whileInSound.setConditions(convertObjectToConditionModel(soundModelMap.get("Conditions")));
+            whileIn.Sounds.add(whileInSound);
         }
 
         return this;
+    }
+
+    /**
+     * Get the BiomeId
+     * @return <code>String</code> - String containing the biome name
+     */
+    public String getBiomeId() {
+        return biomeId;
+    }
+
+    /**
+     * Get the BiomeId
+     * @return <code>BiomeEventModel</code> - The BiomeEventModel which contains all operations
+     */
+    public BiomeEventModel getWhileInBiomeEventModel() {
+        return whileIn;
     }
 
     /**
@@ -81,10 +97,10 @@ public class BiomeModel {
             }
         }
 
-        returnValue.EnableCondition = Parser.parse(String.valueOf(conditionsMap.get("EnableCondition")), false);
-        returnValue.Weather = Parser.parse(String.valueOf(conditionsMap.get("Weather")), WeatherType.CLEAR);
-        returnValue.FromTimeInTicks = Parser.parse(String.valueOf(conditionsMap.get("FromTimeInTicks")), 1000);
-        returnValue.UntilTimeInTicks = Parser.parse(String.valueOf(conditionsMap.get("UntilTimeInTicks")), 13000);
+        returnValue.setEnableCondition(Parser.parse(String.valueOf(conditionsMap.get("EnableCondition")), false));
+        returnValue.setWeather(Parser.parse(String.valueOf(conditionsMap.get("Weather")), WeatherType.CLEAR));
+        returnValue.setFromTimeInTicks(Parser.parse(String.valueOf(conditionsMap.get("FromTimeInTicks")), 1000));
+        returnValue.setUntilTimeInTicks(Parser.parse(String.valueOf(conditionsMap.get("UntilTimeInTicks")), 13000));
 
         return returnValue;
     }
@@ -111,7 +127,7 @@ public class BiomeModel {
 
             var biomeModel = new BiomeModel(convertObjectToMap(List.of(foundValue.getValue())).get(0)).loadBiomeModel();
 
-            return biomeModel.WhileIn.Sounds;
+            return biomeModel.whileIn.Sounds;
         }
 
         return null;

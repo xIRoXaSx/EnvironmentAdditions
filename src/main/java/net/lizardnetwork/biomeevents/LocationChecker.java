@@ -42,42 +42,42 @@ public class LocationChecker {
                     String biomeNameOfPlayer = new PlaceholderApiHook(biomePlaceholderEmpty).getPlaceholder(player, biomePlaceholder);
 
                     var matchedBiome = BiomeEvents.getBiomeModels().stream()
-                        .filter(x -> x.BiomeId.equalsIgnoreCase(biomeNameOfPlayer))
+                        .filter(x -> x.getBiomeId().equalsIgnoreCase(biomeNameOfPlayer))
                         .findFirst().orElse(null);
 
                     if (matchedBiome == null)
                         continue;
 
                     // Check if conditions meet
-                    if (!passedConditionChecks(matchedBiome.WhileIn.Conditions, player))
+                    if (!passedConditionChecks(matchedBiome.getWhileInBiomeEventModel().Conditions, player))
                         return;
 
                     // Replace placeholders and execute given command
-                    for (String command : matchedBiome.WhileIn.Commands.Commands) {
+                    for (String command : matchedBiome.getWhileInBiomeEventModel().Commands.Commands) {
                         String replacedCommand = new PlaceholderApiHook().getPlaceholder(player, command);
                         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), replacedCommand);
                     }
 
                     int randomSoundIndex = 0;
 
-                    if (matchedBiome.WhileIn.Sounds.size() > 1) {
-                        randomSoundIndex = ThreadLocalRandom.current().nextInt(0, matchedBiome.WhileIn.Sounds.size());
+                    if (matchedBiome.getWhileInBiomeEventModel().Sounds.size() > 1) {
+                        randomSoundIndex = ThreadLocalRandom.current().nextInt(0, matchedBiome.getWhileInBiomeEventModel().Sounds.size());
                     }
 
-                    SoundModel soundModel = matchedBiome.WhileIn.Sounds.get(randomSoundIndex);
+                    SoundModel soundModel = matchedBiome.getWhileInBiomeEventModel().Sounds.get(randomSoundIndex);
 
                     // Return only if the permission node is set and player does not have the permission
-                    if (!soundModel.Permission.isBlank() && !player.hasPermission(soundModel.Permission))
+                    if (!soundModel.getPermission().isBlank() && !player.hasPermission(soundModel.getPermission()))
                         return;
 
                     // Check if conditions meet
-                    if (!passedConditionChecks(soundModel.Conditions, player))
+                    if (!passedConditionChecks(soundModel.getConditions(), player))
                         return;
 
-                    int randomIndex = ThreadLocalRandom.current().nextInt(0, soundModel.Chance);
+                    int randomIndex = ThreadLocalRandom.current().nextInt(0, soundModel.getChance());
 
                     // Calculate chance
-                    ChanceCalculation calculatedChance = new ChanceCalculation(randomIndex, soundModel.Chance);
+                    ChanceCalculation calculatedChance = new ChanceCalculation(randomIndex, soundModel.getChance());
 
                     if (!calculatedChance.matchedIndex())
                         return;
@@ -85,29 +85,29 @@ public class LocationChecker {
                     Location soundLocation = player.getLocation();
 
                     // Add random offset if configured
-                    if (soundModel.MaxRandomOffset > 0) {
+                    if (soundModel.getMaxRandomOffset() > 0) {
                         double randomOffsetX = ThreadLocalRandom.current()
-                            .nextDouble(soundModel.MaxRandomOffset * -1, soundModel.MaxRandomOffset);
+                            .nextDouble(soundModel.getMaxRandomOffset() * -1, soundModel.getMaxRandomOffset());
                         double randomOffsetZ = ThreadLocalRandom.current()
-                                .nextDouble(soundModel.MaxRandomOffset * -1, soundModel.MaxRandomOffset);
+                                .nextDouble(soundModel.getMaxRandomOffset() * -1, soundModel.getMaxRandomOffset());
                         soundLocation.add(new Vector(randomOffsetX, 0, randomOffsetZ));
                     }
 
-                    if (soundModel.IsServerWide || soundModel.MaxRandomOffset > 0) {
+                    if (soundModel.isServerWide() || soundModel.getMaxRandomOffset() > 0) {
                         player.getWorld().playSound(
                             soundLocation,
-                            soundModel.Sound,
-                            Parser.parse(soundModel.Category, SoundCategory.AMBIENT),
-                            soundModel.Volume,
-                            soundModel.Pitch
+                            soundModel.getSound(),
+                            Parser.parse(soundModel.getCategory(), SoundCategory.AMBIENT),
+                            soundModel.getVolume(),
+                            soundModel.getPitch()
                         );
                     } else {
                         player.playSound(
                             soundLocation,
-                            soundModel.Sound,
-                            Parser.parse(soundModel.Category, SoundCategory.AMBIENT),
-                            soundModel.Volume,
-                            soundModel.Pitch
+                            soundModel.getSound(),
+                            Parser.parse(soundModel.getCategory(), SoundCategory.AMBIENT),
+                            soundModel.getVolume(),
+                            soundModel.getPitch()
                         );
                     }
                 }
