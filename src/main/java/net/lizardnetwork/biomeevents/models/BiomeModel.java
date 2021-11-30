@@ -30,8 +30,11 @@ public class BiomeModel {
         whileIn.Sounds = new ArrayList<>();
         whileIn.Commands.Commands = convertObjectToList(valueMap.getOrDefault("WhileIn.Commands", new ArrayList<>()));
         whileIn.Conditions = convertObjectToConditionModel(valueMap.getOrDefault("WhileIn.Conditions", null));
+        whileIn.ParticleModels = new ArrayList<>();
 
         List<Map<String, Object>> whileInSounds = convertObjectToMap(valueMap.getOrDefault("WhileIn.Sounds", List.of(Collections.emptyMap())));
+        List<Map<String, Object>> whileInParticles = convertObjectToMap(valueMap.getOrDefault("WhileIn.Particles", List.of(Collections.emptyMap())));
+
         for (Map<String, Object> soundModelMap : whileInSounds) {
             // Check if the map contains a reference to another biome
             List<SoundModel> soundReferences = getSoundModelFromReference(soundModelMap);
@@ -52,6 +55,18 @@ public class BiomeModel {
             whileInSound.setMaxRandomOffset(Parser.parse(String.valueOf(soundModelMap.get("MaxRandomOffset")), -1f));
             whileInSound.setConditions(convertObjectToConditionModel(soundModelMap.get("Conditions")));
             whileIn.Sounds.add(whileInSound);
+        }
+
+        for (Map<String, Object> particleModelMap : whileInParticles) {
+            ParticleModel particleModel = new ParticleModel();
+            particleModel.setParticle(String.valueOf(particleModelMap.get("Particle")));
+            particleModel.setRedstoneHexColor(String.valueOf(particleModelMap.get("RedstoneHexColor")));
+            particleModel.setRedstoneSize(Parser.parse(String.valueOf(particleModelMap.get("RedstoneSize")), 1));
+            particleModel.setParticleCount(Parser.parse(String.valueOf(particleModelMap.get("ParticleCount")), 1));
+            particleModel.setPermission(String.valueOf(particleModelMap.get("Permission")));
+            particleModel.setConditions(convertObjectToConditionModel(particleModelMap.get("Conditions")));
+            particleModel.setParticleAnimationModel(convertObjectToAnimationModel(particleModelMap.get("Animation")));
+            whileIn.ParticleModels.add(particleModel);
         }
 
         return this;
@@ -75,6 +90,7 @@ public class BiomeModel {
 
     /**
      * Convert an <code>WhileIn.Conditions</code> object from <code>valueMap</code> to a <code>ConditionModel</code>
+     * @param conditions <code>Object</code> - The object to convert
      * @return <code>ConditionModel</code> - A ConditionModel which represents conditions for a WhileIn block of a BiomeModel
      */
     @SuppressWarnings("unchecked")
@@ -102,6 +118,69 @@ public class BiomeModel {
         returnValue.setFromTimeInTicks(Parser.parse(String.valueOf(conditionsMap.get("FromTimeInTicks")), 1000));
         returnValue.setUntilTimeInTicks(Parser.parse(String.valueOf(conditionsMap.get("UntilTimeInTicks")), 13000));
 
+        return returnValue;
+    }
+
+    /**
+     * Convert an <code>WhileIn.Particles</code> object from <code>valueMap</code> to a <code>ParticleAnimationModel</code>
+     * @param animationModel <code>Object</code> - The object to convert
+     * @return <code>ParticleAnimationModel</code> - A ParticleAnimationModel which represents particle animation information
+     */
+    @SuppressWarnings("unchecked")
+    private ParticleAnimationModel convertObjectToAnimationModel(Object animationModel) {
+        ParticleAnimationModel returnValue = new ParticleAnimationModel();
+
+        if (animationModel == null)
+            return null;
+
+        Map<String, Object> animationMap;
+
+        if (animationModel.getClass().equals(LinkedHashMap.class)) {
+            animationMap = (Map<String, Object>) animationModel;
+        } else {
+            try {
+                animationMap = ((MemorySection) animationModel).getValues(false);
+            } catch (ClassCastException ex) {
+                Logging.warning("ERROR: " + ex);
+                return returnValue;
+            }
+        }
+
+        returnValue.setViewDirectionDistance(Parser.parse(String.valueOf(animationMap.get("ViewDirectionDistance")), 0f));
+        returnValue.setRelativeOffsetX(Parser.parse(String.valueOf(animationMap.get("RelativeOffsetX")), 0f));
+        returnValue.setRelativeOffsetY(Parser.parse(String.valueOf(animationMap.get("RelativeOffsetY")), 5f));
+        returnValue.setRelativeOffsetZ(Parser.parse(String.valueOf(animationMap.get("RelativeOffsetZ")), 0f));
+        returnValue.setLoopOption(convertObjectToParticleLoopOptionModel(animationMap.get("LoopOption")));
+        return returnValue;
+    }
+
+    /**
+     * Convert an <code>WhileIn.Particles.Animation.LoopObject</code> object from <code>valueMap</code> to a <code>ParticleLoopOptionModel</code>
+     * @param loopOptionModel <code>Object</code> - The object to convert
+     * @return <code>ParticleLoopOptionModel</code> - A ParticleLoopOptionModel which represents particle animation loop option information
+     */
+    @SuppressWarnings("unchecked")
+    private ParticleLoopOptionModel convertObjectToParticleLoopOptionModel(Object loopOptionModel) {
+        ParticleLoopOptionModel returnValue = new ParticleLoopOptionModel();
+
+        if (loopOptionModel == null)
+            return null;
+
+        Map<String, Object> loopOptionMap;
+
+        if (loopOptionModel.getClass().equals(LinkedHashMap.class)) {
+            loopOptionMap = (Map<String, Object>) loopOptionModel;
+        } else {
+            try {
+                loopOptionMap = ((MemorySection) loopOptionModel).getValues(false);
+            } catch (ClassCastException ex) {
+                Logging.warning("ERROR: " + ex);
+                return returnValue;
+            }
+        }
+
+        returnValue.setChanceForEachLoop(Parser.parse(String.valueOf(loopOptionMap.get("ChanceForEachLoop")), 1));
+        returnValue.setRadiusInBlocks(Parser.parse(String.valueOf(loopOptionMap.get("RadiusInBlocks")), 10));
         return returnValue;
     }
 

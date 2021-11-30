@@ -4,6 +4,9 @@
 #    => Sounds:        https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
 #    => SoundCategory: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/SoundCategory.html
 #
+# Check out the particle list from spigot for all available particle names
+#    => Particles: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
+#
 # To understand ticks and times, please use this reference:
 #    => https://www.digminecraft.com/getting_started/game_tick.php
 # ---
@@ -67,6 +70,37 @@ BiomeEvents:
         Commands:
           - 'msg @p You are currently in the swamp biome!'
           - 'msg @p Be aware of swamp creatures!'
+        Particles:
+          # A list of particle objects to play every defined PositionChecksInTicks
+          # The type of the particle. Have a look at the top description for all available particles
+          - Particle: FIREWORKS_SPARK
+            # If particle is set to REDSTONE, you can define the color as a hex code here
+            RedstoneHexColor: '#55ffff'
+            # If particle is set to REDSTONE, you can define the size of those particles here
+            RedstoneSize: 10
+            # The amount of particles. If greater than 0, the particles will fly more aggressively
+            ParticleCount: 0
+            # If you want to set an offset to the particles, you can define the distance here.
+            Animation:
+              # If you don't know the direction a player faces, you can set the relative distance here.
+              # Otherwise, you can use RelativeOffsetX and RelativeOffsetZ
+              ViewDirectionDistance: 0
+              # The relative x location the particles will spawn
+              RelativeOffsetX: 0
+              # The relative y location the particles will spawn
+              RelativeOffsetY: 5
+              # The relative z location the particles will spawn
+              RelativeOffsetZ: 0
+              # If you want to have an area filled with particles, here are some settings for it
+              LoopOption:
+                # Setting this greater than 0 will spawn a cube around the player in the dimensions of the configured integer.
+                # Formula for one line: x * 2 + 1
+                # Example: Setting this to 1 will spawn a 3x3x3 cube in total (+1 each side, relative of players location).
+                # Example: Setting this to 5 will spawn 11x11x11
+                RadiusInBlocks: 30
+                # Setting this higher than 1 will skip some particles of the "cube".
+                # This is an option to "randomize" particle spawns around the player (eg. for snowflakes, ect)
+                ChanceForEachLoop: 5
         Sounds:
           # A list of sound object. You can add multiple sound objects as shown below
           # The chance that this sound will be played. Chance is 1 to x

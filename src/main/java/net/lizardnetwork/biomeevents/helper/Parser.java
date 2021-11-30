@@ -2,6 +2,7 @@ package net.lizardnetwork.biomeevents.helper;
 
 import net.lizardnetwork.biomeevents.Logging;
 import org.bukkit.ChatColor;
+import org.bukkit.Particle;
 import org.bukkit.SoundCategory;
 import org.bukkit.WeatherType;
 import org.jetbrains.annotations.Nullable;
@@ -136,6 +137,33 @@ public class Parser {
         return returnValue;
     }
 
+    /**
+     * Try to parse a particle from string
+     * Fallback value will be returned if parsing was unsuccessful
+     * @param value <code>String</code> - The value to parse
+     * @param fallbackValue <code>Particle</code> - The value to return as fallback if parameter <code>value</code> cannot be parsed
+     * @return <code>Particle</code> - Either parsed from parameter <code>value</code> or fallback
+     */
+    public static Particle parse(@Nullable String value, Particle fallbackValue) {
+        Particle returnValue = fallbackValue;
+
+        try {
+            if (value != null && !value.isBlank() && !value.equals("null"))
+                returnValue = Particle.valueOf(value.toUpperCase());
+        } catch (Exception ex) {
+            Logging.warning("Error parsing SoundCategory: " + ex.getMessage());
+        }
+
+        return returnValue;
+    }
+
+    /**
+     * Try to parse a weather type from string
+     * Fallback value will be returned if parsing was unsuccessful
+     * @param value <code>String</code> - The value to parse
+     * @param fallbackValue <code>WeatherType</code> - The value to return as fallback if parameter <code>value</code> cannot be parsed
+     * @return <code>WeatherType</code> - Either parsed from parameter <code>value</code> or fallback
+     */
     public static WeatherType parse(@Nullable String value, WeatherType fallbackValue) {
         WeatherType returnValue = fallbackValue;
 
