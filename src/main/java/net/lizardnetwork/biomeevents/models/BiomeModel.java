@@ -179,6 +179,7 @@ public class BiomeModel {
             }
         }
 
+        returnValue.setVersion(Parser.parse(String.valueOf(loopOptionMap.get("Version")), 0));
         returnValue.setChanceForEachLoop(Parser.parse(String.valueOf(loopOptionMap.get("ChanceForEachLoop")), 1));
         returnValue.setRadiusInBlocks(Parser.parse(String.valueOf(loopOptionMap.get("RadiusInBlocks")), 10));
         return returnValue;

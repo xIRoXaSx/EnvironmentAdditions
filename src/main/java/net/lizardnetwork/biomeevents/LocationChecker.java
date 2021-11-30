@@ -203,64 +203,82 @@ public class LocationChecker {
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             if (finalRadiusInBlocks > 0) {
-                for (int y = player.getLocation().getBlockY() + finalRadiusInBlocks + 1; y > player.getLocation().getBlockY() - finalRadiusInBlocks; y--) {
-                    int randomIndex = ThreadLocalRandom.current().nextInt(0, finalChanceForEachLoop);
-                    ChanceCalculation calculatedChance = new ChanceCalculation(randomIndex, finalChanceForEachLoop);
-
-                    if (!calculatedChance.matchedIndex())
-                        continue;
-
-                    for (int x = 0; x < finalRadiusInBlocks + 1; x++) {
-                        randomIndex = ThreadLocalRandom.current().nextInt(0, finalChanceForEachLoop);
-                        calculatedChance = new ChanceCalculation(randomIndex, finalChanceForEachLoop);
+                if (particleModel.getParticleAnimationModel().getLoopOption().getVersion() == 1) {
+                    // Version 1 spawning
+                    for (int y = player.getLocation().getBlockY() + finalRadiusInBlocks + 1; y > player.getLocation().getBlockY() - finalRadiusInBlocks; y--) {
+                        int randomIndex = ThreadLocalRandom.current().nextInt(0, finalChanceForEachLoop);
+                        ChanceCalculation calculatedChance = new ChanceCalculation(randomIndex, finalChanceForEachLoop);
 
                         if (!calculatedChance.matchedIndex())
                             continue;
 
-                        for (int z = 0; z < finalRadiusInBlocks + 1; z++) {
-                            // Calculate chance
+                        for (int x = 0; x < finalRadiusInBlocks + 1; x++) {
                             randomIndex = ThreadLocalRandom.current().nextInt(0, finalChanceForEachLoop);
                             calculatedChance = new ChanceCalculation(randomIndex, finalChanceForEachLoop);
 
                             if (!calculatedChance.matchedIndex())
                                 continue;
 
-                            player.spawnParticle(
-                                particle,
-                                finalFromX + x,
-                                y,
-                                finalFromZ + z,
-                                particleModel.getParticleCount(),
-                                finalDustOptions
-                            );
+                            for (int z = 0; z < finalRadiusInBlocks + 1; z++) {
+                                // Calculate chance
+                                randomIndex = ThreadLocalRandom.current().nextInt(0, finalChanceForEachLoop);
+                                calculatedChance = new ChanceCalculation(randomIndex, finalChanceForEachLoop);
 
-                            player.spawnParticle(
-                                particle,
-                                finalFromX + x,
-                                y,
-                                finalFromZ - z,
-                                particleModel.getParticleCount(),
-                                finalDustOptions
-                            );
+                                if (!calculatedChance.matchedIndex())
+                                    continue;
 
-                            player.spawnParticle(
-                                particle,
-                                finalFromX - x,
-                                y,
-                                finalFromZ + z,
-                                particleModel.getParticleCount(),
-                                finalDustOptions
-                            );
+                                player.spawnParticle(
+                                        particle,
+                                        finalFromX + x,
+                                        y,
+                                        finalFromZ + z,
+                                        particleModel.getParticleCount(),
+                                        finalDustOptions
+                                );
 
-                            player.spawnParticle(
-                                particle,
-                                finalFromX - x,
-                                y,
-                                finalFromZ - z,
-                                particleModel.getParticleCount(),
-                                finalDustOptions
-                            );
+                                player.spawnParticle(
+                                        particle,
+                                        finalFromX + x,
+                                        y,
+                                        finalFromZ - z,
+                                        particleModel.getParticleCount(),
+                                        finalDustOptions
+                                );
+
+                                player.spawnParticle(
+                                        particle,
+                                        finalFromX - x,
+                                        y,
+                                        finalFromZ + z,
+                                        particleModel.getParticleCount(),
+                                        finalDustOptions
+                                );
+
+                                player.spawnParticle(
+                                        particle,
+                                        finalFromX - x,
+                                        y,
+                                        finalFromZ - z,
+                                        particleModel.getParticleCount(),
+                                        finalDustOptions
+                                );
+                            }
                         }
+                    }
+                } else {
+                    for (int i = 0; i < finalChanceForEachLoop + 1; i++) {
+                        int randomX = ThreadLocalRandom.current().nextInt(-finalRadiusInBlocks - 1, finalRadiusInBlocks + 1);
+                        int randomY = ThreadLocalRandom.current().nextInt(-finalRadiusInBlocks - 1, finalRadiusInBlocks + 1);
+                        int randomZ = ThreadLocalRandom.current().nextInt(-finalRadiusInBlocks - 1, finalRadiusInBlocks + 1);
+
+                        player.spawnParticle(
+                            particle,
+                            finalFromX + randomX,
+                            finalFromY + randomY,
+                            finalFromZ + randomZ,
+                            particleModel.getParticleCount(),
+                            finalDustOptions
+                        );
                     }
                 }
 
@@ -286,7 +304,7 @@ public class LocationChecker {
      *         otherwise <code>false</code>
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean passedConditionChecks(ConditionModel conditions, Player currentPlayer) {
+    boolean passedConditionChecks(ConditionModel conditions, Player currentPlayer) {
         if (conditions != null && conditions.getEnableCondition()) {
             WeatherType worldWeatherCondition = currentPlayer.getWorld().isClearWeather() ? WeatherType.CLEAR : WeatherType.DOWNFALL;
 

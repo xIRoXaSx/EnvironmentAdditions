@@ -1,8 +1,17 @@
 package net.lizardnetwork.biomeevents.models;
 
 public class ParticleLoopOptionModel {
+    private int version;
     private int chanceForEachLoop;
     private int radiusInBlocks;
+
+    /**
+     * Get the version of spawning a particle for the loop
+     * @return <code>Int</code> - The version of spawning particles
+     */
+    public int getVersion() {
+        return version;
+    }
 
     /**
      * Get the chance of spawning a particle for the loop
@@ -18,6 +27,14 @@ public class ParticleLoopOptionModel {
      */
     public int getRadiusInBlocks() {
         return radiusInBlocks;
+    }
+
+    /**
+     * Set the version of spawning a particle for the loop
+     * @param version <code>Int</code> - The version of spawning particles
+     */
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     /**

@@ -93,13 +93,23 @@ BiomeEvents:
               RelativeOffsetZ: 0
               # If you want to have an area filled with particles, here are some settings for it
               LoopOption:
-                # Setting this greater than 0 will spawn a cube around the player in the dimensions of the configured integer.
+                # Can be 0 (disabled), 1 or two.
+                # Example (Version 1): A cubic area around the player will be calculated in which particle will spawn
+                #    (more calculation needed as option 2 and does not look as randomized as option 2).
+                # Example (Version 2): Random locations around the player ('RadiusInBlocks' at max each axis) will be picked.
+                #    'ChanceForEachLoop' will be used to tell how many PARTICLES should be spawned in each loop.
+                Version: 2
+                # Setting this greater than 0 will calculate a cube around the player in the dimensions of the configured integer.
                 # Formula for one line: x * 2 + 1
-                # Example: Setting this to 1 will spawn a 3x3x3 cube in total (+1 each side, relative of players location).
-                # Example: Setting this to 5 will spawn 11x11x11
+                # Example (Version 1): Setting this to 1 will spawn a 3x3x3 cube in total (+1 each side, relative of players location).
+                # Example (Version 1): Setting this to 5 will spawn 11x11x11
+                # Example (Version 2): Setting this to 1 will pick a random number between -1 and 1 to spawn the particle
+                # Example (Version 2): Setting this to 5 will pick a random number between -5 and 5 to spawn the particle
                 RadiusInBlocks: 30
-                # Setting this higher than 1 will skip some particles of the "cube".
-                # This is an option to "randomize" particle spawns around the player (eg. for snowflakes, ect)
+                # Example (Version 1): Setting this higher than 1 will skip some particles of the "cube".
+                #    This is an option to "randomize" particle spawns around the player (eg. for snowflakes, ect)
+                # Example (Version 2): If version 2 is used, this will be used to indicate how many particles should
+                #    be spawned! THIS IS NOT THE CHANCE IF VERSION 2 IS PICKED!
                 ChanceForEachLoop: 5
         Sounds:
           # A list of sound object. You can add multiple sound objects as shown below
