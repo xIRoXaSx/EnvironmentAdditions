@@ -109,7 +109,7 @@ BiomeEvents:
                 # Example (Version 1): Setting this higher than 1 will skip some particles of the "cube".
                 #    This is an option to "randomize" particle spawns around the player (eg. for snowflakes, ect)
                 # Example (Version 2): If version 2 is used, this will be used to indicate how many particles should
-                #    be spawned! THIS IS NOT THE CHANCE IF VERSION 2 IS PICKED!
+                #    be spawned in total! THIS IS NOT THE CHANCE IF VERSION 2 IS PICKED!
                 ChanceForEachLoop: 5
         Sounds:
           # A list of sound object. You can add multiple sound objects as shown below
@@ -162,6 +162,10 @@ BiomeEvents:
     # The HIGHER this integer is, the FEWER checks will be made => Better performance, poorer experience
     # The LOWER this integer is, the HIGHER checks will be made => Poorer performance, better experience
     PositionChecksInTicks: 20
+    # The time in ticks in which the plugin should check the current biomes of all players for particles (-1 to disable)
+    # The HIGHER this integer is, the FEWER checks will be made => Better performance, poorer experience
+    # The LOWER this integer is, the HIGHER checks will be made => Poorer performance, better experience
+    PositionParticleChecksInTicks: 20
     # Have a look at the Placeholder description section!
     # Leave it as it is or empty to use for vanilla worlds
     PapiBiomePlaceholder: '%player_biome%'

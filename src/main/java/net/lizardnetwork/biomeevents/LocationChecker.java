@@ -13,6 +13,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class LocationChecker {
@@ -29,7 +30,7 @@ public class LocationChecker {
      * depending on the players current location
      * @return <code>BukkitTask</code> - The running BukkitTask
      */
-    BukkitTask initializeTimeDrivenSystem() {
+    BukkitTask initializeMainTimeDrivenSystem() {
         return new BukkitRunnable() {
             @Override
             public void run() {
@@ -58,10 +59,42 @@ public class LocationChecker {
                     }
 
                     playSound(player, matchedBiome);
-                    spawnParticles(player, matchedBiome);
                 }
             }
         }.runTaskTimer(plugin, 0, BiomeEvents.getPositionChecksInTicks());
+    }
+
+    /**
+     * Start the BukkitRunnable which will check player positions for biomes to spawn particles
+     * depending on the players current location
+     * @return <code>BukkitTask</code> - The running BukkitTask
+     */
+    BukkitTask initializeParticleTimeDrivenSystem() {
+        return new BukkitRunnable() {
+            @Override
+            public void run() {
+                var onlinePlayers = plugin.getServer().getOnlinePlayers();
+
+                for (Player player : onlinePlayers) {
+                    boolean biomePlaceholderEmpty = papiBiomePlaceholder == null || papiBiomePlaceholder.isBlank();
+                    String biomePlaceholder = biomePlaceholderEmpty ? "%biome%" : papiBiomePlaceholder;
+                    String biomeNameOfPlayer = new PlaceholderApiHook(biomePlaceholderEmpty).getPlaceholder(player, biomePlaceholder);
+
+                    var matchedBiome = BiomeEvents.getBiomeModels().stream()
+                        .filter(x -> x.getBiomeId().equalsIgnoreCase(biomeNameOfPlayer))
+                        .findFirst().orElse(null);
+
+                    if (matchedBiome == null)
+                        continue;
+
+                    // Check if conditions meet
+                    if (!passedConditionChecks(matchedBiome.getWhileInBiomeEventModel().Conditions, player))
+                        return;
+
+                    spawnParticles(player, matchedBiome);
+                }
+            }
+        }.runTaskTimer(plugin, 0, BiomeEvents.getPositionParticleChecksInTicks());
     }
 
     /**
@@ -69,7 +102,7 @@ public class LocationChecker {
      * @param player <code>Player</code> - The current player
      * @param biomeModel <code>BiomeModel</code> - The BiomeModel which matched the players biome
      */
-    private void playSound(Player player, BiomeModel biomeModel) {
+    private void playSound(Player player, @NotNull BiomeModel biomeModel) {
         int randomSoundIndex = 0;
 
         if (biomeModel.getWhileInBiomeEventModel().Sounds.size() > 1) {
@@ -133,7 +166,7 @@ public class LocationChecker {
      * @param player <code>Player</code> - The current player
      * @param biomeModel <code>BiomeModel</code> - The BiomeModel which matched the players biome
      */
-    private void spawnParticles(Player player, BiomeModel biomeModel) {
+    private void spawnParticles(Player player, @NotNull BiomeModel biomeModel) {
         int randomParticleIndex = 0;
 
         if (biomeModel.getWhileInBiomeEventModel().ParticleModels.size() > 1) {
@@ -203,7 +236,22 @@ public class LocationChecker {
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             if (finalRadiusInBlocks > 0) {
-                if (particleModel.getParticleAnimationModel().getLoopOption().getVersion() == 1) {
+                if (particleModel.getParticleAnimationModel().getLoopOption().getVersion() != 1) {
+                    for (int i = 0; i < finalChanceForEachLoop + 1; i++) {
+                        int randomX = ThreadLocalRandom.current().nextInt(-finalRadiusInBlocks - 1, finalRadiusInBlocks + 1);
+                        int randomY = ThreadLocalRandom.current().nextInt(-finalRadiusInBlocks - 1, finalRadiusInBlocks + 1);
+                        int randomZ = ThreadLocalRandom.current().nextInt(-finalRadiusInBlocks - 1, finalRadiusInBlocks + 1);
+
+                        player.spawnParticle(
+                                particle,
+                                finalFromX + randomX,
+                                finalFromY + randomY,
+                                finalFromZ + randomZ,
+                                particleModel.getParticleCount(),
+                                finalDustOptions
+                        );
+                    }
+                } else {
                     // Version 1 spawning
                     for (int y = player.getLocation().getBlockY() + finalRadiusInBlocks + 1; y > player.getLocation().getBlockY() - finalRadiusInBlocks; y--) {
                         int randomIndex = ThreadLocalRandom.current().nextInt(0, finalChanceForEachLoop);
@@ -228,57 +276,42 @@ public class LocationChecker {
                                     continue;
 
                                 player.spawnParticle(
-                                        particle,
-                                        finalFromX + x,
-                                        y,
-                                        finalFromZ + z,
-                                        particleModel.getParticleCount(),
-                                        finalDustOptions
+                                    particle,
+                                    finalFromX + x,
+                                    y,
+                                    finalFromZ + z,
+                                    particleModel.getParticleCount(),
+                                    finalDustOptions
                                 );
 
                                 player.spawnParticle(
-                                        particle,
-                                        finalFromX + x,
-                                        y,
-                                        finalFromZ - z,
-                                        particleModel.getParticleCount(),
-                                        finalDustOptions
+                                    particle,
+                                    finalFromX + x,
+                                    y,
+                                    finalFromZ - z,
+                                    particleModel.getParticleCount(),
+                                    finalDustOptions
                                 );
 
                                 player.spawnParticle(
-                                        particle,
-                                        finalFromX - x,
-                                        y,
-                                        finalFromZ + z,
-                                        particleModel.getParticleCount(),
-                                        finalDustOptions
+                                    particle,
+                                    finalFromX - x,
+                                    y,
+                                    finalFromZ + z,
+                                    particleModel.getParticleCount(),
+                                    finalDustOptions
                                 );
 
                                 player.spawnParticle(
-                                        particle,
-                                        finalFromX - x,
-                                        y,
-                                        finalFromZ - z,
-                                        particleModel.getParticleCount(),
-                                        finalDustOptions
+                                    particle,
+                                    finalFromX - x,
+                                    y,
+                                    finalFromZ - z,
+                                    particleModel.getParticleCount(),
+                                    finalDustOptions
                                 );
                             }
                         }
-                    }
-                } else {
-                    for (int i = 0; i < finalChanceForEachLoop + 1; i++) {
-                        int randomX = ThreadLocalRandom.current().nextInt(-finalRadiusInBlocks - 1, finalRadiusInBlocks + 1);
-                        int randomY = ThreadLocalRandom.current().nextInt(-finalRadiusInBlocks - 1, finalRadiusInBlocks + 1);
-                        int randomZ = ThreadLocalRandom.current().nextInt(-finalRadiusInBlocks - 1, finalRadiusInBlocks + 1);
-
-                        player.spawnParticle(
-                            particle,
-                            finalFromX + randomX,
-                            finalFromY + randomY,
-                            finalFromZ + randomZ,
-                            particleModel.getParticleCount(),
-                            finalDustOptions
-                        );
                     }
                 }
 
@@ -305,16 +338,16 @@ public class LocationChecker {
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     boolean passedConditionChecks(ConditionModel conditions, Player currentPlayer) {
-        if (conditions != null && conditions.getEnableCondition()) {
+        if (conditions != null && conditions.isEnabled()) {
             WeatherType worldWeatherCondition = currentPlayer.getWorld().isClearWeather() ? WeatherType.CLEAR : WeatherType.DOWNFALL;
 
-            if (!conditions.getWeatherCondition().equals(worldWeatherCondition))
+            if (!conditions.getWeather().equals(worldWeatherCondition))
                 return false;
 
-            if (conditions.getStartTimeCondition() > currentPlayer.getWorld().getTime())
+            if (conditions.getFromTimeInTicks() > currentPlayer.getWorld().getTime())
                 return false;
 
-            return conditions.getEndTimeCondition() >= currentPlayer.getWorld().getTime();
+            return conditions.getUntilTimeInTicks() >= currentPlayer.getWorld().getTime();
         }
 
         return true;

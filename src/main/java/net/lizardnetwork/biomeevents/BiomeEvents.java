@@ -12,13 +12,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import java.util.List;
+import java.util.Objects;
 
 public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor {
     private static BiomeEvents instance;
     private static String consolePrefix;
     private static int positionChecksInTicks = -1;
+    private static int positionParticleChecksInTicks = -1;
     private Config config = new Config(this);
     private BukkitTask locationCheckerTask;
+    private BukkitTask locationParticleCheckerTask;
     static List<BiomeModel> biomeModels;
 
     @Override
@@ -40,7 +43,7 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
         if (args.length == 0)
             return true;
 
@@ -68,7 +71,11 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
         biomeModels = config.getBiomeConfigs();
         Logging.info("Found " + biomeModels.size() + " biomes in the config!");
         positionChecksInTicks = Parser.parse(config.getConfigProperty("BiomeEvents.Settings.PositionChecksInTicks"), 20);
+        positionParticleChecksInTicks = Parser.parse(config.getConfigProperty("BiomeEvents.Settings.PositionParticleChecksInTicks"), 20);
         locationCheckerTask = startLocationChecker();
+
+        if (positionParticleChecksInTicks > -1)
+            locationParticleCheckerTask = startLocationParticleChecker();
     }
 
     /**
@@ -77,6 +84,9 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
      */
     private String reload() {
         long startTime = System.nanoTime();
+
+        if (locationParticleCheckerTask != null)
+            locationParticleCheckerTask.cancel();
 
         locationCheckerTask.cancel();
         config = new Config(this);
@@ -101,7 +111,21 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
      */
     private BukkitTask startLocationChecker() {
         return new LocationChecker(this, config.getConfigProperty("BiomeEvents.Settings.PapiBiomePlaceholder"))
-            .initializeTimeDrivenSystem();
+            .initializeMainTimeDrivenSystem();
+    }
+
+    /**
+     * Start the LocationParticleChecker BukkitTask
+     * @return <code>BukkitTask</code> - Start the BukkitTask of LocationParticleChecker
+     */
+    private BukkitTask startLocationParticleChecker() {
+        if (areParticlesDefined()) {
+            Logging.info("Initiating ParticleTimeDrivenSystem");
+            return new LocationChecker(this, config.getConfigProperty("BiomeEvents.Settings.PapiBiomePlaceholder"))
+                .initializeParticleTimeDrivenSystem();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -129,10 +153,28 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
     }
 
     /**
+     * Get the current integer for PositionParticleChecksInTicks
+     * @return <code>Integer</code> - PositionParticleChecksInTicks
+     */
+    public static Integer getPositionParticleChecksInTicks() {
+        return positionParticleChecksInTicks;
+    }
+
+    /**
      * Return the current set BiomeModel list
      * @return <code>List&lt;BiomeModel&gt;</code> - List containing all BiomeModels from the config
      */
     static List<BiomeModel> getBiomeModels() {
         return biomeModels;
+    }
+
+    /**
+     * Check whether particles have been defined in any of the BiomeModels
+     * @return <code>Boolean</code> - Represents whether any particle has been defined or not.
+     */
+    private boolean areParticlesDefined() {
+        return biomeModels.stream()
+            .filter(x -> x.getWhileInBiomeEventModel().ParticleModels.stream().anyMatch(y -> !Objects.equals(y.getParticle(), "null")))
+            .findFirst().orElse(null) != null;
     }
 }

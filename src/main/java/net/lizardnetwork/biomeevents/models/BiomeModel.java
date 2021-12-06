@@ -113,7 +113,7 @@ public class BiomeModel {
             }
         }
 
-        returnValue.setEnableCondition(Parser.parse(String.valueOf(conditionsMap.get("EnableCondition")), false));
+        returnValue.setIsEnabled(Parser.parse(String.valueOf(conditionsMap.get("EnableCondition")), false));
         returnValue.setWeather(Parser.parse(String.valueOf(conditionsMap.get("Weather")), WeatherType.CLEAR));
         returnValue.setFromTimeInTicks(Parser.parse(String.valueOf(conditionsMap.get("FromTimeInTicks")), 1000));
         returnValue.setUntilTimeInTicks(Parser.parse(String.valueOf(conditionsMap.get("UntilTimeInTicks")), 13000));
