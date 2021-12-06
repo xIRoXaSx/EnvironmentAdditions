@@ -51,7 +51,6 @@ public class BiomeModel {
             whileInSound.setVolume(Parser.parse(String.valueOf(soundModelMap.get("Volume")), 0.5f));
             whileInSound.setPitch(Parser.parse(String.valueOf(soundModelMap.get("Pitch")), 1f));
             whileInSound.setIsServerWide(Parser.parse(String.valueOf(soundModelMap.get("IsServerWide")), false));
-            whileInSound.setPermission(String.valueOf(soundModelMap.get("Permission")));
             whileInSound.setMaxRandomOffset(Parser.parse(String.valueOf(soundModelMap.get("MaxRandomOffset")), -1f));
             whileInSound.setConditions(convertObjectToConditionModel(soundModelMap.get("Conditions")));
             whileIn.Sounds.add(whileInSound);
@@ -63,7 +62,6 @@ public class BiomeModel {
             particleModel.setRedstoneHexColor(String.valueOf(particleModelMap.get("RedstoneHexColor")));
             particleModel.setRedstoneSize(Parser.parse(String.valueOf(particleModelMap.get("RedstoneSize")), 1));
             particleModel.setParticleCount(Parser.parse(String.valueOf(particleModelMap.get("ParticleCount")), 1));
-            particleModel.setPermission(String.valueOf(particleModelMap.get("Permission")));
             particleModel.setConditions(convertObjectToConditionModel(particleModelMap.get("Conditions")));
             particleModel.setParticleAnimationModel(convertObjectToAnimationModel(particleModelMap.get("Animation")));
             whileIn.ParticleModels.add(particleModel);
@@ -117,6 +115,7 @@ public class BiomeModel {
         returnValue.setWeather(Parser.parse(String.valueOf(conditionsMap.get("Weather")), WeatherType.CLEAR));
         returnValue.setFromTimeInTicks(Parser.parse(String.valueOf(conditionsMap.get("FromTimeInTicks")), 1000));
         returnValue.setUntilTimeInTicks(Parser.parse(String.valueOf(conditionsMap.get("UntilTimeInTicks")), 13000));
+        returnValue.setPermission(String.valueOf(conditionsMap.get("Permission")));
 
         return returnValue;
     }

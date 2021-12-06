@@ -112,10 +112,6 @@ public class LocationChecker {
 
         SoundModel soundModel = biomeModel.getWhileInBiomeEventModel().Sounds.get(randomSoundIndex);
 
-        // Return only if the permission node is set and player does not have the permission
-        if (!soundModel.getPermission().isBlank() && !player.hasPermission(soundModel.getPermission()))
-            return;
-
         // Check if conditions meet
         if (!passedConditionChecks(soundModel.getConditions(), player))
             return;
@@ -175,10 +171,6 @@ public class LocationChecker {
         }
 
         ParticleModel particleModel = biomeModel.getWhileInBiomeEventModel().ParticleModels.get(randomParticleIndex);
-
-        // Return only if the permission node is set and player does not have the permission
-        if (!particleModel.getPermission().isBlank() && !player.hasPermission(particleModel.getPermission()))
-            return;
 
         // Check if conditions meet
         if (!passedConditionChecks(particleModel.getConditions(), player))
@@ -340,6 +332,9 @@ public class LocationChecker {
     boolean passedConditionChecks(ConditionModel conditions, Player currentPlayer) {
         if (conditions != null && conditions.isEnabled()) {
             WeatherType worldWeatherCondition = currentPlayer.getWorld().isClearWeather() ? WeatherType.CLEAR : WeatherType.DOWNFALL;
+
+            if (!conditions.getPermission().isBlank() && !currentPlayer.hasPermission(conditions.getPermission()))
+                return false;
 
             if (!conditions.getWeather().equals(worldWeatherCondition))
                 return false;

@@ -7,7 +7,6 @@ public class SoundModel {
     private Float volume = 1.0f;
     private Float pitch = 1.0f;
     private boolean isServerWide = false;
-    private String permission = "";
     private double maxRandomOffset = -1d;
     private ConditionModel conditions = new ConditionModel();
 
@@ -57,14 +56,6 @@ public class SoundModel {
      */
     public boolean isServerWide() {
         return isServerWide;
-    }
-
-    /**
-     * Get the permission needed for this SoundModel to be heard / spawned
-     * @return <code>String</code> - The permission needed to spawn the sound
-     */
-    public String getPermission() {
-        return permission;
     }
 
     /**
@@ -124,13 +115,6 @@ public class SoundModel {
      */
     void setIsServerWide(boolean isServerWide) {
         this.isServerWide = isServerWide;
-    }
-
-    /**
-     * Set the permission needed for this SoundModel to be heard / spawned
-     */
-    void setPermission(String permission) {
-        this.permission = permission;
     }
 
     /**

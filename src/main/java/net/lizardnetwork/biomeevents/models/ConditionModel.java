@@ -7,6 +7,7 @@ public class ConditionModel {
     private WeatherType Weather = WeatherType.CLEAR;
     private long FromTimeInTicks = 1000;
     private long UntilTimeInTicks = 13000;
+    private String Permission = "";
 
     /**
      * Get whether the condition block should be respected or not
@@ -70,5 +71,21 @@ public class ConditionModel {
      */
     public void setUntilTimeInTicks(long untilTimeInTicks) {
         UntilTimeInTicks = untilTimeInTicks;
+    }
+
+    /**
+     * Get the permission needed for the corresponding operation
+     * @return <code>String</code> - The permission needed. <code>EMPTY</code> for no permission
+     */
+    public String getPermission() {
+        return Permission;
+    }
+
+    /**
+     * Set the permission needed for the corresponding operation
+     * @param permission <code>String</code> - The permission needed. <code>EMPTY</code> for no permission
+     */
+    public void setPermission(String permission) {
+        this.Permission = permission;
     }
 }

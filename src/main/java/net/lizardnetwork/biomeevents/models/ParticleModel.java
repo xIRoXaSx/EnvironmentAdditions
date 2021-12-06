@@ -5,7 +5,6 @@ public class ParticleModel {
     private String redstoneHexColor;
     private int redstoneSize;
     private int particleCount;
-    private String permission = "";
     private ConditionModel conditions = new ConditionModel();
     private ParticleAnimationModel particleAnimationModel;
 
@@ -39,14 +38,6 @@ public class ParticleModel {
      */
     public int getParticleCount() {
         return particleCount;
-    }
-
-    /**
-     * Get the permission needed for this ParticleModel to be spawned
-     * @return <code>String</code> - The permission needed to spawn particles
-     */
-    public String getPermission() {
-        return permission;
     }
 
     /**
@@ -95,13 +86,6 @@ public class ParticleModel {
      */
     public void setParticleCount(int particleCount) {
         this.particleCount = particleCount;
-    }
-
-    /**
-     * Set the permission needed for this ParticleModel to be spawned
-     */
-    void setPermission(String permission) {
-        this.permission = permission;
     }
 
     /**
