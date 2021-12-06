@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class LocationChecker {
@@ -333,10 +334,11 @@ public class LocationChecker {
         if (conditions != null && conditions.isEnabled()) {
             WeatherType worldWeatherCondition = currentPlayer.getWorld().isClearWeather() ? WeatherType.CLEAR : WeatherType.DOWNFALL;
 
-            if (!conditions.getPermission().isBlank() && !currentPlayer.hasPermission(conditions.getPermission()))
+            if (!Objects.equals(conditions.getPermission(), "null") && !conditions.getPermission().isBlank()
+                    && !currentPlayer.hasPermission(conditions.getPermission()))
                 return false;
 
-            if (!conditions.getWeather().equals(worldWeatherCondition))
+            if (conditions.getWeather() != null && !conditions.getWeather().equals(worldWeatherCondition))
                 return false;
 
             if (conditions.getFromTimeInTicks() > currentPlayer.getWorld().getTime())
