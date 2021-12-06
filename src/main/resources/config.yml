@@ -58,7 +58,9 @@ BiomeEvents:
         Conditions:
           # If this condition block should be enabled / considered.
           # If set to true, all conditions need to apply before any operation for this biome will be performed.
-          # If set to false, all operations in this biome will be performed regardless of the configured conditions
+          # If set to false, all operations in this biome will be performed regardless of the configured conditions.
+          # You can remove conditions that aren't necessary for you.
+          # You can also copy 'Condition' blocks underneath every operation except 'Commands' as of v1.2.0 (Particles, Sounds, ...)
           EnableCondition: true
           # The weather type. Either 'Clear' or 'Downfall'
           Weather: Clear
@@ -66,6 +68,8 @@ BiomeEvents:
           FromTimeInTicks: 1000
           # The time (in ticks) in which the biome operations will stop
           UntilTimeInTicks: 13000
+          # The permission the player needs to have in order to play the sound for him
+          Permission: ''
         # A list of commands to execute
         Commands:
           - 'msg @p You are currently in the swamp biome!'
@@ -125,8 +129,6 @@ BiomeEvents:
             Pitch: 1.0
             # Whether the sound will follow the player or stays at the last location of the player
             IsServerWide: true
-            # The permission the user needs to have in order to play the sound for him
-            Permission: ''
             # Randomize the location by this much in X and Z directions (e.g.: +10 and -10)
             # This will also overwrite 'IsServerWide' to true
             MaxRandomOffset: 10
@@ -144,7 +146,6 @@ BiomeEvents:
             Volume: 0.1
             Pitch: 1.0
             IsServerWide: true
-            Permission: ''
     Desert:
       WhileIn:
         Commands:
@@ -156,7 +157,6 @@ BiomeEvents:
             Volume: 0.1
             Pitch: 0.5
             IsServerWide: false
-            Permission: ''
   Settings:
     # The time in ticks in which the plugin should check the current biomes of all players
     # The HIGHER this integer is, the FEWER checks will be made => Better performance, poorer experience
