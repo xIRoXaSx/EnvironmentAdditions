@@ -20,6 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class LocationChecker {
     private final Plugin plugin;
     private final String papiBiomePlaceholder;
+    private final static String biomeFallbackPlaceholder = "%player_biome%";
 
     public LocationChecker(Plugin plugin, String papiBiomePlaceholder) {
         this.plugin = plugin;
@@ -39,8 +40,8 @@ public class LocationChecker {
 
                 for (Player player : onlinePlayers) {
                     boolean biomePlaceholderEmpty = papiBiomePlaceholder == null || papiBiomePlaceholder.isBlank();
-                    String biomePlaceholder = biomePlaceholderEmpty ? "%biome%" : papiBiomePlaceholder;
-                    String biomeNameOfPlayer = new PlaceholderApiHook(biomePlaceholderEmpty).getPlaceholder(player, biomePlaceholder);
+                    String biomePlaceholder = biomePlaceholderEmpty ? biomeFallbackPlaceholder : papiBiomePlaceholder;
+                    String biomeNameOfPlayer = new PlaceholderApiHook(biomePlaceholderEmpty, biomeFallbackPlaceholder).getPlaceholder(player, biomePlaceholder);
 
                     var matchedBiome = BiomeEvents.getBiomeModels().stream()
                         .filter(x -> x.getBiomeId().equalsIgnoreCase(biomeNameOfPlayer))
@@ -78,8 +79,8 @@ public class LocationChecker {
 
                 for (Player player : onlinePlayers) {
                     boolean biomePlaceholderEmpty = papiBiomePlaceholder == null || papiBiomePlaceholder.isBlank();
-                    String biomePlaceholder = biomePlaceholderEmpty ? "%biome%" : papiBiomePlaceholder;
-                    String biomeNameOfPlayer = new PlaceholderApiHook(biomePlaceholderEmpty).getPlaceholder(player, biomePlaceholder);
+                    String biomePlaceholder = biomePlaceholderEmpty ? biomeFallbackPlaceholder : papiBiomePlaceholder;
+                    String biomeNameOfPlayer = new PlaceholderApiHook(biomePlaceholderEmpty, biomeFallbackPlaceholder).getPlaceholder(player, biomePlaceholder);
 
                     var matchedBiome = BiomeEvents.getBiomeModels().stream()
                         .filter(x -> x.getBiomeId().equalsIgnoreCase(biomeNameOfPlayer))

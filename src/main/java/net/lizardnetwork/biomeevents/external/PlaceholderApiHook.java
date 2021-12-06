@@ -1,6 +1,7 @@
 package net.lizardnetwork.biomeevents.external;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.lizardnetwork.biomeevents.Logging;
 import net.lizardnetwork.biomeevents.enums.Dependency;
 import net.lizardnetwork.biomeevents.helper.DependencyChecker;
 import net.lizardnetwork.biomeevents.helper.Parser;
@@ -12,6 +13,7 @@ import java.util.Map;
 public class PlaceholderApiHook implements Listener {
     private final boolean isEnabled;
     private boolean forceDefaultCheck = false;
+    private String fallbackPlaceholder;
 
     /**
      * Replace placeholder by either internal checks or PlaceholderAPI if available
@@ -26,11 +28,12 @@ public class PlaceholderApiHook implements Listener {
      * Replace placeholder by either internal checks or PlaceholderAPI if installed
      * @param forceDefaultCheck <code>Boolean</code> - <code>True</code> if internal placeholders should be preferred.
      */
-    public PlaceholderApiHook(boolean forceDefaultCheck) {
+    public PlaceholderApiHook(boolean forceDefaultCheck, String fallbackPlaceholder) {
         DependencyChecker dependencyChecker = new DependencyChecker();
         Dependency dependency = dependencyChecker.getEnabledDependencies();
         this.isEnabled = dependency.equals(Dependency.PlaceholderAPI);
         this.forceDefaultCheck = forceDefaultCheck;
+        this.fallbackPlaceholder = fallbackPlaceholder;
     }
 
     /**
@@ -41,7 +44,12 @@ public class PlaceholderApiHook implements Listener {
      */
     public String getPlaceholder(Player player, String text) {
         if (isEnabled && !forceDefaultCheck) {
-            return Parser.getColorizedText(PlaceholderAPI.setPlaceholders(player, text));
+            String replacedText = PlaceholderAPI.setPlaceholders(player, text);
+
+            if (replacedText.equals(text))
+                replacedText = PlaceholderAPI.setPlaceholders(player, fallbackPlaceholder);
+
+            return Parser.getColorizedText(replacedText);
         } else {
             Map<String, String> replacements = Map.of(
                 "player", player.getName(),
