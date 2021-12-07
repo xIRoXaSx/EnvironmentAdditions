@@ -27,13 +27,30 @@ public class BiomeModel {
      */
     public BiomeModel loadBiomeModel() {
         biomeId = String.valueOf(valueMap.get("BiomeId"));
+        whileIn.Commands = new ArrayList<>();
         whileIn.Sounds = new ArrayList<>();
-        whileIn.Commands.Commands = convertObjectToList(valueMap.getOrDefault("WhileIn.Commands", new ArrayList<>()));
         whileIn.Conditions = convertObjectToConditionModel(valueMap.getOrDefault("WhileIn.Conditions", null));
         whileIn.ParticleModels = new ArrayList<>();
 
+        List<Map<String, Object>> whileInCommands = convertObjectToMap(valueMap.getOrDefault("WhileIn.Commands", List.of(Collections.emptyMap())));
         List<Map<String, Object>> whileInSounds = convertObjectToMap(valueMap.getOrDefault("WhileIn.Sounds", List.of(Collections.emptyMap())));
         List<Map<String, Object>> whileInParticles = convertObjectToMap(valueMap.getOrDefault("WhileIn.Particles", List.of(Collections.emptyMap())));
+
+        for (Map<String, Object> commandModelMap : whileInCommands) {
+            CommandModel commandModel = new CommandModel();
+
+            if (commandModelMap.get("Commands") != null)
+                commandModel.setCommandList(convertObjectToList(commandModelMap.get("Commands")));
+
+            if (commandModelMap.get("Conditions") != null)
+                commandModel.setConditions(convertObjectToConditionModel(commandModelMap.get("Conditions")));
+
+            if (commandModelMap.get("PickRandomCommand") != null)
+                commandModel.setRandom(Parser.parse(String.valueOf(commandModelMap.get("PickRandomCommand")), false));
+
+            if (commandModel.getCommandList() != null)
+                whileIn.Commands.add(commandModel);
+        }
 
         for (Map<String, Object> soundModelMap : whileInSounds) {
             // Check if the map contains a reference to another biome
@@ -44,16 +61,16 @@ public class BiomeModel {
                 continue;
             }
 
-            SoundModel whileInSound = new SoundModel();
-            whileInSound.setChance(Parser.parse(String.valueOf(soundModelMap.get("Chance")), 1));
-            whileInSound.setSound(String.valueOf(soundModelMap.get("Sound")));
-            whileInSound.setCategory(String.valueOf(Parser.parse(String.valueOf(soundModelMap.get("Category")), SoundCategory.AMBIENT)));
-            whileInSound.setVolume(Parser.parse(String.valueOf(soundModelMap.get("Volume")), 0.5f));
-            whileInSound.setPitch(Parser.parse(String.valueOf(soundModelMap.get("Pitch")), 1f));
-            whileInSound.setIsServerWide(Parser.parse(String.valueOf(soundModelMap.get("IsServerWide")), false));
-            whileInSound.setMaxRandomOffset(Parser.parse(String.valueOf(soundModelMap.get("MaxRandomOffset")), -1f));
-            whileInSound.setConditions(convertObjectToConditionModel(soundModelMap.get("Conditions")));
-            whileIn.Sounds.add(whileInSound);
+            SoundModel soundModel = new SoundModel();
+            soundModel.setChance(Parser.parse(String.valueOf(soundModelMap.get("Chance")), 1));
+            soundModel.setSound(String.valueOf(soundModelMap.get("Sound")));
+            soundModel.setCategory(String.valueOf(Parser.parse(String.valueOf(soundModelMap.get("Category")), SoundCategory.AMBIENT)));
+            soundModel.setVolume(Parser.parse(String.valueOf(soundModelMap.get("Volume")), 0.5f));
+            soundModel.setPitch(Parser.parse(String.valueOf(soundModelMap.get("Pitch")), 1f));
+            soundModel.setIsServerWide(Parser.parse(String.valueOf(soundModelMap.get("IsServerWide")), false));
+            soundModel.setMaxRandomOffset(Parser.parse(String.valueOf(soundModelMap.get("MaxRandomOffset")), -1f));
+            soundModel.setConditions(convertObjectToConditionModel(soundModelMap.get("Conditions")));
+            whileIn.Sounds.add(soundModel);
         }
 
         for (Map<String, Object> particleModelMap : whileInParticles) {

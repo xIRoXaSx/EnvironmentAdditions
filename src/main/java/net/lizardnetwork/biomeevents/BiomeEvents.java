@@ -19,6 +19,7 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
     private static String consolePrefix;
     private static int positionChecksInTicks = -1;
     private static int positionParticleChecksInTicks = -1;
+    private static boolean isSingleCommandModelEnabled = true;
     private Config config = new Config(this);
     private BukkitTask locationCheckerTask;
     private BukkitTask locationParticleCheckerTask;
@@ -72,6 +73,7 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
         Logging.info("Found " + biomeModels.size() + " biomes in the config!");
         positionChecksInTicks = Parser.parse(config.getConfigProperty("BiomeEvents.Settings.PositionChecksInTicks"), 20);
         positionParticleChecksInTicks = Parser.parse(config.getConfigProperty("BiomeEvents.Settings.PositionParticleChecksInTicks"), 20);
+        isSingleCommandModelEnabled = Parser.parse(config.getConfigProperty("BiomeEvents.Settings.ExecuteSingleCommandModel"), true);
         locationCheckerTask = startLocationChecker();
 
         if (positionParticleChecksInTicks > -1)
@@ -176,5 +178,13 @@ public class BiomeEvents extends JavaPlugin implements Listener, CommandExecutor
         return biomeModels.stream()
             .filter(x -> x.getWhileInBiomeEventModel().ParticleModels.stream().anyMatch(y -> !Objects.equals(y.getParticle(), "null")))
             .findFirst().orElse(null) != null;
+    }
+
+    /**
+     * Check whether a single command model or all of them inside the biome configuration will be used
+     * @return <code>Boolean</code> - <code>True</code> if one will get picked randomly, <code>false</code> if all will be used.
+     */
+    static boolean isSingleCommandModelEnabled() {
+        return isSingleCommandModelEnabled;
     }
 }

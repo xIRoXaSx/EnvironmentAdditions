@@ -1,12 +1,10 @@
 package net.lizardnetwork.biomeevents;
 
+import net.lizardnetwork.biomeevents.external.Placeholder;
 import net.lizardnetwork.biomeevents.external.PlaceholderApiHook;
 import net.lizardnetwork.biomeevents.helper.ChanceCalculation;
 import net.lizardnetwork.biomeevents.helper.Parser;
-import net.lizardnetwork.biomeevents.models.BiomeModel;
-import net.lizardnetwork.biomeevents.models.ConditionModel;
-import net.lizardnetwork.biomeevents.models.ParticleModel;
-import net.lizardnetwork.biomeevents.models.SoundModel;
+import net.lizardnetwork.biomeevents.models.*;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -14,6 +12,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -54,12 +54,7 @@ public class LocationChecker {
                     if (!passedConditionChecks(matchedBiome.getWhileInBiomeEventModel().Conditions, player))
                         return;
 
-                    // Replace placeholders and execute given command
-                    for (String command : matchedBiome.getWhileInBiomeEventModel().Commands.Commands) {
-                        String replacedCommand = new PlaceholderApiHook().getPlaceholder(player, command);
-                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), replacedCommand);
-                    }
-
+                    executeCommand(player, matchedBiome);
                     playSound(player, matchedBiome);
                 }
             }
@@ -100,27 +95,69 @@ public class LocationChecker {
     }
 
     /**
+     * Execute a CommandModel
+     * @param player <code>Player</code> - The current player
+     * @param biomeModel <code>BiomeModel</code> - The BiomeModel which matched the players biome
+     */
+    private void executeCommand(Player player, @NotNull BiomeModel biomeModel) {
+        if (biomeModel.getWhileInBiomeEventModel().Commands.size() < 1)
+            return;
+
+        if (!BiomeEvents.isSingleCommandModelEnabled()) {
+            for (CommandModel commandModel : biomeModel.getWhileInBiomeEventModel().Commands) {
+                executeCommandFromModel(player, commandModel);
+            }
+
+            return;
+        }
+
+        int randomCommandIndex = new ChanceCalculation(0, biomeModel.getWhileInBiomeEventModel().Commands.size()).getRandom();
+        CommandModel commandModel = biomeModel.getWhileInBiomeEventModel().Commands.get(randomCommandIndex);
+
+        executeCommandFromModel(player, commandModel);
+    }
+
+    /**
+     * Execute commands from the given CommandModel
+     * @param player <code>Player</code> - The current player
+     * @param commandModel <code>CommandModel</code> - The CommandModel containing the commands
+     */
+    private void executeCommandFromModel(Player player, CommandModel commandModel) {
+        // Check if conditions meet
+        if (!passedConditionChecks(commandModel.getConditions(), player))
+            return;
+
+        Placeholder placeholder;
+        List<String> commands = new ArrayList<>();
+
+        if (commandModel.isRandom()) {
+            int randomCommandIndex = new ChanceCalculation(0, commandModel.getCommandList().size()).getRandom();
+            placeholder = new Placeholder(commandModel.getCommandList().get(randomCommandIndex));
+            commands.add(placeholder.replaceFromPlaceholderApi(player));
+        } else {
+            commands.addAll(commandModel.getCommandList().stream().map(x -> new Placeholder(x).replaceFromPlaceholderApi(player)).toList());
+        }
+
+        for (String command : commands) {
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+        }
+    }
+
+    /**
      * Play a SoundModel sound
      * @param player <code>Player</code> - The current player
      * @param biomeModel <code>BiomeModel</code> - The BiomeModel which matched the players biome
      */
     private void playSound(Player player, @NotNull BiomeModel biomeModel) {
-        int randomSoundIndex = 0;
-
-        if (biomeModel.getWhileInBiomeEventModel().Sounds.size() > 1) {
-            randomSoundIndex = ThreadLocalRandom.current()
-                .nextInt(0, biomeModel.getWhileInBiomeEventModel().Sounds.size());
-        }
-
+        int randomSoundIndex = new ChanceCalculation(0, biomeModel.getWhileInBiomeEventModel().Sounds.size()).getRandom();
         SoundModel soundModel = biomeModel.getWhileInBiomeEventModel().Sounds.get(randomSoundIndex);
 
         // Check if conditions meet
         if (!passedConditionChecks(soundModel.getConditions(), player))
             return;
 
-        int randomIndex = ThreadLocalRandom.current().nextInt(0, soundModel.getChance());
-
         // Calculate chance
+        int randomIndex = ThreadLocalRandom.current().nextInt(0, soundModel.getChance());
         ChanceCalculation calculatedChance = new ChanceCalculation(randomIndex, soundModel.getChance());
 
         if (!calculatedChance.matchedIndex())

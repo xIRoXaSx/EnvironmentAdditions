@@ -70,10 +70,22 @@ BiomeEvents:
           UntilTimeInTicks: 13000
           # The permission the player needs to have in order to play the sound for him
           Permission: ''
-        # A list of commands to execute
         Commands:
-          - 'msg @p You are currently in the swamp biome!'
-          - 'msg @p Be aware of swamp creatures!'
+          # A list of command objects to execute every defined PositionChecksInTicks
+          # Whether a random command from the list of commands should be picked or all of them
+          - PickRandomCommand: true
+            # The commands to execute.
+            # Depending on 'PickRandomCommand', either one random or all commands will be executed.
+            Commands:
+              - 'msg %player% {#5ee68b}Hi there!'
+              - 'msg %player% You are currently in the swamp biome!'
+            # An optional condition block.
+            Conditions:
+              EnableCondition: true
+              Weather: Clear
+              FromTimeInTicks: 5000
+              UntilTimeInTicks: 9000
+              Permission: ''
         Particles:
           # A list of particle objects to play every defined PositionChecksInTicks
           # The type of the particle. Have a look at the top description for all available particles
@@ -115,6 +127,13 @@ BiomeEvents:
                 # Example (Version 2): If version 2 is used, this will be used to indicate how many particles should
                 #    be spawned in total! THIS IS NOT THE CHANCE IF VERSION 2 IS PICKED!
                 ChanceForEachLoop: 5
+            # An optional condition block.
+            Conditions:
+              EnableCondition: true
+              Weather: Clear
+              FromTimeInTicks: 5000
+              UntilTimeInTicks: 9000
+              Permission: ''
         Sounds:
           # A list of sound object. You can add multiple sound objects as shown below
           # The chance that this sound will be played. Chance is 1 to x
@@ -140,6 +159,7 @@ BiomeEvents:
               Weather: Clear
               FromTimeInTicks: 5000
               UntilTimeInTicks: 9000
+              Permission: ''
           - Chance: 20
             Sound: 'minecraft:ambient.crimson_forest.additions'
             Category: Ambient
@@ -149,7 +169,10 @@ BiomeEvents:
     Desert:
       WhileIn:
         Commands:
-          - 'msg @p You are currently in the desert biome!'
+          - PickRandomCommand: true
+            Commands:
+              - 'msg %player% {#5ee68b}Hi there!'
+              - 'msg %player% You are currently in the swamp biome!'
         Sounds:
           - Chance: 10
             Sound: 'minecraft:block.end_portal_frame.fill'
@@ -169,3 +192,7 @@ BiomeEvents:
     # Have a look at the Placeholder description section!
     # Leave it as it is or empty to use for vanilla worlds
     PapiBiomePlaceholder: '%player_biome%'
+    # Whether a single command model ('Commands' operation) or all of them (inside a biome configuration) should be executed.
+    # If set to true and multiple command models have been configured, only one will randomly get picked.
+    # If set to false and multiple command models have been configured, all of them will get performed.
+    ExecuteSingleCommandModel: true

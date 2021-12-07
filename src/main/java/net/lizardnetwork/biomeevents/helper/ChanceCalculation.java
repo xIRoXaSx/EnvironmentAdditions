@@ -4,7 +4,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ChanceCalculation {
     private final Integer calculatedIndex;
-    Integer randomIndex;
+    Integer start;
     Integer max;
 
     /**
@@ -13,9 +13,22 @@ public class ChanceCalculation {
      * @param max <code>Int</code> - The max bound (exclusive)
      */
     public ChanceCalculation(int start, int max) {
-        this.randomIndex = start;
+        this.start = start;
         this.max = max;
-        this.calculatedIndex = ThreadLocalRandom.current().nextInt(0, max);
+
+        if (start == max) {
+            this.calculatedIndex = start;
+            return;
+        }
+
+        // Change values if swapped
+        if (start > max) {
+            int tmp = start;
+            start = max;
+            max = tmp;
+        }
+
+        this.calculatedIndex = ThreadLocalRandom.current().nextInt(start, max);
     }
 
     /**
@@ -23,6 +36,15 @@ public class ChanceCalculation {
      * @return <code>Boolean</code> - <code>True</code> if both indexes are matching, <c>false</c> if they don't
      */
     public boolean matchedIndex() {
-        return randomIndex.equals(calculatedIndex);
+        return start.equals(calculatedIndex);
+    }
+
+
+    /**
+     * Get the random Integer
+     * @return <code>Integer</code> - The calculated random number
+     */
+    public Integer getRandom() {
+        return start;
     }
 }

@@ -1,7 +1,6 @@
 package net.lizardnetwork.biomeevents.external;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.lizardnetwork.biomeevents.Logging;
 import net.lizardnetwork.biomeevents.enums.Dependency;
 import net.lizardnetwork.biomeevents.helper.DependencyChecker;
 import net.lizardnetwork.biomeevents.helper.Parser;
@@ -46,7 +45,7 @@ public class PlaceholderApiHook implements Listener {
         if (isEnabled && !forceDefaultCheck) {
             String replacedText = PlaceholderAPI.setPlaceholders(player, text);
 
-            if (replacedText.equals(text))
+            if (replacedText.equals(text) && fallbackPlaceholder != null)
                 replacedText = PlaceholderAPI.setPlaceholders(player, fallbackPlaceholder);
 
             return Parser.getColorizedText(replacedText);
