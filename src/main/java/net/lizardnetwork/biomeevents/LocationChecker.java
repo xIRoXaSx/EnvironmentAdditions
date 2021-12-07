@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class LocationChecker {
     private final Plugin plugin;
@@ -111,7 +110,7 @@ public class LocationChecker {
             return;
         }
 
-        int randomCommandIndex = new ChanceCalculation(0, biomeModel.getWhileInBiomeEventModel().Commands.size()).getRandom();
+        int randomCommandIndex = new ChanceCalculation(0, biomeModel.getWhileInBiomeEventModel().Commands.size()).getRandomInteger();
         CommandModel commandModel = biomeModel.getWhileInBiomeEventModel().Commands.get(randomCommandIndex);
 
         executeCommandFromModel(player, commandModel);
@@ -131,7 +130,7 @@ public class LocationChecker {
         List<String> commands = new ArrayList<>();
 
         if (commandModel.isRandom()) {
-            int randomCommandIndex = new ChanceCalculation(0, commandModel.getCommandList().size()).getRandom();
+            int randomCommandIndex = new ChanceCalculation(0, commandModel.getCommandList().size()).getRandomInteger();
             placeholder = new Placeholder(commandModel.getCommandList().get(randomCommandIndex));
             commands.add(placeholder.replaceFromPlaceholderApi(player));
         } else {
@@ -149,7 +148,7 @@ public class LocationChecker {
      * @param biomeModel <code>BiomeModel</code> - The BiomeModel which matched the players biome
      */
     private void playSound(Player player, @NotNull BiomeModel biomeModel) {
-        int randomSoundIndex = new ChanceCalculation(0, biomeModel.getWhileInBiomeEventModel().Sounds.size()).getRandom();
+        int randomSoundIndex = new ChanceCalculation(0, biomeModel.getWhileInBiomeEventModel().Sounds.size()).getRandomInteger();
         SoundModel soundModel = biomeModel.getWhileInBiomeEventModel().Sounds.get(randomSoundIndex);
 
         // Check if conditions meet
@@ -157,7 +156,7 @@ public class LocationChecker {
             return;
 
         // Calculate chance
-        int randomIndex = ThreadLocalRandom.current().nextInt(0, soundModel.getChance());
+        int randomIndex = new ChanceCalculation(0, soundModel.getChance()).getRandomInteger();
         ChanceCalculation calculatedChance = new ChanceCalculation(randomIndex, soundModel.getChance());
 
         if (!calculatedChance.matchedIndex())
@@ -167,10 +166,8 @@ public class LocationChecker {
 
         // Add random offset if configured
         if (soundModel.getMaxRandomOffset() > 0) {
-            double randomOffsetX = ThreadLocalRandom.current()
-                    .nextDouble(soundModel.getMaxRandomOffset() * -1, soundModel.getMaxRandomOffset());
-            double randomOffsetZ = ThreadLocalRandom.current()
-                    .nextDouble(soundModel.getMaxRandomOffset() * -1, soundModel.getMaxRandomOffset());
+            double randomOffsetX = new ChanceCalculation(-soundModel.getMaxRandomOffset() - 1, soundModel.getMaxRandomOffset() + 1).getRandomDouble();
+            double randomOffsetZ = new ChanceCalculation(-soundModel.getMaxRandomOffset() - 1, soundModel.getMaxRandomOffset() + 1).getRandomDouble();
             soundLocation.add(new Vector(randomOffsetX, 0, randomOffsetZ));
         }
 
@@ -205,8 +202,7 @@ public class LocationChecker {
         int randomParticleIndex = 0;
 
         if (biomeModel.getWhileInBiomeEventModel().ParticleModels.size() > 1) {
-            randomParticleIndex = ThreadLocalRandom.current()
-                .nextInt(0, biomeModel.getWhileInBiomeEventModel().ParticleModels.size());
+            randomParticleIndex = new ChanceCalculation(0, biomeModel.getWhileInBiomeEventModel().ParticleModels.size()).getRandomInteger();
         }
 
         ParticleModel particleModel = biomeModel.getWhileInBiomeEventModel().ParticleModels.get(randomParticleIndex);
@@ -269,30 +265,30 @@ public class LocationChecker {
             if (finalRadiusInBlocks > 0) {
                 if (particleModel.getParticleAnimationModel().getLoopOption().getVersion() != 1) {
                     for (int i = 0; i < finalChanceForEachLoop + 1; i++) {
-                        int randomX = ThreadLocalRandom.current().nextInt(-finalRadiusInBlocks - 1, finalRadiusInBlocks + 1);
-                        int randomY = ThreadLocalRandom.current().nextInt(-finalRadiusInBlocks - 1, finalRadiusInBlocks + 1);
-                        int randomZ = ThreadLocalRandom.current().nextInt(-finalRadiusInBlocks - 1, finalRadiusInBlocks + 1);
+                        double randomX = new ChanceCalculation((double) -finalRadiusInBlocks - 1, (double) finalRadiusInBlocks + 1).getRandomDouble();
+                        double randomY = new ChanceCalculation((double) -finalRadiusInBlocks - 1, (double) finalRadiusInBlocks + 1).getRandomDouble();
+                        double randomZ = new ChanceCalculation((double) -finalRadiusInBlocks - 1, (double) finalRadiusInBlocks + 1).getRandomDouble();
 
                         player.spawnParticle(
-                                particle,
-                                finalFromX + randomX,
-                                finalFromY + randomY,
-                                finalFromZ + randomZ,
-                                particleModel.getParticleCount(),
-                                finalDustOptions
+                            particle,
+                            finalFromX + randomX,
+                            finalFromY + randomY,
+                            finalFromZ + randomZ,
+                            particleModel.getParticleCount(),
+                            finalDustOptions
                         );
                     }
                 } else {
                     // Version 1 spawning
                     for (int y = player.getLocation().getBlockY() + finalRadiusInBlocks + 1; y > player.getLocation().getBlockY() - finalRadiusInBlocks; y--) {
-                        int randomIndex = ThreadLocalRandom.current().nextInt(0, finalChanceForEachLoop);
+                        int randomIndex = new ChanceCalculation(0,finalChanceForEachLoop).getRandomInteger();
                         ChanceCalculation calculatedChance = new ChanceCalculation(randomIndex, finalChanceForEachLoop);
 
                         if (!calculatedChance.matchedIndex())
                             continue;
 
                         for (int x = 0; x < finalRadiusInBlocks + 1; x++) {
-                            randomIndex = ThreadLocalRandom.current().nextInt(0, finalChanceForEachLoop);
+                            randomIndex = new ChanceCalculation(0, finalChanceForEachLoop).getRandomInteger();
                             calculatedChance = new ChanceCalculation(randomIndex, finalChanceForEachLoop);
 
                             if (!calculatedChance.matchedIndex())
@@ -300,7 +296,7 @@ public class LocationChecker {
 
                             for (int z = 0; z < finalRadiusInBlocks + 1; z++) {
                                 // Calculate chance
-                                randomIndex = ThreadLocalRandom.current().nextInt(0, finalChanceForEachLoop);
+                                randomIndex = new ChanceCalculation(0, finalChanceForEachLoop).getRandomInteger();
                                 calculatedChance = new ChanceCalculation(randomIndex, finalChanceForEachLoop);
 
                                 if (!calculatedChance.matchedIndex())
