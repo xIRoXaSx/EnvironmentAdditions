@@ -1,6 +1,6 @@
 name: BiomeEvents
 main: net.lizardnetwork.biomeevents.BiomeEvents
-version: 1.2.0
+version: 1.2.1
 api-version: 1.17
 author: xIRoXaSx
 softdepend: [PlaceholderAPI]

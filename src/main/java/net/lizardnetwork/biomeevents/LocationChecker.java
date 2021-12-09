@@ -289,7 +289,8 @@ public class LocationChecker {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     boolean passedConditionChecks(ConditionModel conditions, Player currentPlayer) {
         if (conditions != null && conditions.isEnabled()) {
-            WeatherType worldWeatherCondition = currentPlayer.getWorld().isClearWeather() ? WeatherType.CLEAR : WeatherType.DOWNFALL;
+            WeatherType worldWeatherCondition = currentPlayer.getWorld().isClearWeather()
+                || currentPlayer.getWorld().isThundering() ? WeatherType.CLEAR : WeatherType.DOWNFALL;
 
             if (!Objects.equals(conditions.getPermission(), "null") && !conditions.getPermission().isBlank()
                     && !currentPlayer.hasPermission(conditions.getPermission()))
