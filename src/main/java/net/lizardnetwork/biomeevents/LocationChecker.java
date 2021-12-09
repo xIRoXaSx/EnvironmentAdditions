@@ -264,95 +264,18 @@ public class LocationChecker {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             if (finalRadiusInBlocks > 0) {
                 if (particleModel.getParticleAnimationModel().getLoopOption().getVersion() != 1) {
-                    for (int i = 0; i < finalChanceForEachLoop + 1; i++) {
-                        double randomX = new ChanceCalculation((double) -finalRadiusInBlocks - 1, (double) finalRadiusInBlocks + 1).getRandomDouble();
-                        double randomY = new ChanceCalculation((double) -finalRadiusInBlocks - 1, (double) finalRadiusInBlocks + 1).getRandomDouble();
-                        double randomZ = new ChanceCalculation((double) -finalRadiusInBlocks - 1, (double) finalRadiusInBlocks + 1).getRandomDouble();
-
-                        player.spawnParticle(
-                            particle,
-                            finalFromX + randomX,
-                            finalFromY + randomY,
-                            finalFromZ + randomZ,
-                            particleModel.getParticleCount(),
-                            finalDustOptions
-                        );
-                    }
+                    new BiomeParticle(particle, finalDustOptions, finalFromX, finalFromY, finalFromZ)
+                        .spawnV2(player, particleModel.getParticleCount(), finalRadiusInBlocks, finalChanceForEachLoop);
                 } else {
-                    // Version 1 spawning
-                    for (int y = player.getLocation().getBlockY() + finalRadiusInBlocks + 1; y > player.getLocation().getBlockY() - finalRadiusInBlocks; y--) {
-                        int randomIndex = new ChanceCalculation(0,finalChanceForEachLoop).getRandomInteger();
-                        ChanceCalculation calculatedChance = new ChanceCalculation(randomIndex, finalChanceForEachLoop);
-
-                        if (!calculatedChance.matchedIndex())
-                            continue;
-
-                        for (int x = 0; x < finalRadiusInBlocks + 1; x++) {
-                            randomIndex = new ChanceCalculation(0, finalChanceForEachLoop).getRandomInteger();
-                            calculatedChance = new ChanceCalculation(randomIndex, finalChanceForEachLoop);
-
-                            if (!calculatedChance.matchedIndex())
-                                continue;
-
-                            for (int z = 0; z < finalRadiusInBlocks + 1; z++) {
-                                // Calculate chance
-                                randomIndex = new ChanceCalculation(0, finalChanceForEachLoop).getRandomInteger();
-                                calculatedChance = new ChanceCalculation(randomIndex, finalChanceForEachLoop);
-
-                                if (!calculatedChance.matchedIndex())
-                                    continue;
-
-                                player.spawnParticle(
-                                    particle,
-                                    finalFromX + x,
-                                    y,
-                                    finalFromZ + z,
-                                    particleModel.getParticleCount(),
-                                    finalDustOptions
-                                );
-
-                                player.spawnParticle(
-                                    particle,
-                                    finalFromX + x,
-                                    y,
-                                    finalFromZ - z,
-                                    particleModel.getParticleCount(),
-                                    finalDustOptions
-                                );
-
-                                player.spawnParticle(
-                                    particle,
-                                    finalFromX - x,
-                                    y,
-                                    finalFromZ + z,
-                                    particleModel.getParticleCount(),
-                                    finalDustOptions
-                                );
-
-                                player.spawnParticle(
-                                    particle,
-                                    finalFromX - x,
-                                    y,
-                                    finalFromZ - z,
-                                    particleModel.getParticleCount(),
-                                    finalDustOptions
-                                );
-                            }
-                        }
-                    }
+                    new BiomeParticle(particle, finalDustOptions, finalFromX, finalFromY, finalFromZ)
+                        .spawnV1(player, particleModel.getParticleCount(), finalRadiusInBlocks, finalChanceForEachLoop);
                 }
 
                 return;
             }
 
-            player.spawnParticle(
-                particle,
-                finalFromX,
-                finalFromY,
-                finalFromZ,
-                particleModel.getParticleCount(),
-                finalDustOptions
-            );
+            // Spawn particle at the defined location
+            new BiomeParticle(particle, finalDustOptions, finalFromX, finalFromY, finalFromZ).spawn(player, particleModel.getParticleCount());
         }, 0);
     }
 

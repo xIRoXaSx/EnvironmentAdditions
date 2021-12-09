@@ -1,6 +1,5 @@
 package net.lizardnetwork.biomeevents.external;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.lizardnetwork.biomeevents.helper.Parser;
 import org.bukkit.entity.Player;
 import java.util.Map;
