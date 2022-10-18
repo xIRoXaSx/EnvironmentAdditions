@@ -50,9 +50,9 @@
 # ========
 BiomeEvents:
   Biomes:
-    # The name of the biome (either vanilla or returned from PapiBiomePlaceholder)
+    # The name of the biome (either vanilla or returned from PapiBiomePlaceholder).
     Swamp:
-      # The commands and sounds that should be executed while players are in this specific biome
+      # The actions that should be executed WHILE players are IN this specific biome.
       WhileIn:
         # The conditions that must apply before any operation for this biome will be performed
         Conditions:

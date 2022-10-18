@@ -1,15 +1,16 @@
-name: BiomeEvents
-main: net.lizardnetwork.biomeevents.BiomeEvents
-version: 1.2.1
-api-version: 1.17
+name: EnvironmentAdditions
+main: net.lizardnetwork.environmentadditions.EnvironmentAdditions
+version: 2.0.0
+api-version: 1.19
 author: xIRoXaSx
 softdepend: [PlaceholderAPI]
 commands:
-  biomeevents:
-    description: Main command for BiomeEvents
+  environment:
+    description: Main command for EnvironmentAdditions
     usage: /<command>
-    permission: biomeevents.admin
+    permission: environmentadditions.admin
     permission-message: ""
     aliases:
-      - "biomeev"
-      - "be"
+      - "envadd"
+      - "envad"
+      - "ea"
