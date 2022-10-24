@@ -21,7 +21,7 @@ public class Config {
             return;
         }
 
-        if (!Files.exists(plugin.getDataFolder().toPath()) || !file.getParentFile().mkdirs()) {
+        if (!Files.exists(plugin.getDataFolder().toPath()) && !file.getParentFile().mkdirs()) {
             Exceptions.Fatal("Unable to get / create config, disabling...");
             return;
         }
