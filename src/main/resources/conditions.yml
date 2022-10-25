@@ -1,0 +1,45 @@
+# ========
+#
+# To understand ticks and times, please use this reference:
+#    => https://www.digminecraft.com/getting_started/game_tick.php
+#
+# ========
+Conditions:
+  WhileClearAndDay:
+    # If this condition block should be enabled / considered.
+    # If set to true, all conditions need to apply before any operation for linked biome groups will be performed.
+    # If set to false, all operations linked to this condition will be performed regardless of the configured conditions.
+    # You can remove conditions that aren't necessary for you.
+    EnableCondition: true
+    # The weather type. Either 'Clear' or 'Downfall'.
+    Weather: Clear
+    # The time (in ticks) in which the linked events will start.
+    FromTimeInTicks: 0
+    # The time (in ticks) in which the linked events will stop.
+    UntilTimeInTicks: 12000
+    # The permission the player needs to have in order to activate an event.
+    Permission: ''
+  WhileClearAndDayAndPermission:
+    EnableCondition: true
+    Weather: Clear
+    FromTimeInTicks: 0
+    UntilTimeInTicks: 12000
+    Permission: 'ea.condition.specialpermission'
+  WhileRainyAndDay:
+    EnableCondition: true
+    Weather: Downfall
+    FromTimeInTicks: 0
+    UntilTimeInTicks: 12000
+    Permission: ''
+  WhileClearAndNight:
+    EnableCondition: true
+    Weather: Clear
+    FromTimeInTicks: 18000
+    UntilTimeInTicks: 23999
+    Permission: ''
+  WhileClearAndDayWithPermission:
+    EnableCondition: true
+    Weather: Clear
+    FromTimeInTicks: 5000
+    UntilTimeInTicks: 9000
+    Permission: ea.condition.specialpermission
