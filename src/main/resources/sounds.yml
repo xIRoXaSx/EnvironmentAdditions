@@ -24,9 +24,9 @@ Sounds:
     # Whether the sound is publicly audible.
     # If set to true, all players are able to hear the sound around the played location.
     # If set to false, only the player who activated the event is able to hear the sound (+ sound is following the player).
-    IsServerWide: true
+    IsGlobal: true
     # Randomize the location (X and Z directions) by the given number (e.g.: +10 and -10).
-    # This will also overwrite 'IsServerWide' to true
+    # This will also overwrite 'IsGlobal' to true
     MaxRandomOffset: 10
     # An optional condition, leave empty if no condition should be used.
     # Keep in mind, that all conditions of the BIOME GROUP MUST ALSO APPLY!
@@ -38,7 +38,7 @@ Sounds:
     Category: Ambient
     Volume: 0.1
     Pitch: 1.0
-    IsServerWide: true
+    IsGlobal: true
     MaxRandomOffset: 0
     Condition: ""
 
@@ -48,6 +48,6 @@ Sounds:
     Category: Ambient
     Volume: 0.1
     Pitch: 1.0
-    IsServerWide: true
+    IsGlobal: true
     MaxRandomOffset: 0
     Condition: ""

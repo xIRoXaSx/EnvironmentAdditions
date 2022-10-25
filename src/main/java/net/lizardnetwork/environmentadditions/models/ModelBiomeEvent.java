@@ -1,10 +1,20 @@
 package net.lizardnetwork.environmentadditions.models;
 
-public class ModelBiomeEvent {
-    private final ModelCondition condition = new ModelCondition();
-    private final ModelCommand[] commands = new ModelCommand[]{};
-    private final ModelParticle[] particles = new ModelParticle[]{};
-    private final ModelSound[] sounds = new ModelSound[]{};
+import net.lizardnetwork.environmentadditions.interfaces.ICondition;
+
+public class ModelBiomeEvent extends ModelCondition implements ICondition {
+    private final ModelCondition condition;
+    private final ModelCommand[] commands;
+    private final ModelParticle[] particles;
+    private final ModelSound[] sounds;
+
+    public ModelBiomeEvent(ModelCondition condition, ModelCommand[] commands, ModelParticle[] particles, ModelSound[] sounds) {
+        super(condition.isEnabled(), condition.getFromTimeInTicks(), condition.getUntilTimeInTicks(),condition.getWeather(), condition.getPermission());
+        this.condition = condition;
+        this.commands = commands;
+        this.particles = particles;
+        this.sounds = sounds;
+    }
 
     public ModelCondition getCondition() {
         return condition;

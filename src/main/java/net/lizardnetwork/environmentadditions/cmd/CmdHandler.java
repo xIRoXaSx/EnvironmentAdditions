@@ -1,8 +1,8 @@
 package net.lizardnetwork.environmentadditions.cmd;
 
 import net.lizardnetwork.environmentadditions.EnvironmentAdditions;
-import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.interfaces.ICmd;
+import net.lizardnetwork.environmentadditions.models.ModelCondition;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -52,6 +52,6 @@ public class CmdHandler  {
     }
 
     private boolean hasPermission(String perm) {
-        return Parser.isEmpty(perm) || sender.hasPermission(perm);
+        return ModelCondition.hasPermission(sender, perm);
     }
 }
