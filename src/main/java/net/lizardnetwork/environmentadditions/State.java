@@ -4,8 +4,13 @@ import net.lizardnetwork.environmentadditions.enums.Dependency;
 import net.lizardnetwork.environmentadditions.models.ModelBiomeEvent;
 
 public class State {
+    private Config config;
     private Dependency dependency;
     private ModelBiomeEvent[] biomeEvents;
+
+    public void setConfig() {
+        config = new Config();
+    }
 
     void setDependency(Dependency value) {
         this.dependency = value;
@@ -13,6 +18,10 @@ public class State {
 
     void setBiomeEvents(ModelBiomeEvent[] biomeEvents) {
         this.biomeEvents = biomeEvents;
+    }
+
+    public Config getConfig() {
+        return config;
     }
 
     public Dependency getDependency() {

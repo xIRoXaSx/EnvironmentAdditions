@@ -14,15 +14,14 @@ import org.jetbrains.annotations.NotNull;
 public class EnvironmentAdditions extends JavaPlugin implements CommandExecutor {
     private static EnvironmentAdditions instance;
     private static final State state = new State();
-    private static Config config;
     private static final String coloredPrefix = ChatColor.translateAlternateColorCodes('&', "&6Environment&aAddition&r");
 
     @Override
     public void onEnable() {
         long start = System.nanoTime();
         instance = this;
-        config = new Config();
         state.setDependency(Resolve.resolveDependencies());
+        state.setConfig();
         long end = System.nanoTime();
         Logging.info("Enabled within " + Math.round((end - start) / 1e6) + "ms");
     }
@@ -45,7 +44,7 @@ public class EnvironmentAdditions extends JavaPlugin implements CommandExecutor 
     }
 
     public static void reload() {
-        config = new Config();
+        state.setConfig();
     }
 
     public static PluginDescriptionFile getPluginDescription() {
