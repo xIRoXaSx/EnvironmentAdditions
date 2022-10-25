@@ -3,10 +3,8 @@ package net.lizardnetwork.environmentadditions;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
-
 import java.io.File;
 import java.nio.file.Files;
-
 
 public class Config {
     private final FileConfiguration config;

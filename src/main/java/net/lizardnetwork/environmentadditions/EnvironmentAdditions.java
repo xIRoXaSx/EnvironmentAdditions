@@ -1,6 +1,7 @@
 package net.lizardnetwork.environmentadditions;
 
 import net.lizardnetwork.environmentadditions.cmd.CmdHandler;
+import net.lizardnetwork.environmentadditions.helper.Resolve;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class EnvironmentAdditions extends JavaPlugin implements CommandExecutor {
     private static EnvironmentAdditions instance;
+    private static final State state = new State();
     private static Config config;
     private static final String coloredPrefix = ChatColor.translateAlternateColorCodes('&', "&6Environment&aAddition&r");
 
@@ -20,6 +22,7 @@ public class EnvironmentAdditions extends JavaPlugin implements CommandExecutor 
         long start = System.nanoTime();
         instance = this;
         config = new Config();
+        state.updateDependency(Resolve.resolveDependencies());
         long end = System.nanoTime();
         Logging.info("Enabled within " + Math.round((end - start) / 1e6) + "ms");
     }
@@ -35,6 +38,10 @@ public class EnvironmentAdditions extends JavaPlugin implements CommandExecutor 
      */
     static Plugin getInstance() {
         return instance;
+    }
+
+    public static State getState() {
+        return state;
     }
 
     public static void reload() {

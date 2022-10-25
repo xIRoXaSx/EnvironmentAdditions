@@ -35,6 +35,11 @@
                 <includes>
                     <include>plugin.yml</include>
                     <include>config.yml</include>
+                    <include>biomes.yml</include>
+                    <include>commands.yml</include>
+                    <include>conditions.yml</include>
+                    <include>particles.yml</include>
+                    <include>sounds.yml</include>
                 </includes>
             </resource>
         </resources>
