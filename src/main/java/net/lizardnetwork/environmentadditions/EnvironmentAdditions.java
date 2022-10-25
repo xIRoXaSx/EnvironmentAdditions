@@ -22,7 +22,7 @@ public class EnvironmentAdditions extends JavaPlugin implements CommandExecutor 
         long start = System.nanoTime();
         instance = this;
         config = new Config();
-        state.updateDependency(Resolve.resolveDependencies());
+        state.setDependency(Resolve.resolveDependencies());
         long end = System.nanoTime();
         Logging.info("Enabled within " + Math.round((end - start) / 1e6) + "ms");
     }
