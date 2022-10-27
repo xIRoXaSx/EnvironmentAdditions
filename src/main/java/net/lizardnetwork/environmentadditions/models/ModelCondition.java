@@ -5,6 +5,7 @@ import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.interfaces.ICondition;
 import org.bukkit.WeatherType;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class ModelCondition implements ICondition {
     private final boolean enabled;
@@ -25,6 +26,27 @@ public class ModelCondition implements ICondition {
         return new ModelCondition(false, 0, 0, WeatherCondition.CLEAR,"");
     }
 
+    public static boolean hasPermission(CommandSender target, String permission) {
+        return Parser.isEmpty(permission) || target.hasPermission(permission);
+    }
+
+    /**
+     * Check if the provided ICondition matches every condition.
+     * @param player Player - The targeted player.
+     * @return boolean - True if every condition returned true, false otherwise.
+     */
+    @Override
+    public boolean matchesEveryCondition(Player player) {
+        return isEnabled() && hasPermission(player) &&
+            matchesWeather(player.getPlayerWeather()) &&
+            isBetweenTicks(player.getPlayerTime());
+    }
+
+    @Override
+    public boolean hasPermission(CommandSender target) {
+        return Parser.isEmpty(permission) || target.hasPermission(permission);
+    }
+
     @Override
     public boolean isEnabled() {
         return enabled;
@@ -38,10 +60,6 @@ public class ModelCondition implements ICondition {
     @Override
     public boolean isBetweenTicks(long current) {
         return fromTimeInTicks < 0 || untilTimeInTicks < 0 || current >= fromTimeInTicks && current <= untilTimeInTicks;
-    }
-
-    public static boolean hasPermission(CommandSender target, String permission) {
-        return Parser.isEmpty(permission) || target.hasPermission(permission);
     }
 
     public long getFromTimeInTicks() {

@@ -1,5 +1,6 @@
 package net.lizardnetwork.environmentadditions;
 
+import net.lizardnetwork.environmentadditions.enums.CommandExecutor;
 import net.lizardnetwork.environmentadditions.enums.ParticleLoop;
 import net.lizardnetwork.environmentadditions.enums.WeatherCondition;
 import net.lizardnetwork.environmentadditions.helper.Parser;
@@ -141,11 +142,14 @@ public class Config {
         // Since this is not a hot path, we can use Lists and convert them later.
         List<String> biomesForEvents = new ArrayList<>();
         for (Object bg : biomeGroups) {
-            if (bg == null) {
-                return new String[0];
+            if (Parser.isEmpty(bg)) {
+                continue;
             }
             List<?> linkedBiomes = (List<?>)biomeLookup.get(bg.toString());
             for (Object lb : linkedBiomes) {
+                if (Parser.isEmpty(lb)) {
+                    continue;
+                }
                 biomesForEvents.add(lb.toString());
             }
         }
@@ -162,7 +166,7 @@ public class Config {
      */
     private ModelCondition getConditionByName(Object name) {
         ModelCondition condition = ModelCondition.getDefault();
-        if (name == null || Parser.isEmpty(name.toString())) {
+        if (Parser.isEmpty(name)) {
             return condition;
         }
 
@@ -195,7 +199,7 @@ public class Config {
      */
     private ModelCommand[] getCommandsByName(List<?> commandGroups) {
         ModelCondition condition = ModelCondition.getDefault();
-        ModelCommand commands = new ModelCommand(new String[0], condition, false);
+        ModelCommand commands = new ModelCommand(new String[0], CommandExecutor.PLAYER, condition, false);
         if (commandGroups == null) {
             return List.of(commands).toArray(new ModelCommand[0]);
         }
@@ -203,9 +207,10 @@ public class Config {
         String pickRandomCommandKey = "PickRandomCommand";
         String commandListKey = "Commands";
         String conditionKey = "Condition";
+        String executorKey = "Executor";
         List<ModelCommand> modelCommandList = new ArrayList<>();
         for (Object commandGroup : commandGroups) {
-            if (commandGroup == null || Parser.isEmpty(commandGroup.toString())) {
+            if (Parser.isEmpty(commandGroup)) {
                 continue;
             }
             String commandsKey = "Commands." + commandGroup;
@@ -217,10 +222,13 @@ public class Config {
 
             String conditionName = commandSection.getString(conditionKey);
             condition = getConditionByName(conditionName);
+            String executorName = commandSection.getString(executorKey);
+            CommandExecutor executor = Parser.valueOf(CommandExecutor.class, executorName);
             List<String> commandList = commandSection.getStringList(commandListKey);
             String[] commandArray = commandList.toArray(new String[0]);
             modelCommandList.add(new ModelCommand(
                 commandArray,
+                executor,
                 condition,
                 commandSection.getBoolean(pickRandomCommandKey)
             ));
@@ -255,7 +263,7 @@ public class Config {
         String chanceForEachLoopKey = animationKey + "." + loopOptionKey + ".ChanceForEachLoop";
         List<ModelParticle> modelParticleList = new ArrayList<>();
         for (Object particleGroup : particleGroups) {
-            if (particleGroup == null || Parser.isEmpty(particleGroup.toString())) {
+            if (Parser.isEmpty(particleGroup)) {
                 continue;
             }
             String particlesKey = "Particles." + particleGroup;
@@ -324,7 +332,7 @@ public class Config {
         String conditionKey = "Condition";
         List<ModelSound> modelSoundList = new ArrayList<>();
         for (Object soundGroup : soundGroups) {
-            if (soundGroup == null || Parser.isEmpty(soundGroup.toString())) {
+            if (Parser.isEmpty(soundGroup)) {
                 continue;
             }
             String soundsKey = "Sounds." + soundGroup;

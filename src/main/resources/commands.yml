@@ -11,6 +11,9 @@ Commands:
   CommonResponse:
     # Whether a random command from the list of commands should be picked or all of them should be executed.
     PickRandomCommand: false
+    # The target who should execute the command.
+    # Can either be 'Player' or 'Console'.
+    Executor: Console
     # The commands to execute.
     # Depending on 'PickRandomCommand', either one random or all commands will be considered.
     Commands:
@@ -21,6 +24,7 @@ Commands:
 
   SnowyResponse:
     PickRandomCommand: false
+    Executor: Console
     Commands:
       - 'msg %player% {#5ee68b}Hi there!'
       - 'msg %player% You are currently in one of the snow biomes!'
@@ -28,6 +32,7 @@ Commands:
 
   SwampyResponse:
     PickRandomCommand: true
+    Executor: Console
     Commands:
       - 'msg %player% You received a random message!'
       - 'msg %player% This is another random message!'

@@ -3,8 +3,8 @@ package net.lizardnetwork.environmentadditions.helper;
 import net.lizardnetwork.environmentadditions.Logging;
 
 public class Parser {
-    public static boolean isEmpty(String value) {
-        return value == null || value.isBlank() || value.equalsIgnoreCase("null");
+    public static boolean isEmpty(Object value) {
+        return value == null || value.toString().isBlank() || value.toString().equalsIgnoreCase("null");
     }
 
     /**
