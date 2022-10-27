@@ -1,23 +1,27 @@
 package net.lizardnetwork.environmentadditions.models;
 
+import net.lizardnetwork.environmentadditions.enums.WeatherCondition;
 import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.interfaces.ICondition;
-import org.bukkit.WeatherType;
 import org.bukkit.command.CommandSender;
 
 public class ModelCondition implements ICondition {
     private final boolean enabled;
     private final long fromTimeInTicks;
     private final long untilTimeInTicks;
-    private final WeatherType weather;
+    private final WeatherCondition weather;
     private final String permission;
 
-    public ModelCondition(boolean enabled, long fromTimeInTicks, long untilTimeInTicks, WeatherType weather, String permission) {
+    public ModelCondition(boolean enabled, long fromTimeInTicks, long untilTimeInTicks, WeatherCondition weather, String permission) {
         this.enabled = enabled;
         this.fromTimeInTicks = fromTimeInTicks;
         this.untilTimeInTicks = untilTimeInTicks;
         this.weather = weather;
         this.permission = permission;
+    }
+
+    public static ModelCondition getDefault() {
+        return new ModelCondition(false, 0, 0, WeatherCondition.CLEAR,"");
     }
 
     @Override
@@ -26,7 +30,7 @@ public class ModelCondition implements ICondition {
     }
 
     @Override
-    public boolean matchesWeather(WeatherType current) {
+    public boolean matchesWeather(WeatherCondition current) {
         return weather.equals(current);
     }
 
@@ -47,7 +51,7 @@ public class ModelCondition implements ICondition {
         return untilTimeInTicks;
     }
 
-    public WeatherType getWeather() {
+    public WeatherCondition getWeather() {
         return weather;
     }
 

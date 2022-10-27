@@ -28,18 +28,18 @@ Particles:
       RelativeOffsetZ: 0
       # If you want to have an area filled with particles, here are some settings for it
       LoopOption:
-        # Can be 0 (disabled), 1 or two.
-        # Example (Version 1): A cubic area around the player will be calculated in which particle will spawn
+        # Can be empty (disabled), Cubic or Random.
+        # Example (Version Cubic): A cubic area around the player will be calculated in which particle will spawn
         #    (more calculation needed as option 2 and does not look as randomized as option 2).
-        # Example (Version 2): Random locations around the player ('RadiusInBlocks' at max each axis) will be picked.
+        # Example (Version Random): Random locations around the player ('RadiusInBlocks' at max each axis) will be picked.
         #    'ChanceForEachLoop' will be used to tell how many PARTICLES should be spawned in each loop.
-        Version: 2
+        Version: Cubic
         # Setting this greater than 0 will calculate a cube around the player in the dimensions of the configured integer.
         # Formula for one line: x * 2 + 1
-        # Example (Version 1): Setting this to 1 will spawn a 3x3x3 cube in total (+1 each side, relative of players location).
-        # Example (Version 1): Setting this to 5 will spawn 11x11x11
-        # Example (Version 2): Setting this to 1 will pick a random number between -1 and 1 to spawn the particle
-        # Example (Version 2): Setting this to 5 will pick a random number between -5 and 5 to spawn the particle
+        # Example (Version Cubic): Setting this to 1 will spawn a 3x3x3 cube in total (+1 each side, relative of players location).
+        # Example (Version Cubic): Setting this to 5 will spawn 11x11x11
+        # Example (Version Random): Setting this to 1 will pick a random number between -1 and 1 to spawn the particle
+        # Example (Version Random): Setting this to 5 will pick a random number between -5 and 5 to spawn the particle
         RadiusInBlocks: 30
         # Example (Version 1): Setting this higher than 1 will skip some particles of the "cube".
         #    This is an option to "randomize" particle spawns around the player (eg. for snowflakes, ect)

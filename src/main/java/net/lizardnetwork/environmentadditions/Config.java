@@ -1,15 +1,16 @@
 package net.lizardnetwork.environmentadditions;
 
+import net.lizardnetwork.environmentadditions.enums.ParticleLoop;
+import net.lizardnetwork.environmentadditions.enums.WeatherCondition;
 import net.lizardnetwork.environmentadditions.helper.Parser;
-import net.lizardnetwork.environmentadditions.models.ModelBiomeEvent;
-import net.lizardnetwork.environmentadditions.models.ModelCommand;
-import net.lizardnetwork.environmentadditions.models.ModelCondition;
-import org.bukkit.WeatherType;
+import net.lizardnetwork.environmentadditions.models.*;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
-
 import javax.annotation.Nullable;
 import java.io.File;
 import java.nio.file.Files;
@@ -71,6 +72,8 @@ public class Config {
         String whileInKey = "WhileIn";
         String conditionKey = "Condition";
         String commandKey = "Commands";
+        String particleKey = "Particles";
+        String soundKey = "Sounds";
         String biomesKey = "EnvironmentAdditions." + biomesGroupKey;
         ConfigurationSection biomeGroups = this.biomes.getConfigurationSection(biomesGroupKey);
         if (biomeGroups == null) {
@@ -88,26 +91,28 @@ public class Config {
             if (be == null) {
                 continue;
             }
-            String[] activeBiomes = getLinkedBiomesByName(be.get("BiomeGroup"));
-            Logging.debug(String.join(",", activeBiomes));
 
+            String[] activeBiomes = getLinkedBiomesByName(be.get("BiomeGroup"));
             Object whileIn = be.get(whileInKey);
             Map<?, ?> wi = castToMap(whileIn);
             if (wi == null) {
                 continue;
             }
+
             Object conditionName = wi.get(conditionKey);
             ModelCondition condition = getConditionByName(conditionName);
-
-            List<?> commandsName = (List<?>)wi.get(commandKey);
-            ModelCommand[] command = getCommandsByName(commandsName);
+            List<?> commandNames = (List<?>)wi.get(commandKey);
+            ModelCommand[] commands = getCommandsByName(commandNames);
+            List<?> particleNames = (List<?>)wi.get(particleKey);
+            ModelParticle[] particles = getParticlesByName(particleNames);
+            List<?> soundNames = (List<?>)wi.get(soundKey);
+            ModelSound[] sounds = getSoundsByName(soundNames);
 
             configuredBiomeEvents.add(
-                new ModelBiomeEvent(activeBiomes, condition, command, null, null)
+                new ModelBiomeEvent(activeBiomes, condition, commands, particles, sounds)
             );
         }
-
-        return null;
+        return configuredBiomeEvents.toArray(new ModelBiomeEvent[0]);
     }
 
     /**
@@ -156,7 +161,7 @@ public class Config {
      * @return ModelCondition - The condition.
      */
     private ModelCondition getConditionByName(Object name) {
-        ModelCondition condition = new ModelCondition(false, 0, 0, WeatherType.CLEAR,"");
+        ModelCondition condition = ModelCondition.getDefault();
         if (name == null || Parser.isEmpty(name.toString())) {
             return condition;
         }
@@ -172,9 +177,9 @@ public class Config {
             Logging.warn("Unable to retrieve condition object!");
             return condition;
         }
-        String weatherString = conditionSection.getString(weatherKey);
-        WeatherType weather;
-        weather = weatherString == null ? WeatherType.CLEAR : WeatherType.valueOf(weatherString.toUpperCase());
+        //String weatherString = conditionSection.getString(weatherKey);
+        //weather = weatherString == null ? WeatherType.CLEAR : WeatherType.valueOf(weatherString.toUpperCase());
+        WeatherCondition weather = Parser.valueOf(WeatherCondition.class, conditionSection.getString(weatherKey));
         return new ModelCondition(
             conditionSection.getBoolean(isEnabledKey),
             conditionSection.getInt(fromTimeInTicksKey),
@@ -189,7 +194,7 @@ public class Config {
      * @return ModelCommand - The commands.
      */
     private ModelCommand[] getCommandsByName(List<?> commandGroups) {
-        ModelCondition condition = new ModelCondition(false, 0, 0, WeatherType.CLEAR,"");
+        ModelCondition condition = ModelCondition.getDefault();
         ModelCommand commands = new ModelCommand(new String[0], condition, false);
         if (commandGroups == null) {
             return List.of(commands).toArray(new ModelCommand[0]);
@@ -204,23 +209,154 @@ public class Config {
                 continue;
             }
             String commandsKey = "Commands." + commandGroup;
-            ConfigurationSection conditionSection = this.commands.getConfigurationSection(commandsKey);
-            if (conditionSection == null) {
+            ConfigurationSection commandSection = this.commands.getConfigurationSection(commandsKey);
+            if (commandSection == null) {
                 Logging.warn("Unable to retrieve command object!");
                 continue;
             }
 
-            String conditionName = conditionSection.getString(conditionKey);
+            String conditionName = commandSection.getString(conditionKey);
             condition = getConditionByName(conditionName);
-            List<String> commandList = conditionSection.getStringList(commandListKey);
+            List<String> commandList = commandSection.getStringList(commandListKey);
             String[] commandArray = commandList.toArray(new String[0]);
             modelCommandList.add(new ModelCommand(
                 commandArray,
                 condition,
-                conditionSection.getBoolean(pickRandomCommandKey)
+                commandSection.getBoolean(pickRandomCommandKey)
             ));
         }
         return modelCommandList.toArray(new ModelCommand[0]);
+    }
+
+    /**
+     * Get the configured particles by name.
+     * @return ModelParticle - The commands.
+     */
+    private ModelParticle[] getParticlesByName(List<?> particleGroups) {
+        ModelCondition condition = ModelCondition.getDefault();
+        ModelParticle particles = new ModelParticle(Particle.REDSTONE, "fff", 1, 1, condition, null);
+        if (particleGroups == null) {
+            return List.of(particles).toArray(new ModelParticle[0]);
+        }
+
+        String particleKey = "Particle";
+        String redstoneHexColorKey = "RedstoneHexColor";
+        String redstoneSizeKey = "RedstoneSize";
+        String particleCountKey = "ParticleCount";
+        String conditionKey = "Condition";
+        String animationKey = "Animation";
+        String viewDirectionDistanceKey = animationKey + ".ViewDirectionDistance";
+        String relativeOffsetXKey = animationKey + ".RelativeOffsetX";
+        String relativeOffsetYKey = animationKey + ".RelativeOffsetY";
+        String relativeOffsetZKey = animationKey + ".RelativeOffsetZ";
+        String loopOptionKey = animationKey + ".LoopOption";
+        String versionKey = loopOptionKey + ".Version";
+        String radiusInBlocksKey = animationKey + "." + loopOptionKey + ".RadiusInBlocks";
+        String chanceForEachLoopKey = animationKey + "." + loopOptionKey + ".ChanceForEachLoop";
+        List<ModelParticle> modelParticleList = new ArrayList<>();
+        for (Object particleGroup : particleGroups) {
+            if (particleGroup == null || Parser.isEmpty(particleGroup.toString())) {
+                continue;
+            }
+            String particlesKey = "Particles." + particleGroup;
+            ConfigurationSection particleSection = this.particles.getConfigurationSection(particlesKey);
+            if (particleSection == null) {
+                Logging.warn("Unable to retrieve particle object!");
+                continue;
+            }
+
+            String conditionName = particleSection.getString(conditionKey);
+            condition = getConditionByName(conditionName);
+            String particleName = particleSection.getString(particleKey);
+            Particle particle = Parser.valueOf(Particle.class, particleName);
+            String hex = particleSection.getString(redstoneHexColorKey);
+            int size = particleSection.getInt(redstoneSizeKey);
+            int num = particleSection.getInt(particleCountKey);
+
+            // Animation values.
+            int viewDistance = particleSection.getInt(viewDirectionDistanceKey);
+            int relX = particleSection.getInt(relativeOffsetXKey);
+            int relY = particleSection.getInt(relativeOffsetYKey);
+            int relZ = particleSection.getInt(relativeOffsetZKey);
+
+            // Loop option values.
+            String versionName = particleSection.getString(versionKey);
+            ParticleLoop version = Parser.valueOf(ParticleLoop.class, versionName);
+            int rad = particleSection.getInt(radiusInBlocksKey);
+            int chance = particleSection.getInt(chanceForEachLoopKey);
+
+            modelParticleList.add(new ModelParticle(
+                particle,
+                hex,
+                size,
+                num,
+                condition,
+                new ModelParticleAnimation(
+                    viewDistance,
+                    relX,
+                    relY,
+                    relZ,
+                    new ModelParticleLoop(version, chance, rad)
+                )
+            ));
+        }
+        return modelParticleList.toArray(new ModelParticle[0]);
+    }
+
+    /**
+     * Get the configured particles by name.
+     * @return ModelParticle - The commands.
+     */
+    private ModelSound[] getSoundsByName(List<?> soundGroups) {
+        ModelCondition condition = ModelCondition.getDefault();
+        ModelSound sounds = new ModelSound(0, Sound.WEATHER_RAIN.getKey().toString(), SoundCategory.MUSIC, 0, 0, false, 0, condition);
+        if (soundGroups == null) {
+            return List.of(sounds).toArray(new ModelSound[0]);
+        }
+
+        String chanceKey = "Chance";
+        String soundKey = "Sound";
+        String categoryKey = "Category";
+        String volumeKey = "Volume";
+        String pitchKey = "Pitch";
+        String isGlobalKey = "IsGlobal";
+        String maxRandomOffsetKey = "MaxRandomOffset";
+        String conditionKey = "Condition";
+        List<ModelSound> modelSoundList = new ArrayList<>();
+        for (Object soundGroup : soundGroups) {
+            if (soundGroup == null || Parser.isEmpty(soundGroup.toString())) {
+                continue;
+            }
+            String soundsKey = "Sounds." + soundGroup;
+            ConfigurationSection soundSection = this.sounds.getConfigurationSection(soundsKey);
+            if (soundSection == null) {
+                Logging.warn("Unable to retrieve sound object!");
+                continue;
+            }
+
+            String conditionName = soundSection.getString(conditionKey);
+            condition = getConditionByName(conditionName);
+            int chance = soundSection.getInt(chanceKey);
+            String sound = soundSection.getString(soundKey);
+            String categoryName = soundSection.getString(categoryKey);
+            SoundCategory category = Parser.valueOf(SoundCategory.class, categoryName);
+            float vol = (float)soundSection.getDouble(volumeKey);
+            float pitch = (float)soundSection.getDouble(pitchKey);
+            boolean isGlobal = soundSection.getBoolean(isGlobalKey);
+            int maxRandOff = soundSection.getInt(maxRandomOffsetKey);
+
+            modelSoundList.add(new ModelSound(
+                chance,
+                sound,
+                category,
+                vol,
+                pitch,
+                isGlobal,
+                maxRandOff,
+                condition
+            ));
+        }
+        return modelSoundList.toArray(new ModelSound[0]);
     }
 
     private Map<?,?> castToMap(Object o) {
@@ -231,13 +367,3 @@ public class Config {
         return map;
     }
 }
-
-
-
-
-
-
-
-
-
-
