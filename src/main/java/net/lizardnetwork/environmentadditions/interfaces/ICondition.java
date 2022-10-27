@@ -1,9 +1,9 @@
 package net.lizardnetwork.environmentadditions.interfaces;
 
-import net.lizardnetwork.environmentadditions.enums.WeatherCondition;
+import org.bukkit.WeatherType;
 
 public interface ICondition {
     boolean isEnabled();
-    boolean matchesWeather(WeatherCondition current);
-    boolean isBetweenTicks(long min, long max, long current);
+    boolean matchesWeather(WeatherType current);
+    boolean isBetweenTicks(long current);
 }

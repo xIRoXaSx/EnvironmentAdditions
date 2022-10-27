@@ -67,7 +67,7 @@ public class Config {
     }
 
     @Nullable
-    ModelBiomeEvent[] linkConfigs() {
+    ModelBiomeEvent[] getLinkedConfigs() {
         String biomesGroupKey = "Biomes";
         String whileInKey = "WhileIn";
         String conditionKey = "Condition";

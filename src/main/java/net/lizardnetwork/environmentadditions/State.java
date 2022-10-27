@@ -10,7 +10,7 @@ public class State {
 
     public void setConfig() {
         config = new Config();
-        biomeEvents = config.linkConfigs();
+        biomeEvents = config.getLinkedConfigs();
     }
 
     void setDependency(Dependency value) {

@@ -3,6 +3,7 @@ package net.lizardnetwork.environmentadditions.models;
 import net.lizardnetwork.environmentadditions.enums.WeatherCondition;
 import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.interfaces.ICondition;
+import org.bukkit.WeatherType;
 import org.bukkit.command.CommandSender;
 
 public class ModelCondition implements ICondition {
@@ -30,13 +31,13 @@ public class ModelCondition implements ICondition {
     }
 
     @Override
-    public boolean matchesWeather(WeatherCondition current) {
-        return weather.equals(current);
+    public boolean matchesWeather(WeatherType current) {
+        return weather.equals(WeatherCondition.DISABLED) || weather.name().equals(current.name());
     }
 
     @Override
-    public boolean isBetweenTicks(long min, long max, long current) {
-        return current <= max && current >= min;
+    public boolean isBetweenTicks(long current) {
+        return fromTimeInTicks < 0 || untilTimeInTicks < 0 || current >= fromTimeInTicks && current <= untilTimeInTicks;
     }
 
     public static boolean hasPermission(CommandSender target, String permission) {

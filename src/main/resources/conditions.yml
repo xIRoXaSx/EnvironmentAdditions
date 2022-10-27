@@ -15,7 +15,7 @@ Conditions:
     FromTimeInTicks: 0
     # The time (in ticks) in which the linked events will stop.
     UntilTimeInTicks: 12000
-    # The weather type. Either 'Clear' or 'Downfall'.
+    # The weather type. Either 'Disabled', 'Clear' or 'Downfall'.
     Weather: Clear
     # The permission the player needs to have in order to activate an event.
     Permission: ''
