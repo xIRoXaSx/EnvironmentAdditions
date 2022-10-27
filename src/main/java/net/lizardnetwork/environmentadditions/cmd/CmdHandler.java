@@ -3,11 +3,11 @@ package net.lizardnetwork.environmentadditions.cmd;
 import net.lizardnetwork.environmentadditions.EnvironmentAdditions;
 import net.lizardnetwork.environmentadditions.interfaces.ICmd;
 import net.lizardnetwork.environmentadditions.models.ModelCondition;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
 
 public class CmdHandler  {
     private static final String rootPerm = EnvironmentAdditions.getPluginDescription().getName().toLowerCase();
@@ -25,7 +25,6 @@ public class CmdHandler  {
     }
 
     public boolean handle() {
-        Bukkit.getLogger().warning(String.join(" ", args));
         if (args.length == 0) {
             return false;
         }
@@ -49,6 +48,14 @@ public class CmdHandler  {
             }
         }
         return null;
+    }
+
+    /**
+     * Get all arguments which can be used for tab-completion.
+     * @return List&lt;String&gt; - A List of all arguments.
+     */
+    public static List<String> getCompletionArgs() {
+        return Arrays.stream(registry).toList().stream().map(ICmd::getCmd).toList();
     }
 
     private boolean hasPermission(String perm) {

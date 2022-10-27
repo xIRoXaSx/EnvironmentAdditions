@@ -16,7 +16,7 @@ public class Observer {
     }
 
     // TODO: Read "PositionChecksInTicks" from settings.
-    BukkitTask initTimeDrivenObserver(Player player) {
+    public BukkitTask initTimeDrivenObserver(Player player) {
         return new BukkitRunnable() {
             @Override
             public void run() {

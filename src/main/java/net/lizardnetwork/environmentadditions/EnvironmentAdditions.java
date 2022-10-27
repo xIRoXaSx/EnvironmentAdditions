@@ -2,16 +2,20 @@ package net.lizardnetwork.environmentadditions;
 
 import net.lizardnetwork.environmentadditions.cmd.CmdHandler;
 import net.lizardnetwork.environmentadditions.helper.Resolve;
+import net.lizardnetwork.environmentadditions.tasking.Observer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-public class EnvironmentAdditions extends JavaPlugin implements CommandExecutor {
+public class EnvironmentAdditions extends JavaPlugin implements Listener, CommandExecutor {
     private static EnvironmentAdditions instance;
     private static final State state = new State();
     private static final String coloredPrefix = ChatColor.translateAlternateColorCodes('&', "&6Environment&aAddition&r");
@@ -22,8 +26,18 @@ public class EnvironmentAdditions extends JavaPlugin implements CommandExecutor 
         instance = this;
         state.setDependency(Resolve.resolveDependencies());
         state.setConfig();
+        state.subscribeToEvents();
         long end = System.nanoTime();
         Logging.info("Enabled within " + Math.round((end - start) / 1e6) + "ms");
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        Observer observer = new Observer(this);
+        EnvironmentAdditions.getState().appendObserver(
+            event.getPlayer().getUniqueId(),
+            observer.initTimeDrivenObserver(event.getPlayer())
+        );
     }
 
     @Override
