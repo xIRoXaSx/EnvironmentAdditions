@@ -28,6 +28,18 @@ public class Caster {
     }
 
     /**
+     * Check if o is an instance of String and return its value.
+     * @param o Object - The object to use.
+     * @return String - Either the object's String value if instance of String or empty String.
+     */
+    public static String valueOrEmpty(Object o) {
+        if (!(o instanceof String value)) {
+            return "";
+        }
+        return Parser.isEmpty(value) ? "" : value;
+    }
+
+    /**
      * Cast o to a float value.
      * @param o Object - The object to cast.
      * @return float - The float value of o or 0.
@@ -41,6 +53,21 @@ public class Caster {
         }
         if (o instanceof Double) {
             return (float)((double)o);
+        }
+        return 0;
+    }
+
+    /**
+     * Cast o to a long value.
+     * @param o Object - The object to cast.
+     * @return long - The long value of o or 0.
+     */
+    public static long castToLong(Object o) {
+        if (o instanceof Integer) {
+            return (long)((int)o);
+        }
+        if (o instanceof Long) {
+            return (long)o;
         }
         return 0;
     }

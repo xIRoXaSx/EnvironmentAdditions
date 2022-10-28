@@ -191,7 +191,6 @@ public class Config {
      * @return ModelCondition - The condition.
      */
     private ModelCondition getConditionByName(Object requestKey, Object name) {
-        ModelCondition condition = ModelCondition.getDefault(false);
         if (Parser.isEmpty(name)) {
             Logging.warn("Condition object name " + (Parser.isEmpty(requestKey) ? "" : "of " + requestKey + " ") +
                 "was empty, fallback: enabling event executing!"
@@ -199,26 +198,27 @@ public class Config {
             return ModelCondition.getDefault(true);
         }
 
-        String conditionsKey = "Conditions." + name;
-        String isEnabledKey = "IsEnabled";
-        String fromTimeInTicksKey = "FromTimeInTicks";
-        String untilTimeInTicksKey = "UntilTimeInTicks";
-        String weatherKey = "Weather";
-        String permissionKey = "Permission";
-        ConfigurationSection conditionSection = this.conditions.getConfigurationSection(conditionsKey);
-        if (conditionSection == null) {
+        String[] subKeys = new String[]{
+            "IsEnabled",
+            "FromTimeInTicks",
+            "UntilTimeInTicks",
+            "Weather",
+            "Permission"
+        };
+        String rootKey = "Conditions." + name;
+        Map<String, Object> configValues = getConfigValues(this.conditions, rootKey, subKeys);
+        if (configValues.size() == 0) {
             Logging.warn("Unable to retrieve condition object: " + (Parser.isEmpty(requestKey) ? "" : requestKey + ".") +
-                conditionsKey + ", fallback: disabling event executing!"
+                rootKey + ", fallback: disabling event executing!"
             );
-            return condition;
+            return ModelCondition.getDefault(false);
         }
-        WeatherCondition weather = Parser.valueOf(WeatherCondition.class, conditionSection.getString(weatherKey));
         return new ModelCondition(
-            conditionSection.getBoolean(isEnabledKey),
-            conditionSection.getInt(fromTimeInTicksKey),
-            conditionSection.getInt(untilTimeInTicksKey),
-            weather,
-            conditionSection.getString(permissionKey)
+            (boolean)configValues.get(subKeys[0]),
+            Caster.castToLong(configValues.get(subKeys[1])),
+            Caster.castToLong(configValues.get(subKeys[2])),
+            Parser.valueOf(WeatherCondition.class, configValues.get(subKeys[3])),
+            Caster.valueOrEmpty(configValues.get(subKeys[4]))
         );
     }
 
@@ -247,6 +247,12 @@ public class Config {
 
             String rootKey = "Commands." + group;
             Map<String, Object> configValues = getConfigValues(this.commands, rootKey, subKeys);
+            if (configValues.size() == 0) {
+                Logging.warn("Unable to retrieve command object: " + rootKey + ", " +
+                    "fallback: disabling event executing!"
+                );
+                return new ModelCommand[]{commands};
+            }
             modelList.add(new ModelCommand(
                 Caster.castToList(String.class, configValues.get(subKeys[1])).toArray(new String[0]),
                 Parser.valueOf(CommandExecutor.class, configValues.get(subKeys[3])),
@@ -292,9 +298,15 @@ public class Config {
 
             String rootKey = "Particles." + group;
             Map<String, Object> configValues = getConfigValues(this.particles, rootKey, subKeys);
+            if (configValues.size() == 0) {
+                Logging.warn("Unable to retrieve particle object: " + rootKey + ", " +
+                    "fallback: disabling event executing!"
+                );
+                return new ModelParticle[]{particles};
+            }
             modelList.add(new ModelParticle(
                 Parser.valueOf(Particle.class, configValues.get(subKeys[0])),
-                configValues.get(subKeys[1]).toString(),
+                Caster.valueOrEmpty(configValues.get(subKeys[1])),
                 (int)configValues.get(subKeys[2]),
                 (int)configValues.get(subKeys[3]),
                 getConditionByName(rootKey, configValues.get(subKeys[4])),
@@ -326,14 +338,14 @@ public class Config {
         }
 
         String[] subKeys = new String[]{
-                "Chance",
-                "Sound",
-                "Category",
-                "Volume",
-                "Pitch",
-                "IsGlobal",
-                "MaxRandomOffset",
-                "Condition"
+            "Chance",
+            "Sound",
+            "Category",
+            "Volume",
+            "Pitch",
+            "IsGlobal",
+            "MaxRandomOffset",
+            "Condition"
         };
         List<ModelSound> modelList = new ArrayList<>();
         for (Object group : groups) {
@@ -343,9 +355,15 @@ public class Config {
 
             String rootKey = "Sounds." + group;
             Map<String, Object> configValues = getConfigValues(this.sounds, rootKey, subKeys);
+            if (configValues.size() == 0) {
+                Logging.warn("Unable to retrieve sound object: " + rootKey + ", " +
+                    "fallback: disabling event executing!"
+                );
+                return new ModelSound[]{sound};
+            }
             modelList.add(new ModelSound(
                 (int)configValues.get(subKeys[0]),
-                configValues.get(subKeys[1]).toString(),
+                Caster.valueOrEmpty(configValues.get(subKeys[1])),
                 Parser.valueOf(SoundCategory.class, configValues.get(subKeys[2])),
                 Caster.castToFloat(configValues.get(subKeys[3])),
                 Caster.castToFloat(configValues.get(subKeys[4])),
