@@ -3,6 +3,7 @@ package net.lizardnetwork.environmentadditions;
 import net.lizardnetwork.environmentadditions.enums.CommandExecutor;
 import net.lizardnetwork.environmentadditions.enums.ParticleLoop;
 import net.lizardnetwork.environmentadditions.enums.WeatherCondition;
+import net.lizardnetwork.environmentadditions.helper.Caster;
 import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.models.*;
 import org.bukkit.Particle;
@@ -86,7 +87,7 @@ public class Config {
             return null;
         }
         for (Object biomeEvent : biomeEvents) {
-            Map<?, ?> be = castToMap(biomeEvent);
+            Map<?, ?> be = Caster.castToMap(biomeEvent);
             if (be == null) {
                 continue;
             }
@@ -94,7 +95,7 @@ public class Config {
             Object biomeGroupKey = be.get("BiomeGroup");
             String[] activeBiomes = getLinkedBiomesByName(biomeGroupKey);
             Object whileIn = be.get(whileInKey);
-            Map<?, ?> wi = castToMap(whileIn);
+            Map<?, ?> wi = Caster.castToMap(whileIn);
             if (wi == null) {
                 continue;
             }
@@ -225,10 +226,10 @@ public class Config {
      * Get the configured commands by name.
      * @return ModelCommand - The commands.
      */
-    private ModelCommand[] getCommandsByName(List<?> commandGroups) {
+    private ModelCommand[] getCommandsByName(List<?> groups) {
         ModelCondition condition = ModelCondition.getDefault(false);
         ModelCommand commands = new ModelCommand(new String[0], CommandExecutor.PLAYER, condition, false);
-        if (commandGroups == null) {
+        if (groups == null) {
             return List.of(commands).toArray(new ModelCommand[0]);
         }
 
@@ -238,174 +239,121 @@ public class Config {
             "Condition",
             "Executor"
         };
-
-        List<ModelCommand> modelCommandList = new ArrayList<>();
-        for (Object commandGroup : commandGroups) {
-            if (Parser.isEmpty(commandGroup)) {
+        List<ModelCommand> modelList = new ArrayList<>();
+        for (Object group : groups) {
+            if (Parser.isEmpty(group)) {
                 continue;
             }
 
-            String rootKey = "Commands." + commandGroup;
+            String rootKey = "Commands." + group;
             Map<String, Object> configValues = getConfigValues(this.commands, rootKey, subKeys);
-            modelCommandList.add(new ModelCommand(
-                castToList(String.class, configValues.get(subKeys[1])).toArray(new String[0]),
+            modelList.add(new ModelCommand(
+                Caster.castToList(String.class, configValues.get(subKeys[1])).toArray(new String[0]),
                 Parser.valueOf(CommandExecutor.class, configValues.get(subKeys[3])),
                 getConditionByName(rootKey, configValues.get(subKeys[2])),
                 (boolean)configValues.get(subKeys[0])
             ));
         }
-        return modelCommandList.toArray(new ModelCommand[0]);
+        return modelList.toArray(new ModelCommand[0]);
     }
 
     /**
      * Get the configured particles by name.
      * @return ModelParticle - The commands.
      */
-    private ModelParticle[] getParticlesByName(List<?> particleGroups) {
+    private ModelParticle[] getParticlesByName(List<?> groups) {
         ModelCondition condition = ModelCondition.getDefault(false);
         ModelParticle particles = new ModelParticle(Particle.REDSTONE, "fff", 1, 1, condition, null);
-        if (particleGroups == null) {
+        if (groups == null) {
             return List.of(particles).toArray(new ModelParticle[0]);
         }
 
-        String particleKey = "Particle";
-        String redstoneHexColorKey = "RedstoneHexColor";
-        String redstoneSizeKey = "RedstoneSize";
-        String particleCountKey = "ParticleCount";
-        String conditionKey = "Condition";
-        String animationKey = "Animation";
-        String viewDirectionDistanceKey = animationKey + ".ViewDirectionDistance";
-        String relativeOffsetXKey = animationKey + ".RelativeOffsetX";
-        String relativeOffsetYKey = animationKey + ".RelativeOffsetY";
-        String relativeOffsetZKey = animationKey + ".RelativeOffsetZ";
-        String loopOptionKey = animationKey + ".LoopOption";
-        String versionKey = loopOptionKey + ".Version";
-        String radiusInBlocksKey = animationKey + "." + loopOptionKey + ".RadiusInBlocks";
-        String chanceForEachLoopKey = animationKey + "." + loopOptionKey + ".ChanceForEachLoop";
-        List<ModelParticle> modelParticleList = new ArrayList<>();
-        for (Object particleGroup : particleGroups) {
-            if (Parser.isEmpty(particleGroup)) {
-                continue;
-            }
-            String particlesKey = "Particles." + particleGroup;
-            ConfigurationSection particleSection = this.particles.getConfigurationSection(particlesKey);
-            if (particleSection == null) {
-                Logging.warn("Unable to retrieve particle object!");
+        String animationSubKey = "Animation";
+        String loopOptionSubKey = animationSubKey + ".LoopOption";
+        String[] subKeys = new String[]{
+            "Particle",
+            "RedstoneHexColor",
+            "RedstoneSize",
+            "ParticleCount",
+            "Condition",
+            animationSubKey + ".ViewDirectionDistance",
+            animationSubKey + ".RelativeOffsetX",
+            animationSubKey + ".RelativeOffsetY",
+            animationSubKey + ".RelativeOffsetZ",
+            loopOptionSubKey + ".Version",
+            loopOptionSubKey + ".ChanceForEachLoop",
+            loopOptionSubKey + ".RadiusInBlocks",
+        };
+        List<ModelParticle> modelList = new ArrayList<>();
+        for (Object group : groups) {
+            if (Parser.isEmpty(group)) {
                 continue;
             }
 
-            String conditionName = particleSection.getString(conditionKey);
-            condition = getConditionByName(particlesKey, conditionName);
-            String particleName = particleSection.getString(particleKey);
-            Particle particle = Parser.valueOf(Particle.class, particleName);
-            String hex = particleSection.getString(redstoneHexColorKey);
-            int size = particleSection.getInt(redstoneSizeKey);
-            int num = particleSection.getInt(particleCountKey);
-
-            // Animation values.
-            int viewDistance = particleSection.getInt(viewDirectionDistanceKey);
-            int relX = particleSection.getInt(relativeOffsetXKey);
-            int relY = particleSection.getInt(relativeOffsetYKey);
-            int relZ = particleSection.getInt(relativeOffsetZKey);
-
-            // Loop option values.
-            String versionName = particleSection.getString(versionKey);
-            ParticleLoop version = Parser.valueOf(ParticleLoop.class, versionName);
-            int rad = particleSection.getInt(radiusInBlocksKey);
-            int chance = particleSection.getInt(chanceForEachLoopKey);
-
-            modelParticleList.add(new ModelParticle(
-                particle,
-                hex,
-                size,
-                num,
-                condition,
+            String rootKey = "Particles." + group;
+            Map<String, Object> configValues = getConfigValues(this.particles, rootKey, subKeys);
+            modelList.add(new ModelParticle(
+                Parser.valueOf(Particle.class, configValues.get(subKeys[0])),
+                configValues.get(subKeys[1]).toString(),
+                (int)configValues.get(subKeys[2]),
+                (int)configValues.get(subKeys[3]),
+                getConditionByName(rootKey, configValues.get(subKeys[4])),
                 new ModelParticleAnimation(
-                    viewDistance,
-                    relX,
-                    relY,
-                    relZ,
-                    new ModelParticleLoop(version, chance, rad)
+                    Caster.castToFloat(configValues.get(subKeys[5])),
+                    Caster.castToFloat(configValues.get(subKeys[6])),
+                    Caster.castToFloat(configValues.get(subKeys[7])),
+                    Caster.castToFloat(configValues.get(subKeys[8])),
+                    new ModelParticleLoop(
+                        Parser.valueOf(ParticleLoop.class, configValues.get(subKeys[9])),
+                        (int)configValues.get(subKeys[10]),
+                        (int)configValues.get(subKeys[11])
+                    )
                 )
             ));
         }
-        return modelParticleList.toArray(new ModelParticle[0]);
+        return modelList.toArray(new ModelParticle[0]);
     }
 
     /**
      * Get the configured particles by name.
      * @return ModelParticle - The commands.
      */
-    private ModelSound[] getSoundsByName(List<?> soundGroups) {
+    private ModelSound[] getSoundsByName(List<?> groups) {
         ModelCondition condition = ModelCondition.getDefault(false);
-        ModelSound sounds = new ModelSound(0, Sound.WEATHER_RAIN.getKey().toString(), SoundCategory.MUSIC, 0, 0, false, 0, condition);
-        if (soundGroups == null) {
-            return List.of(sounds).toArray(new ModelSound[0]);
+        ModelSound sound = new ModelSound(0, Sound.WEATHER_RAIN.getKey().toString(), SoundCategory.MUSIC, 0, 0, false, 0, condition);
+        if (groups == null) {
+            return List.of(sound).toArray(new ModelSound[0]);
         }
 
-        String chanceKey = "Chance";
-        String soundKey = "Sound";
-        String categoryKey = "Category";
-        String volumeKey = "Volume";
-        String pitchKey = "Pitch";
-        String isGlobalKey = "IsGlobal";
-        String maxRandomOffsetKey = "MaxRandomOffset";
-        String conditionKey = "Condition";
-        List<ModelSound> modelSoundList = new ArrayList<>();
-        for (Object soundGroup : soundGroups) {
-            if (Parser.isEmpty(soundGroup)) {
-                continue;
-            }
-            String soundsKey = "Sounds." + soundGroup;
-            ConfigurationSection soundSection = this.sounds.getConfigurationSection(soundsKey);
-            if (soundSection == null) {
-                Logging.warn("Unable to retrieve sound object!");
+        String[] subKeys = new String[]{
+                "Chance",
+                "Sound",
+                "Category",
+                "Volume",
+                "Pitch",
+                "IsGlobal",
+                "MaxRandomOffset",
+                "Condition"
+        };
+        List<ModelSound> modelList = new ArrayList<>();
+        for (Object group : groups) {
+            if (Parser.isEmpty(group)) {
                 continue;
             }
 
-            String conditionName = soundSection.getString(conditionKey);
-            condition = getConditionByName(soundsKey, conditionName);
-            int chance = soundSection.getInt(chanceKey);
-            String sound = soundSection.getString(soundKey);
-            String categoryName = soundSection.getString(categoryKey);
-            SoundCategory category = Parser.valueOf(SoundCategory.class, categoryName);
-            float vol = (float)soundSection.getDouble(volumeKey);
-            float pitch = (float)soundSection.getDouble(pitchKey);
-            boolean isGlobal = soundSection.getBoolean(isGlobalKey);
-            int maxRandOff = soundSection.getInt(maxRandomOffsetKey);
-
-            modelSoundList.add(new ModelSound(
-                chance,
-                sound,
-                category,
-                vol,
-                pitch,
-                isGlobal,
-                maxRandOff,
-                condition
+            String rootKey = "Sounds." + group;
+            Map<String, Object> configValues = getConfigValues(this.sounds, rootKey, subKeys);
+            modelList.add(new ModelSound(
+                (int)configValues.get(subKeys[0]),
+                configValues.get(subKeys[1]).toString(),
+                Parser.valueOf(SoundCategory.class, configValues.get(subKeys[2])),
+                Caster.castToFloat(configValues.get(subKeys[3])),
+                Caster.castToFloat(configValues.get(subKeys[4])),
+                (boolean)configValues.get(subKeys[5]),
+                Caster.castToFloat(configValues.get(subKeys[6])),
+                getConditionByName(rootKey, configValues.get(subKeys[7]))
             ));
         }
-        return modelSoundList.toArray(new ModelSound[0]);
-    }
-
-    private Map<?,?> castToMap(Object o) {
-        if (!(o instanceof Map<?, ?> map)) {
-            Logging.warn("Unable to cast object to map");
-            return null;
-        }
-        return map;
-    }
-
-    private static <T>List<T> castToList(Class<T> c, Object o) {
-        List<T> values = new ArrayList<>();
-        if (!(o instanceof List<?> casted)) {
-            Logging.warn("Unable to cast " + o.getClass().getSimpleName() + " to " + c.getSimpleName());
-            return values;
-        }
-
-        for (var elem : casted) {
-            values.add(c.cast(elem));
-        }
-        return values;
+        return modelList.toArray(new ModelSound[0]);
     }
 }
