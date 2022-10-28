@@ -22,7 +22,10 @@ public class ModelCondition implements ICondition {
         this.permission = permission;
     }
 
-    public static ModelCondition getDefault() {
+    public static ModelCondition getDefault(boolean enabled) {
+        if (enabled) {
+            return new ModelCondition(true, -1, -1, WeatherCondition.DISABLED,"");
+        }
         return new ModelCondition(false, 0, 0, WeatherCondition.CLEAR,"");
     }
 

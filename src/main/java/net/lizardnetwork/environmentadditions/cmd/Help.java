@@ -15,9 +15,9 @@ public class Help extends CmdModel implements ICmd {
         int len = getLongestCmd();
         for (ICmd cmd : CmdHandler.registry) {
             int delta = Math.abs(cmd.getCmd().length() - len);
-            msg.append(cmd.getCmd()).append(" ".repeat(delta));
-            msg.append(" » ").append(cmd.getDescription());
-            msg.append("\n\n");
+            msg.append(cmd.getCmd()).append(" ".repeat(delta))
+                .append(" » ").append(cmd.getDescription())
+                .append("\n\n");
         }
         msg.append("Version: ").append(EnvironmentAdditions.getPluginDescription().getVersion());
         sender.sendMessage(msg.toString());

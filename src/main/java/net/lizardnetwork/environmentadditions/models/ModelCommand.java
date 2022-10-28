@@ -47,9 +47,9 @@ public class ModelCommand extends ModelCondition implements ICondition {
     }
 
     private void dispatchCommand(String command, CommandSender target) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("Executing command \"");
         String replacedCommand = new Placeholder(command).resolve((Player)target).getReplaced();
-        sb.append("Executing command \"").append(replacedCommand).append("\" as ").append(executor.toString());
+        sb.append(replacedCommand).append("\" as ").append(executor.toString());
         if (executor.equals(CommandExecutor.PLAYER)) {
             sb.append(" for ").append(target.getName());
         }

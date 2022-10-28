@@ -15,7 +15,7 @@ public class Parser {
      * @param value String - The value to look for.
      * @return Enum - The target Enum or <code>null</code>.
      */
-    public static <E extends Enum<E>>E valueOf(Class<E>e, String value) {
+    public static <E extends Enum<E>>E valueOf(Class<E>e, Object value) {
         if (!e.isEnum()) {
             Logging.warn( e.getSimpleName() + " is not an enum!");
             return null;
@@ -26,7 +26,7 @@ public class Parser {
         }
 
         try {
-            return Enum.valueOf(e, value.toUpperCase());
+            return Enum.valueOf(e, value.toString().toUpperCase());
         } catch (IllegalArgumentException ex) {
             Logging.warn("Invalid enum value " + value + " for type " + e.getSimpleName());
             return e.getEnumConstants()[0];

@@ -15,9 +15,7 @@ import org.bukkit.plugin.Plugin;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Config {
     private final FileConfiguration config = new YamlConfiguration();
@@ -93,7 +91,8 @@ public class Config {
                 continue;
             }
 
-            String[] activeBiomes = getLinkedBiomesByName(be.get("BiomeGroup"));
+            Object biomeGroupKey = be.get("BiomeGroup");
+            String[] activeBiomes = getLinkedBiomesByName(biomeGroupKey);
             Object whileIn = be.get(whileInKey);
             Map<?, ?> wi = castToMap(whileIn);
             if (wi == null) {
@@ -101,7 +100,7 @@ public class Config {
             }
 
             Object conditionName = wi.get(conditionKey);
-            ModelCondition condition = getConditionByName(conditionName);
+            ModelCondition condition = getConditionByName(biomesKey + "." + biomeGroupKey, conditionName);
             List<?> commandNames = (List<?>)wi.get(commandKey);
             ModelCommand[] commands = getCommandsByName(commandNames);
             List<?> particleNames = (List<?>)wi.get(particleKey);
@@ -160,14 +159,43 @@ public class Config {
         return (String[])activeBiomeObjects;
     }
 
+    private Map<String, Object> getConfigValues(FileConfiguration config, Object rootKey, String[] subKeys) {
+        Map<String, Object> value = new HashMap<>();
+        if (Parser.isEmpty(config) || Parser.isEmpty(rootKey)) {
+            Logging.warn("Unable to retrieve sub keys, root key / config section was empty!");
+            return value;
+        }
+
+        String mainKey = rootKey.toString();
+        ConfigurationSection configSection = config.getConfigurationSection(mainKey);
+        if (configSection == null) {
+            Logging.warn("Unable to retrieve config section for " + mainKey + "!");
+            return value;
+        }
+
+        for (String subKey : subKeys) {
+            Object val = configSection.get(subKey);
+            if (Parser.isEmpty(val)) {
+                continue;
+            }
+            value.put(subKey, val);
+        }
+        return value;
+    }
+
     /**
      * Get a configured condition by name.
+     * @param requestKey Object - The original key that corresponds to the condition resolution, just for logging.
+     * @param name Object - The name of the condition to retrieve.
      * @return ModelCondition - The condition.
      */
-    private ModelCondition getConditionByName(Object name) {
-        ModelCondition condition = ModelCondition.getDefault();
+    private ModelCondition getConditionByName(Object requestKey, Object name) {
+        ModelCondition condition = ModelCondition.getDefault(false);
         if (Parser.isEmpty(name)) {
-            return condition;
+            Logging.warn("Condition object name " + (Parser.isEmpty(requestKey) ? "" : "of " + requestKey + " ") +
+                "was empty, fallback: enabling event executing!"
+            );
+            return ModelCondition.getDefault(true);
         }
 
         String conditionsKey = "Conditions." + name;
@@ -178,11 +206,11 @@ public class Config {
         String permissionKey = "Permission";
         ConfigurationSection conditionSection = this.conditions.getConfigurationSection(conditionsKey);
         if (conditionSection == null) {
-            Logging.warn("Unable to retrieve condition object!");
+            Logging.warn("Unable to retrieve condition object: " + (Parser.isEmpty(requestKey) ? "" : requestKey + ".") +
+                conditionsKey + ", fallback: disabling event executing!"
+            );
             return condition;
         }
-        //String weatherString = conditionSection.getString(weatherKey);
-        //weather = weatherString == null ? WeatherType.CLEAR : WeatherType.valueOf(weatherString.toUpperCase());
         WeatherCondition weather = Parser.valueOf(WeatherCondition.class, conditionSection.getString(weatherKey));
         return new ModelCondition(
             conditionSection.getBoolean(isEnabledKey),
@@ -198,39 +226,32 @@ public class Config {
      * @return ModelCommand - The commands.
      */
     private ModelCommand[] getCommandsByName(List<?> commandGroups) {
-        ModelCondition condition = ModelCondition.getDefault();
+        ModelCondition condition = ModelCondition.getDefault(false);
         ModelCommand commands = new ModelCommand(new String[0], CommandExecutor.PLAYER, condition, false);
         if (commandGroups == null) {
             return List.of(commands).toArray(new ModelCommand[0]);
         }
 
-        String pickRandomCommandKey = "PickRandomCommand";
-        String commandListKey = "Commands";
-        String conditionKey = "Condition";
-        String executorKey = "Executor";
+        String[] subKeys = new String[]{
+            "PickRandomCommand",
+            "Commands",
+            "Condition",
+            "Executor"
+        };
+
         List<ModelCommand> modelCommandList = new ArrayList<>();
         for (Object commandGroup : commandGroups) {
             if (Parser.isEmpty(commandGroup)) {
                 continue;
             }
-            String commandsKey = "Commands." + commandGroup;
-            ConfigurationSection commandSection = this.commands.getConfigurationSection(commandsKey);
-            if (commandSection == null) {
-                Logging.warn("Unable to retrieve command object!");
-                continue;
-            }
 
-            String conditionName = commandSection.getString(conditionKey);
-            condition = getConditionByName(conditionName);
-            String executorName = commandSection.getString(executorKey);
-            CommandExecutor executor = Parser.valueOf(CommandExecutor.class, executorName);
-            List<String> commandList = commandSection.getStringList(commandListKey);
-            String[] commandArray = commandList.toArray(new String[0]);
+            String rootKey = "Commands." + commandGroup;
+            Map<String, Object> configValues = getConfigValues(this.commands, rootKey, subKeys);
             modelCommandList.add(new ModelCommand(
-                commandArray,
-                executor,
-                condition,
-                commandSection.getBoolean(pickRandomCommandKey)
+                castToList(String.class, configValues.get(subKeys[1])).toArray(new String[0]),
+                Parser.valueOf(CommandExecutor.class, configValues.get(subKeys[3])),
+                getConditionByName(rootKey, configValues.get(subKeys[2])),
+                (boolean)configValues.get(subKeys[0])
             ));
         }
         return modelCommandList.toArray(new ModelCommand[0]);
@@ -241,7 +262,7 @@ public class Config {
      * @return ModelParticle - The commands.
      */
     private ModelParticle[] getParticlesByName(List<?> particleGroups) {
-        ModelCondition condition = ModelCondition.getDefault();
+        ModelCondition condition = ModelCondition.getDefault(false);
         ModelParticle particles = new ModelParticle(Particle.REDSTONE, "fff", 1, 1, condition, null);
         if (particleGroups == null) {
             return List.of(particles).toArray(new ModelParticle[0]);
@@ -274,7 +295,7 @@ public class Config {
             }
 
             String conditionName = particleSection.getString(conditionKey);
-            condition = getConditionByName(conditionName);
+            condition = getConditionByName(particlesKey, conditionName);
             String particleName = particleSection.getString(particleKey);
             Particle particle = Parser.valueOf(Particle.class, particleName);
             String hex = particleSection.getString(redstoneHexColorKey);
@@ -316,7 +337,7 @@ public class Config {
      * @return ModelParticle - The commands.
      */
     private ModelSound[] getSoundsByName(List<?> soundGroups) {
-        ModelCondition condition = ModelCondition.getDefault();
+        ModelCondition condition = ModelCondition.getDefault(false);
         ModelSound sounds = new ModelSound(0, Sound.WEATHER_RAIN.getKey().toString(), SoundCategory.MUSIC, 0, 0, false, 0, condition);
         if (soundGroups == null) {
             return List.of(sounds).toArray(new ModelSound[0]);
@@ -343,7 +364,7 @@ public class Config {
             }
 
             String conditionName = soundSection.getString(conditionKey);
-            condition = getConditionByName(conditionName);
+            condition = getConditionByName(soundsKey, conditionName);
             int chance = soundSection.getInt(chanceKey);
             String sound = soundSection.getString(soundKey);
             String categoryName = soundSection.getString(categoryKey);
@@ -373,5 +394,18 @@ public class Config {
             return null;
         }
         return map;
+    }
+
+    private static <T>List<T> castToList(Class<T> c, Object o) {
+        List<T> values = new ArrayList<>();
+        if (!(o instanceof List<?> casted)) {
+            Logging.warn("Unable to cast " + o.getClass().getSimpleName() + " to " + c.getSimpleName());
+            return values;
+        }
+
+        for (var elem : casted) {
+            values.add(c.cast(elem));
+        }
+        return values;
     }
 }
