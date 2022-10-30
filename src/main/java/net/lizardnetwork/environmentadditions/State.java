@@ -23,6 +23,9 @@ public class State {
         config = new Config();
         settings = config.getSettings();
         biomeEvents = config.getLinkedConfigs();
+        for (Map.Entry<UUID, BukkitTask> entrySet : observerRunnables.entrySet()) {
+            removeObserverTask(entrySet.getKey());
+        }
     }
 
     void subscribeToEvents() {
@@ -43,11 +46,15 @@ public class State {
     }
 
     void removeObserverTask(UUID uuid) {
+        BukkitTask task = observerRunnables.get(uuid);
+        if (task != null) {
+            task.cancel();
+        }
         observerRunnables.remove(uuid);
     }
 
-    public Config getConfig() {
-        return config;
+    public String getBiomePlaceholder() {
+        return settings.getBiomePlaceholder();
     }
 
     public EDependency getDependency() {

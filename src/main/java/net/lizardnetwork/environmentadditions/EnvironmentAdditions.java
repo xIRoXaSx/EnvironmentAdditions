@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -14,6 +15,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import java.util.Collection;
 
 public class EnvironmentAdditions extends JavaPlugin implements Listener, CommandExecutor {
     private static EnvironmentAdditions instance;
@@ -66,6 +68,14 @@ public class EnvironmentAdditions extends JavaPlugin implements Listener, Comman
 
     public static void reload() {
         state.setConfig();
+        Collection<? extends Player> online = instance.getServer().getOnlinePlayers();
+        for (Player target : online) {
+            Observer observer = new Observer(instance);
+            EnvironmentAdditions.getState().appendObserverTask(
+                target.getUniqueId(),
+                observer.initTimeDrivenObserver(target)
+            );
+        }
     }
 
     public static PluginDescriptionFile getPluginDescription() {

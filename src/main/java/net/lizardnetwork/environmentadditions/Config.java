@@ -372,7 +372,7 @@ public class Config {
      */
     private ModelSound[] getSoundsByName(List<?> groups) {
         ModelCondition condition = ModelCondition.getDefault(false);
-        ModelSound sound = new ModelSound(0, Sound.WEATHER_RAIN.getKey().toString(), SoundCategory.MUSIC, 0, 0, false, 0, condition);
+        ModelSound sound = new ModelSound(Sound.WEATHER_RAIN.getKey().toString(), SoundCategory.MUSIC, 0, 0, false, 0, condition);
         if (groups == null) {
             return List.of(sound).toArray(new ModelSound[0]);
         }
@@ -382,7 +382,6 @@ public class Config {
         }
 
         String[] subKeys = new String[]{
-            "Chance",
             "Sound",
             "Category",
             "Volume",
@@ -406,14 +405,13 @@ public class Config {
                 return new ModelSound[]{sound};
             }
             modelList.add(new ModelSound(
-                (int)configValues.get(subKeys[0]),
-                Caster.valueOrEmpty(configValues.get(subKeys[1])),
-                Parser.valueOf(SoundCategory.class, configValues.get(subKeys[2])),
+                Caster.valueOrEmpty(configValues.get(subKeys[0])),
+                Parser.valueOf(SoundCategory.class, configValues.get(subKeys[1])),
+                Caster.castToFloat(configValues.get(subKeys[2])),
                 Caster.castToFloat(configValues.get(subKeys[3])),
-                Caster.castToFloat(configValues.get(subKeys[4])),
-                (boolean)configValues.get(subKeys[5]),
-                Caster.castToFloat(configValues.get(subKeys[6])),
-                getConditionByName(rootKey, configValues.get(subKeys[7]))
+                (boolean)configValues.get(subKeys[4]),
+                Caster.castToFloat(configValues.get(subKeys[5])),
+                getConditionByName(rootKey, configValues.get(subKeys[6]))
             ));
         }
         return modelList.toArray(new ModelSound[0]);

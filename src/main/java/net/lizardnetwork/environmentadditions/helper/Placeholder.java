@@ -84,6 +84,7 @@ public class Placeholder {
             "player", target.getName(),
             "world", target.getWorld().getName(),
             "biome", target.getLocation().getBlock().getBiome().name(),
+            "player_biome", target.getLocation().getBlock().getBiome().name(),
             "x", String.valueOf(target.getLocation().getBlockX()),
             "y", String.valueOf(target.getLocation().getBlockY()),
             "z", String.valueOf(target.getLocation().getBlockZ())

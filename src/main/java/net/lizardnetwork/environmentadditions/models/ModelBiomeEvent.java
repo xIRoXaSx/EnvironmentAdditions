@@ -1,5 +1,8 @@
 package net.lizardnetwork.environmentadditions.models;
 
+import net.lizardnetwork.environmentadditions.EnvironmentAdditions;
+import net.lizardnetwork.environmentadditions.helper.Parser;
+import net.lizardnetwork.environmentadditions.helper.Placeholder;
 import net.lizardnetwork.environmentadditions.helper.Random;
 import net.lizardnetwork.environmentadditions.interfaces.ICondition;
 import org.bukkit.Location;
@@ -42,8 +45,19 @@ public class ModelBiomeEvent extends ModelCondition implements ICondition {
     }
 
     private boolean isInSpecifiedBiome(Player target) {
+        String biomePlaceholder = EnvironmentAdditions.getState().getBiomePlaceholder();
+        if (Parser.isEmpty(biomePlaceholder)) {
+            for (String biome : biomes) {
+                if (biome.equalsIgnoreCase(target.getLocation().getBlock().getBiome().name())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        String papiBiome = new Placeholder(biomePlaceholder).resolve(target).getReplaced();
         for (String biome : biomes) {
-            if (biome.equalsIgnoreCase(target.getLocation().getBlock().getBiome().name())) {
+            if (biome.equalsIgnoreCase(papiBiome)) {
                 return true;
             }
         }
