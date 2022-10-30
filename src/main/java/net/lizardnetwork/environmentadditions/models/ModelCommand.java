@@ -1,7 +1,7 @@
 package net.lizardnetwork.environmentadditions.models;
 
 import net.lizardnetwork.environmentadditions.Logging;
-import net.lizardnetwork.environmentadditions.enums.CommandExecutor;
+import net.lizardnetwork.environmentadditions.enums.ECommandExecutor;
 import net.lizardnetwork.environmentadditions.helper.Placeholder;
 import net.lizardnetwork.environmentadditions.helper.Random;
 import net.lizardnetwork.environmentadditions.interfaces.ICondition;
@@ -11,12 +11,12 @@ import org.bukkit.entity.Player;
 
 public class ModelCommand extends ModelCondition implements ICondition {
     private final String[] commands;
-    private final CommandExecutor executor;
+    private final ECommandExecutor executor;
     private final ModelCondition condition;
     private final boolean pickRandomCommand;
 
-    public ModelCommand(String[] commands, CommandExecutor executor, ModelCondition condition, boolean pickRandomCommand) {
-        super(condition.isEnabled(), condition.getFromTimeInTicks(), condition.getUntilTimeInTicks(),condition.getWeather(), condition.getPermission());
+    public ModelCommand(String[] commands, ECommandExecutor executor, ModelCondition condition, boolean pickRandomCommand) {
+        super(condition.isEnabled(), condition.getProbability(), condition.getFromTimeInTicks(), condition.getUntilTimeInTicks(),condition.getWeather(), condition.getPermission());
         this.commands = commands;
         this.executor = executor;
         this.condition = condition;
@@ -50,12 +50,12 @@ public class ModelCommand extends ModelCondition implements ICondition {
         StringBuilder sb = new StringBuilder("Executing command \"");
         String replacedCommand = new Placeholder(command).resolve((Player)target).getReplaced();
         sb.append(replacedCommand).append("\" as ").append(executor.toString());
-        if (executor.equals(CommandExecutor.PLAYER)) {
+        if (executor.equals(ECommandExecutor.PLAYER)) {
             sb.append(" for ").append(target.getName());
         }
         Logging.info(sb.toString());
 
-        if (executor.equals(CommandExecutor.PLAYER)) {
+        if (executor.equals(ECommandExecutor.PLAYER)) {
             ((Player)target).performCommand(replacedCommand);
         } else {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), replacedCommand);

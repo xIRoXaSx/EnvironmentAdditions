@@ -11,8 +11,6 @@
 Sounds:
   # A mapping of sound objects to play every defined PositionChecksInTicks.
   PortalFrameSpawn:
-    # The chance that this sound will be played. Chance is 1 to x.
-    Chance: 20
     # The sound (with namespace) to play.
     Sound: 'minecraft:block.end_portal_frame.spawn'
     # The sound category for the sound.
@@ -33,7 +31,6 @@ Sounds:
     Condition: ""
 
   CrimsonAdditions:
-    Chance: 20
     Sound: 'minecraft:ambient.crimson_forest.additions'
     Category: Ambient
     Volume: 0.1
@@ -43,7 +40,6 @@ Sounds:
     Condition: ""
 
   PortalFrameFill:
-    Chance: 10
     Sound: 'minecraft:block.end_portal_frame.fill'
     Category: Ambient
     Volume: 0.1

@@ -1,7 +1,7 @@
 package net.lizardnetwork.environmentadditions;
 
 import net.lizardnetwork.environmentadditions.cmd.CmdHandler;
-import net.lizardnetwork.environmentadditions.enums.Dependency;
+import net.lizardnetwork.environmentadditions.enums.EDependency;
 import net.lizardnetwork.environmentadditions.events.EventTabComplete;
 import net.lizardnetwork.environmentadditions.models.ModelBiomeEvent;
 import org.bukkit.Bukkit;
@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class State {
     private Config config;
-    private Dependency dependency;
+    private EDependency dependency;
     private ModelBiomeEvent[] biomeEvents;
     private final Map<UUID, BukkitTask> observerRunnables = new HashMap<>();
 
@@ -31,7 +31,7 @@ public class State {
         Bukkit.getServer().getPluginManager().registerEvents(eventTabComplete, EnvironmentAdditions.getInstance());
     }
 
-    void setDependency(Dependency value) {
+    void setDependency(EDependency value) {
         this.dependency = value;
     }
 
@@ -47,7 +47,7 @@ public class State {
         return config;
     }
 
-    public Dependency getDependency() {
+    public EDependency getDependency() {
         return dependency;
     }
 

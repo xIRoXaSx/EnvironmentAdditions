@@ -11,6 +11,9 @@ Conditions:
     # If set to false, all operations linked to this condition will be performed regardless of the configured conditions.
     # You can remove conditions that aren't necessary for you.
     IsEnabled: true
+    # The chance that the linked event will be executed. Chance is 1 to x.
+    # If set to <= 1, the chance will always return true.
+    Chance: 20
     # The time (in ticks) in which the linked events will start.
     FromTimeInTicks: 0
     # The time (in ticks) in which the linked events will stop.
@@ -21,25 +24,36 @@ Conditions:
     Permission: ''
   WhileClearAndDayAndPermission:
     IsEnabled: true
+    Chance: 5
     FromTimeInTicks: 0
     UntilTimeInTicks: 12000
     Weather: Clear
     Permission: 'ea.condition.specialpermission'
   WhileRainyAndDay:
     IsEnabled: true
+    Chance: 5
     FromTimeInTicks: 0
     UntilTimeInTicks: 12000
     Weather: Downfall
     Permission: ''
   WhileClearAndNight:
     IsEnabled: true
+    Chance: 5
     FromTimeInTicks: 18000
     UntilTimeInTicks: 23999
     Weather: Clear
     Permission: ''
   WhileClearAndDayWithPermission:
     IsEnabled: true
+    Chance: 2
     FromTimeInTicks: 5000
     UntilTimeInTicks: 9000
     Weather: Clear
     Permission: ea.condition.specialpermission
+  AlwaysTrue:
+    IsEnabled: true
+    Chance: -1
+    FromTimeInTicks: -1
+    UntilTimeInTicks: -1
+    Weather: Disabled
+    Permission: ""

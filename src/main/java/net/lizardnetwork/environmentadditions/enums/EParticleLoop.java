@@ -1,6 +1,6 @@
 package net.lizardnetwork.environmentadditions.enums;
 
-public enum CommandExecutor {
-    PLAYER,
-    CONSOLE
+public enum EParticleLoop {
+    CUBIC,
+    RANDOM
 }

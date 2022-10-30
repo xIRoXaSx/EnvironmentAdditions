@@ -12,7 +12,7 @@ public class ModelBiomeEvent extends ModelCondition implements ICondition {
     private final ModelSound[] sounds;
 
     public ModelBiomeEvent(String[] biomes, ModelCondition condition, ModelCommand[] commands, ModelParticle[] particles, ModelSound[] sounds) {
-        super(condition.isEnabled(), condition.getFromTimeInTicks(), condition.getUntilTimeInTicks(),condition.getWeather(), condition.getPermission());
+        super(condition.isEnabled(), condition.getProbability(), condition.getFromTimeInTicks(), condition.getUntilTimeInTicks(),condition.getWeather(), condition.getPermission());
         this.biomes = biomes;
         this.condition = condition;
         this.commands = commands;

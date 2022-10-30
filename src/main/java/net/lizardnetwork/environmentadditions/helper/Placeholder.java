@@ -1,7 +1,7 @@
 package net.lizardnetwork.environmentadditions.helper;
 
 import net.lizardnetwork.environmentadditions.EnvironmentAdditions;
-import net.lizardnetwork.environmentadditions.enums.Dependency;
+import net.lizardnetwork.environmentadditions.enums.EDependency;
 import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class Placeholder {
         Matcher matcher = pattern.matcher(value);
 
         while (matcher.find()) {
-            String replacement = resolvePlaceholder(target, matcher.group(0), Dependency.PlaceholderAPI);
+            String replacement = resolvePlaceholder(target, matcher.group(0), EDependency.PlaceholderAPI);
             // Edge case %player%, resolve as the target's username.
             if (matcher.group(1).equalsIgnoreCase("player")) {
                 replaced = replaced.replaceAll(matcher.group(0), target.getName());
@@ -69,9 +69,9 @@ public class Placeholder {
      * @param defaultSystem Dependency - The placeholder system to use.
      * @return String - The replaced string.
      */
-    public String resolvePlaceholder(Player target, String text, Dependency defaultSystem) {
-        Dependency dependency = EnvironmentAdditions.getState().getDependency();
-        if (dependency.equals(Dependency.PlaceholderAPI) && !defaultSystem.equals(Dependency.None)) {
+    public String resolvePlaceholder(Player target, String text, EDependency defaultSystem) {
+        EDependency dependency = EnvironmentAdditions.getState().getDependency();
+        if (dependency.equals(EDependency.PlaceholderAPI) && !defaultSystem.equals(EDependency.None)) {
             // Return the replaced string.
             // If PlaceholderAPI could not resolve the placeholder(s), the return value
             // will contain the raw message instead of trying to parse them internally in favor of performance.

@@ -12,7 +12,7 @@ public class ModelParticle extends ModelCondition implements ICondition {
     private final ModelParticleAnimation animation;
 
     public ModelParticle(Particle particle, String hexColor, int size, int numParticles, ModelCondition condition, ModelParticleAnimation animation) {
-        super(condition.isEnabled(), condition.getFromTimeInTicks(), condition.getUntilTimeInTicks(),condition.getWeather(), condition.getPermission());
+        super(condition.isEnabled(), condition.getProbability() , condition.getFromTimeInTicks(), condition.getUntilTimeInTicks(),condition.getWeather(), condition.getPermission());
         this.particle = particle;
         this.hexColor = hexColor;
         this.size = size;

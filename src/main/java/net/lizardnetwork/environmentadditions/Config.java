@@ -1,8 +1,8 @@
 package net.lizardnetwork.environmentadditions;
 
-import net.lizardnetwork.environmentadditions.enums.CommandExecutor;
-import net.lizardnetwork.environmentadditions.enums.ParticleLoop;
-import net.lizardnetwork.environmentadditions.enums.WeatherCondition;
+import net.lizardnetwork.environmentadditions.enums.ECommandExecutor;
+import net.lizardnetwork.environmentadditions.enums.EParticleLoop;
+import net.lizardnetwork.environmentadditions.enums.EWeatherCondition;
 import net.lizardnetwork.environmentadditions.helper.Caster;
 import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.models.*;
@@ -200,6 +200,7 @@ public class Config {
 
         String[] subKeys = new String[]{
             "IsEnabled",
+            "Chance",
             "FromTimeInTicks",
             "UntilTimeInTicks",
             "Weather",
@@ -215,10 +216,11 @@ public class Config {
         }
         return new ModelCondition(
             (boolean)configValues.get(subKeys[0]),
-            Caster.castToLong(configValues.get(subKeys[1])),
+            (int)configValues.get(subKeys[1]),
             Caster.castToLong(configValues.get(subKeys[2])),
-            Parser.valueOf(WeatherCondition.class, configValues.get(subKeys[3])),
-            Caster.valueOrEmpty(configValues.get(subKeys[4]))
+            Caster.castToLong(configValues.get(subKeys[3])),
+            Parser.valueOf(EWeatherCondition.class, configValues.get(subKeys[4])),
+            Caster.valueOrEmpty(configValues.get(subKeys[5]))
         );
     }
 
@@ -228,7 +230,7 @@ public class Config {
      */
     private ModelCommand[] getCommandsByName(List<?> groups) {
         ModelCondition condition = ModelCondition.getDefault(false);
-        ModelCommand commands = new ModelCommand(new String[0], CommandExecutor.PLAYER, condition, false);
+        ModelCommand commands = new ModelCommand(new String[0], ECommandExecutor.PLAYER, condition, false);
         if (groups == null) {
             return List.of(commands).toArray(new ModelCommand[0]);
         }
@@ -255,7 +257,7 @@ public class Config {
             }
             modelList.add(new ModelCommand(
                 Caster.castToList(String.class, configValues.get(subKeys[1])).toArray(new String[0]),
-                Parser.valueOf(CommandExecutor.class, configValues.get(subKeys[3])),
+                Parser.valueOf(ECommandExecutor.class, configValues.get(subKeys[3])),
                 getConditionByName(rootKey, configValues.get(subKeys[2])),
                 (boolean)configValues.get(subKeys[0])
             ));
@@ -316,7 +318,7 @@ public class Config {
                     Caster.castToFloat(configValues.get(subKeys[7])),
                     Caster.castToFloat(configValues.get(subKeys[8])),
                     new ModelParticleLoop(
-                        Parser.valueOf(ParticleLoop.class, configValues.get(subKeys[9])),
+                        Parser.valueOf(EParticleLoop.class, configValues.get(subKeys[9])),
                         (int)configValues.get(subKeys[10]),
                         (int)configValues.get(subKeys[11])
                     )

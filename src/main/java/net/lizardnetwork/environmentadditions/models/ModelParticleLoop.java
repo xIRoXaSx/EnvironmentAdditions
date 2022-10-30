@@ -1,24 +1,32 @@
 package net.lizardnetwork.environmentadditions.models;
 
-import net.lizardnetwork.environmentadditions.enums.ParticleLoop;
+import net.lizardnetwork.environmentadditions.enums.EParticleLoop;
+import net.lizardnetwork.environmentadditions.enums.EProbability;
+import net.lizardnetwork.environmentadditions.helper.Probability;
+import net.lizardnetwork.environmentadditions.interfaces.IRandomized;
 
-public class ModelParticleLoop {
-    private final ParticleLoop version;
-    private final int chance;
+public class ModelParticleLoop implements IRandomized {
+    private final EParticleLoop version;
+    private final int probability;
     private final int radiusInBlocks;
 
-    public ModelParticleLoop(ParticleLoop version, int chance, int radiusInBlocks) {
+    public ModelParticleLoop(EParticleLoop version, int probability, int radiusInBlocks) {
         this.version = version;
-        this.chance = chance;
+        this.probability = probability;
         this.radiusInBlocks = radiusInBlocks;
     }
 
-    public ParticleLoop getVersion() {
+    @Override
+    public EProbability achievedProbability() {
+        return new Probability(probability).achievedProbability();
+    }
+
+    public EParticleLoop getVersion() {
         return version;
     }
 
-    public int getChance() {
-        return chance;
+    public int getProbability() {
+        return probability;
     }
 
     public int getRadiusInBlocks() {
