@@ -13,6 +13,7 @@ public class Random {
     public Random(float min, float max) {
         min = Math.min(max, min);
         max = Math.max(max, min);
+        max = (min == max) && (max < 0) ? -max : max;
         this.result = ThreadLocalRandom.current().nextFloat(min, max);
     }
 

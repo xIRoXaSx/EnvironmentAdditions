@@ -7,6 +7,7 @@ import net.lizardnetwork.environmentadditions.helper.Probability;
 import net.lizardnetwork.environmentadditions.interfaces.ICondition;
 import net.lizardnetwork.environmentadditions.interfaces.IRandomized;
 import org.bukkit.WeatherType;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -39,7 +40,7 @@ public class ModelCondition implements ICondition, IRandomized {
     }
 
     @Override
-    public EProbability achievedProbability() {
+    public EProbability getAchievedProbability() {
         return new Probability(probability).achievedProbability();
     }
 
@@ -50,8 +51,9 @@ public class ModelCondition implements ICondition, IRandomized {
      */
     @Override
     public boolean matchesEveryCondition(Player player) {
-        return isEnabled() && hasPermission(player) &&
-            matchesWeather(player.getPlayerWeather()) &&
+        return isEnabled() &&
+            hasPermission(player) && achievedProbability() &&
+            matchesWeather(getRealWeatherType(player)) &&
             isBetweenTicks(player.getPlayerTime());
     }
 
@@ -66,6 +68,12 @@ public class ModelCondition implements ICondition, IRandomized {
     }
 
     @Override
+    public boolean achievedProbability() {
+        return getAchievedProbability().equals(EProbability.DISABLED) ||
+            getAchievedProbability().equals(EProbability.ACHIEVED);
+    }
+
+    @Override
     public boolean matchesWeather(WeatherType current) {
         return weather.equals(EWeatherCondition.DISABLED) || weather.name().equals(current.name());
     }
@@ -73,6 +81,16 @@ public class ModelCondition implements ICondition, IRandomized {
     @Override
     public boolean isBetweenTicks(long current) {
         return fromTimeInTicks < 0 || untilTimeInTicks < 0 || current >= fromTimeInTicks && current <= untilTimeInTicks;
+    }
+
+    public WeatherType getRealWeatherType(Player target) {
+        WeatherType weather = target.getPlayerWeather();
+        if (weather != null) {
+            return weather;
+        }
+
+        World world = target.getWorld();
+        return world.isClearWeather() || world.isThundering() ? WeatherType.DOWNFALL : WeatherType.CLEAR;
     }
 
     public int getProbability() {

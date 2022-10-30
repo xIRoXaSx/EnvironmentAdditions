@@ -1,9 +1,11 @@
 package net.lizardnetwork.environmentadditions.models;
 
 import net.lizardnetwork.environmentadditions.interfaces.ICondition;
+import net.lizardnetwork.environmentadditions.interfaces.IModelExecutor;
 import org.bukkit.SoundCategory;
+import org.bukkit.entity.Player;
 
-public class ModelSound extends ModelCondition implements ICondition {
+public class ModelSound extends ModelCondition implements ICondition, IModelExecutor {
     private final int chance;
     private final String sound;
     private final SoundCategory category;
@@ -23,6 +25,11 @@ public class ModelSound extends ModelCondition implements ICondition {
         this.isGlobal = isGlobal;
         this.maxRandomOffset = maxRandomOffset;
         this.condition = condition;
+    }
+
+    @Override
+    public void execute(Player target) {
+        // Play sound.
     }
 
     public int getChance() {

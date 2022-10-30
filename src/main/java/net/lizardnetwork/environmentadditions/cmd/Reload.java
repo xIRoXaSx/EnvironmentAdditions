@@ -2,6 +2,7 @@ package net.lizardnetwork.environmentadditions.cmd;
 
 import net.lizardnetwork.environmentadditions.EnvironmentAdditions;
 import net.lizardnetwork.environmentadditions.interfaces.ICmd;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class Reload extends CmdModel implements ICmd {
@@ -11,8 +12,8 @@ public class Reload extends CmdModel implements ICmd {
 
     @Override
     public boolean execute(CommandSender sender) {
-        sender.sendMessage("Currently not implemented!");
         EnvironmentAdditions.reload();
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&fConfigs have been &areloaded&f!"));
         return true;
     }
 }

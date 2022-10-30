@@ -6,23 +6,23 @@ import net.lizardnetwork.environmentadditions.helper.Probability;
 import net.lizardnetwork.environmentadditions.interfaces.IRandomized;
 
 public class ModelParticleLoop implements IRandomized {
-    private final EParticleLoop version;
+    private final EParticleLoop type;
     private final int probability;
     private final int radiusInBlocks;
 
-    public ModelParticleLoop(EParticleLoop version, int probability, int radiusInBlocks) {
-        this.version = version;
+    public ModelParticleLoop(EParticleLoop type, int probability, int radiusInBlocks) {
+        this.type = type;
         this.probability = probability;
         this.radiusInBlocks = radiusInBlocks;
     }
 
     @Override
-    public EProbability achievedProbability() {
+    public EProbability getAchievedProbability() {
         return new Probability(probability).achievedProbability();
     }
 
-    public EParticleLoop getVersion() {
-        return version;
+    public EParticleLoop getType() {
+        return type;
     }
 
     public int getProbability() {

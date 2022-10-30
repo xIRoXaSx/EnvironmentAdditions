@@ -54,14 +54,10 @@ EnvironmentAdditions:
     # The HIGHER this integer is, the FEWER checks will be made => Better performance, poorer experience
     # The LOWER this integer is, the HIGHER checks will be made => Poorer performance, better experience
     PositionChecksInTicks: 20
-    # The time in ticks in which the plugin should check the current biomes of all players for particles (-1 to disable)
-    # The HIGHER this integer is, the FEWER checks will be made => Better performance, poorer experience
-    # The LOWER this integer is, the HIGHER checks will be made => Poorer performance, better experience
-    PositionParticleChecksInTicks: 20
     # Have a look at the Placeholder description section!
-    # Leave it as it is or empty to use for vanilla worlds
+    # Leave it as it is or empty ('') to use for vanilla worlds.
     PapiBiomePlaceholder: '%player_biome%'
-    # Whether a single command model ('Commands' operation) or all of them (inside a biome configuration) should be executed.
-    # If set to true and multiple command models have been configured, only one will randomly get picked.
-    # If set to false and multiple command models have been configured, all of them will get performed.
-    ExecuteSingleCommandModel: true
+    # Whether a single group or all of them should be executed.
+    # If set to true and multiple groups (e.g.: particles) have been configured, only one will randomly get picked.
+    # If set to false and multiple groups (e.g.: particles) have been configured, all of them will get executed.
+    ExecuteSingleGroupMode: true

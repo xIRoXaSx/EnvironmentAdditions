@@ -5,11 +5,12 @@ import net.lizardnetwork.environmentadditions.enums.ECommandExecutor;
 import net.lizardnetwork.environmentadditions.helper.Placeholder;
 import net.lizardnetwork.environmentadditions.helper.Random;
 import net.lizardnetwork.environmentadditions.interfaces.ICondition;
+import net.lizardnetwork.environmentadditions.interfaces.IModelExecutor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ModelCommand extends ModelCondition implements ICondition {
+public class ModelCommand extends ModelCondition implements ICondition, IModelExecutor {
     private final String[] commands;
     private final ECommandExecutor executor;
     private final ModelCondition condition;
@@ -27,7 +28,8 @@ public class ModelCommand extends ModelCondition implements ICondition {
      * Execute one / every command.
      * @param target CommandSender - The target of the command.
      */
-    public void execute(CommandSender target) {
+    @Override
+    public void execute(Player target) {
         int commandsLength = getCommands().length;
         if (commandsLength == 0) {
             Logging.warn("No command to execute configured!");

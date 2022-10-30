@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class EventTabComplete implements Listener, TabCompleter {
-    List<String> commands;
+    final List<String> commands;
 
     public EventTabComplete(List<String> commands) {
         this.commands = commands;

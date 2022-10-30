@@ -5,7 +5,9 @@ import net.lizardnetwork.environmentadditions.enums.EParticleLoop;
 import net.lizardnetwork.environmentadditions.enums.EWeatherCondition;
 import net.lizardnetwork.environmentadditions.helper.Caster;
 import net.lizardnetwork.environmentadditions.helper.Parser;
+import net.lizardnetwork.environmentadditions.helper.Random;
 import net.lizardnetwork.environmentadditions.models.*;
+import org.bukkit.Color;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -66,6 +68,20 @@ public class Config {
         }
     }
 
+    ModelSettings getSettings() {
+        String rootKey = "EnvironmentAdditions.Settings";
+        String[] keys = new String[]{
+            rootKey + ".PositionChecksInTicks",
+            rootKey + ".PapiBiomePlaceholder",
+            rootKey + ".ExecuteSingleGroupMode"
+        };
+        return new ModelSettings(
+            this.config.getInt(keys[0]),
+            this.config.getString(keys[1]),
+            this.config.getBoolean(keys[2])
+        );
+    }
+
     @Nullable
     ModelBiomeEvent[] getLinkedConfigs() {
         String biomesGroupKey = "Biomes";
@@ -108,6 +124,18 @@ public class Config {
             ModelParticle[] particles = getParticlesByName(particleNames);
             List<?> soundNames = (List<?>)wi.get(soundKey);
             ModelSound[] sounds = getSoundsByName(soundNames);
+
+            ModelSettings settings = EnvironmentAdditions.getState().getSettings();
+            if (settings.isSingleModelMode()) {
+                int index = new Random(0, commands.length).getIntResult();
+                commands = new ModelCommand[]{commands[index]};
+
+                index = new Random(0, particles.length).getIntResult();
+                particles = new ModelParticle[]{particles[index]};
+
+                index = new Random(0, sounds.length).getIntResult();
+                sounds = new ModelSound[]{sounds[index]};
+            }
 
             configuredBiomeEvents.add(
                 new ModelBiomeEvent(activeBiomes, condition, commands, particles, sounds)
@@ -214,9 +242,10 @@ public class Config {
             );
             return ModelCondition.getDefault(false);
         }
+        Object chance = configValues.get(subKeys[1]);
         return new ModelCondition(
             (boolean)configValues.get(subKeys[0]),
-            (int)configValues.get(subKeys[1]),
+            (int)(chance != null ? chance : -1),
             Caster.castToLong(configValues.get(subKeys[2])),
             Caster.castToLong(configValues.get(subKeys[3])),
             Parser.valueOf(EWeatherCondition.class, configValues.get(subKeys[4])),
@@ -233,6 +262,10 @@ public class Config {
         ModelCommand commands = new ModelCommand(new String[0], ECommandExecutor.PLAYER, condition, false);
         if (groups == null) {
             return List.of(commands).toArray(new ModelCommand[0]);
+        }
+        if (EnvironmentAdditions.getState().getSettings().isSingleModelMode()) {
+            int index = new Random(0, groups.size()).getIntResult();
+            groups = List.of(groups.get(index));
         }
 
         String[] subKeys = new String[]{
@@ -271,9 +304,14 @@ public class Config {
      */
     private ModelParticle[] getParticlesByName(List<?> groups) {
         ModelCondition condition = ModelCondition.getDefault(false);
-        ModelParticle particles = new ModelParticle(Particle.REDSTONE, "fff", 1, 1, condition, null);
+        Color color = Parser.hexToColor("ffffff", true);
+        ModelParticle particles = new ModelParticle(Particle.REDSTONE, color, 1, 1, condition, null);
         if (groups == null) {
             return List.of(particles).toArray(new ModelParticle[0]);
+        }
+        if (EnvironmentAdditions.getState().getSettings().isSingleModelMode()) {
+            int index = new Random(0, groups.size()).getIntResult();
+            groups = List.of(groups.get(index));
         }
 
         String animationSubKey = "Animation";
@@ -288,7 +326,7 @@ public class Config {
             animationSubKey + ".RelativeOffsetX",
             animationSubKey + ".RelativeOffsetY",
             animationSubKey + ".RelativeOffsetZ",
-            loopOptionSubKey + ".Version",
+            loopOptionSubKey + ".Type",
             loopOptionSubKey + ".ChanceForEachLoop",
             loopOptionSubKey + ".RadiusInBlocks",
         };
@@ -308,7 +346,7 @@ public class Config {
             }
             modelList.add(new ModelParticle(
                 Parser.valueOf(Particle.class, configValues.get(subKeys[0])),
-                Caster.valueOrEmpty(configValues.get(subKeys[1])),
+                Parser.hexToColor(configValues.get(subKeys[1]), true),
                 (int)configValues.get(subKeys[2]),
                 (int)configValues.get(subKeys[3]),
                 getConditionByName(rootKey, configValues.get(subKeys[4])),
@@ -337,6 +375,10 @@ public class Config {
         ModelSound sound = new ModelSound(0, Sound.WEATHER_RAIN.getKey().toString(), SoundCategory.MUSIC, 0, 0, false, 0, condition);
         if (groups == null) {
             return List.of(sound).toArray(new ModelSound[0]);
+        }
+        if (EnvironmentAdditions.getState().getSettings().isSingleModelMode()) {
+            int index = new Random(0, groups.size()).getIntResult();
+            groups = List.of(groups.get(index));
         }
 
         String[] subKeys = new String[]{

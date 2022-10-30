@@ -2,7 +2,6 @@ package net.lizardnetwork.environmentadditions;
 
 import net.lizardnetwork.environmentadditions.cmd.CmdHandler;
 import net.lizardnetwork.environmentadditions.helper.Resolve;
-import net.lizardnetwork.environmentadditions.tasking.Observer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,9 +34,16 @@ public class EnvironmentAdditions extends JavaPlugin implements Listener, Comman
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Observer observer = new Observer(this);
-        EnvironmentAdditions.getState().appendObserver(
+        EnvironmentAdditions.getState().appendObserverTask(
             event.getPlayer().getUniqueId(),
             observer.initTimeDrivenObserver(event.getPlayer())
+        );
+    }
+
+    @EventHandler
+    public void onLeave(PlayerQuitEvent event) {
+        EnvironmentAdditions.getState().removeObserverTask(
+            event.getPlayer().getUniqueId()
         );
     }
 

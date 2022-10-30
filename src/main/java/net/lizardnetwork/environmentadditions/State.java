@@ -4,6 +4,7 @@ import net.lizardnetwork.environmentadditions.cmd.CmdHandler;
 import net.lizardnetwork.environmentadditions.enums.EDependency;
 import net.lizardnetwork.environmentadditions.events.EventTabComplete;
 import net.lizardnetwork.environmentadditions.models.ModelBiomeEvent;
+import net.lizardnetwork.environmentadditions.models.ModelSettings;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
@@ -15,10 +16,12 @@ public class State {
     private Config config;
     private EDependency dependency;
     private ModelBiomeEvent[] biomeEvents;
+    private ModelSettings settings;
     private final Map<UUID, BukkitTask> observerRunnables = new HashMap<>();
 
     public void setConfig() {
         config = new Config();
+        settings = config.getSettings();
         biomeEvents = config.getLinkedConfigs();
     }
 
@@ -35,12 +38,12 @@ public class State {
         this.dependency = value;
     }
 
-    void setBiomeEvents(ModelBiomeEvent[] biomeEvents) {
-        this.biomeEvents = biomeEvents;
+    void appendObserverTask(UUID uuid, BukkitTask runnable) {
+        observerRunnables.put(uuid, runnable);
     }
 
-    void appendObserver(UUID uuid, BukkitTask runnable) {
-        observerRunnables.put(uuid, runnable);
+    void removeObserverTask(UUID uuid) {
+        observerRunnables.remove(uuid);
     }
 
     public Config getConfig() {
@@ -51,7 +54,11 @@ public class State {
         return dependency;
     }
 
-    public ModelBiomeEvent[] getBiomeEvents() {
+    ModelBiomeEvent[] getBiomeEvents() {
         return biomeEvents;
+    }
+
+    ModelSettings getSettings() {
+        return settings;
     }
 }
