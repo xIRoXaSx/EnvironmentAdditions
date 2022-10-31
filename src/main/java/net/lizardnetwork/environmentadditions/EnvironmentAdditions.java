@@ -1,8 +1,8 @@
 package net.lizardnetwork.environmentadditions;
 
 import net.lizardnetwork.environmentadditions.cmd.CmdHandler;
+import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.helper.Resolve;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,7 +20,7 @@ import java.util.Collection;
 public class EnvironmentAdditions extends JavaPlugin implements Listener, CommandExecutor {
     private static EnvironmentAdditions instance;
     private static final State state = new State();
-    private static final String coloredPrefix = ChatColor.translateAlternateColorCodes('&', "&6Environment&aAddition&r");
+    private static final String coloredPrefix = Parser.gradientText("EnvironmentAdditions", "#5ee667");
 
     @Override
     public void onEnable() {

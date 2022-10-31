@@ -94,7 +94,6 @@ public class Placeholder {
 
     /**
      * Get the replaced String of value.
-     * TODO: Colorizing.
      * @return String - Value, replaced with available replacements.
      */
     public String getReplaced() {

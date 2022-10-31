@@ -304,7 +304,7 @@ public class Config {
      */
     private ModelParticle[] getParticlesByName(List<?> groups) {
         ModelCondition condition = ModelCondition.getDefault(false);
-        Color color = Parser.hexToColor("ffffff", true);
+        Color color = Parser.hexToColor("ffffff");
         ModelParticle particles = new ModelParticle(Particle.REDSTONE, color, 1, 1, condition, null);
         if (groups == null) {
             return List.of(particles).toArray(new ModelParticle[0]);
@@ -346,7 +346,7 @@ public class Config {
             }
             modelList.add(new ModelParticle(
                 Parser.valueOf(Particle.class, configValues.get(subKeys[0])),
-                Parser.hexToColor(configValues.get(subKeys[1]), true),
+                Parser.hexToColor(configValues.get(subKeys[1])),
                 (int)configValues.get(subKeys[2]),
                 (int)configValues.get(subKeys[3]),
                 getConditionByName(rootKey, configValues.get(subKeys[4])),

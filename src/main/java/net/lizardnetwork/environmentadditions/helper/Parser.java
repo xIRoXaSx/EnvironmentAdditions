@@ -1,6 +1,7 @@
 package net.lizardnetwork.environmentadditions.helper;
 
 import net.lizardnetwork.environmentadditions.Logging;
+import org.bukkit.ChatColor;
 import java.awt.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -67,11 +68,62 @@ public class Parser {
         return fallback;
     }
 
-    public static org.bukkit.Color hexToColor(Object value, boolean validate) {
+    /**
+     * Parse the given value to Color.
+     * @param value Object - The object to parse from.
+     * @return org.bukkit.Color - The parsed color, fallback: white.
+     */
+    public static org.bukkit.Color hexToColor(Object value) {
         if (isEmpty(value)) {
             return org.bukkit.Color.fromRGB(255, 255, 255);
         }
-        Color c = validate ? Color.decode("#" + validateHexColor(value.toString())) : Color.decode(value.toString());
+        Color c = Color.decode("#" + validateHexColor(value.toString()));
         return org.bukkit.Color.fromRGB(c.getRed(), c.getGreen(), c.getBlue());
+    }
+
+    /**
+     * Add a gradient to the given text starting at startHex.
+     * @param text String - The text to add the gradient to.
+     * @param startHex String - The starting hex color.
+     * @return String - The colorized text.
+     */
+    public static String gradientText(String text, String startHex) {
+        StringBuilder returnValue = new StringBuilder();
+        startHex = startHex.replace("#", "");
+        startHex = startHex.length() > 1 ? startHex: "000000";
+        int hexInteger = Integer.parseInt(startHex, 16);
+        for (Character character : text.toCharArray()) {
+            String hex = padHexColor(Integer.toHexString(hexInteger));
+            returnValue.append(colorizeText("{#" + hex + "}" + character));
+            hexInteger += 8;
+        }
+        returnValue.append(colorizeText("&r"));
+        return returnValue.toString();
+    }
+
+    private static String padHexColor(String value) {
+        int len = value.length();
+        if (len < 6) {
+            value = "0".repeat(6 - len) + value;
+        }
+        return value;
+    }
+
+    /**
+     * Colorize the given value via alternate / hex color codes.
+     * @param value String - The value to parse.
+     * @return String - The colorized text.
+     */
+    public static String colorizeText(String value) {
+        value = ChatColor.translateAlternateColorCodes('&', value);
+        Pattern pattern = Pattern.compile("\\{(#[a-fA-F0-9]{3})}|\\{(#[a-fA-F0-9]{6})}");
+        Matcher matcher = pattern.matcher(value);
+        while (matcher.find()) {
+            String hex = padHexColor(value.substring(matcher.start() + 1, matcher.end() - 1));
+            String hexColor = "#" + validateHexColor(hex);
+            value = value.replace(matcher.group(0), net.md_5.bungee.api.ChatColor.of(hexColor).toString());
+            matcher = pattern.matcher(value);
+        }
+        return value;
     }
 }

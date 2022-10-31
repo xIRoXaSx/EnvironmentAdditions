@@ -1,6 +1,7 @@
 package net.lizardnetwork.environmentadditions.cmd;
 
 import net.lizardnetwork.environmentadditions.EnvironmentAdditions;
+import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.interfaces.ICmd;
 import org.bukkit.command.CommandSender;
 
@@ -11,16 +12,17 @@ public class Help extends CmdModel implements ICmd {
 
     @Override
     public boolean execute(CommandSender sender) {
-        StringBuilder msg = new StringBuilder();
+        StringBuilder msg = new StringBuilder("\n" + EnvironmentAdditions.getColoredPrefix() + "\n")
+            .append(" Version: ").append(EnvironmentAdditions.getPluginDescription().getVersion());
         int len = getLongestCmd();
         for (ICmd cmd : CmdHandler.registry) {
             int delta = Math.abs(cmd.getCmd().length() - len);
-            msg.append(cmd.getCmd()).append(" ".repeat(delta))
-                .append(" » ").append(cmd.getDescription())
+            msg.append("&f").append(cmd.getCmd()).append(" ".repeat(delta))
+                .append(" &8» &7").append(cmd.getDescription())
                 .append("\n\n");
         }
-        msg.append("Version: ").append(EnvironmentAdditions.getPluginDescription().getVersion());
-        sender.sendMessage(msg.toString());
+
+        sender.sendMessage(Parser.colorizeText(msg.toString()));
         return true;
     }
 

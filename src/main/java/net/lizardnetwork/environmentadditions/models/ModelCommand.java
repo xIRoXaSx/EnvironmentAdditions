@@ -2,6 +2,7 @@ package net.lizardnetwork.environmentadditions.models;
 
 import net.lizardnetwork.environmentadditions.Logging;
 import net.lizardnetwork.environmentadditions.enums.ECommandExecutor;
+import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.helper.Placeholder;
 import net.lizardnetwork.environmentadditions.helper.Random;
 import net.lizardnetwork.environmentadditions.interfaces.ICondition;
@@ -51,7 +52,8 @@ public class ModelCommand extends ModelCondition implements ICondition, IModelEx
     private void dispatchCommand(String command, CommandSender target) {
         StringBuilder sb = new StringBuilder("Executing command \"");
         String replacedCommand = new Placeholder(command).resolve((Player)target).getReplaced();
-        sb.append(replacedCommand).append("\" as ").append(executor.toString());
+        replacedCommand = Parser.colorizeText(replacedCommand);
+        sb.append(command).append("\" as ").append(executor.toString());
         if (executor.equals(ECommandExecutor.PLAYER)) {
             sb.append(" for ").append(target.getName());
         }
