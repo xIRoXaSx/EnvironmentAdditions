@@ -37,6 +37,15 @@ public class Parser {
         }
     }
 
+    public static int parse(String value, int fallback) {
+        try {
+            return Integer.parseInt(value);
+        } catch (IllegalArgumentException ex) {
+            Logging.warn("Unable to parse " + value + " to an integer, fallback: " + fallback);
+        }
+        return fallback;
+    }
+
     /**
      * Validates 3 and 6 digit hex color codes.
      * In case the value is a 3-digit code, the completed 6-digit code will be returned.

@@ -16,6 +16,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
+import java.util.UUID;
 
 public class EnvironmentAdditions extends JavaPlugin implements Listener, CommandExecutor {
     private static EnvironmentAdditions instance;
@@ -35,11 +36,8 @@ public class EnvironmentAdditions extends JavaPlugin implements Listener, Comman
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        Observer observer = new Observer(this);
-        EnvironmentAdditions.getState().appendObserverTask(
-            event.getPlayer().getUniqueId(),
-            observer.initTimeDrivenObserver(event.getPlayer())
-        );
+        Player target = event.getPlayer();
+        addNewObserver(target, target.getUniqueId());
     }
 
     @EventHandler
@@ -51,7 +49,43 @@ public class EnvironmentAdditions extends JavaPlugin implements Listener, Comman
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
-        return new CmdHandler(sender, args).handle();
+        return new CmdHandler(sender, args, instance).handle(true);
+    }
+
+    public static String formPluginMessage(String value) {
+        return EnvironmentAdditions.getColoredPrefix() + " » " + Parser.colorizeText(value);
+    }
+
+    public static void addNewObserver(Player target, UUID uuid) {
+        if (target == null || !target.isOnline()) {
+            return;
+        }
+        uuid = uuid == null ? target.getUniqueId() : uuid;
+        Observer observer = new Observer(instance);
+        EnvironmentAdditions.getState().appendObserverTask(
+            uuid,
+            observer.initTimeDrivenObserver(target)
+        );
+    }
+
+    public static void clearObservers() {
+        getState().clearObservers();
+    }
+
+    public static void pauseObservers() {
+        getState().pauseObservers();
+    }
+
+    public static void resumeObservers() {
+        getState().resumeObservers();
+    }
+
+    public static void reload() {
+        state.setConfig();
+        Collection<? extends Player> online = instance.getServer().getOnlinePlayers();
+        for (Player target : online) {
+            addNewObserver(target, target.getUniqueId());
+        }
     }
 
     /**
@@ -64,18 +98,6 @@ public class EnvironmentAdditions extends JavaPlugin implements Listener, Comman
 
     public static State getState() {
         return state;
-    }
-
-    public static void reload() {
-        state.setConfig();
-        Collection<? extends Player> online = instance.getServer().getOnlinePlayers();
-        for (Player target : online) {
-            Observer observer = new Observer(instance);
-            EnvironmentAdditions.getState().appendObserverTask(
-                target.getUniqueId(),
-                observer.initTimeDrivenObserver(target)
-            );
-        }
     }
 
     public static PluginDescriptionFile getPluginDescription() {

@@ -17,8 +17,8 @@ public class EventTabComplete implements Listener, TabCompleter {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        CmdHandler handler = new CmdHandler(sender, args);
-        if (!handler.handle())
+        CmdHandler handler = new CmdHandler(sender, args, null);
+        if (!handler.handle(false))
             return null;
         if (args.length == 1)
             return commands;

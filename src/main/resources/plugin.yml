@@ -5,12 +5,13 @@ api-version: 1.19
 author: xIRoXaSx
 softdepend: [PlaceholderAPI]
 commands:
-  environment:
+  environmentadditions:
     description: Main command for EnvironmentAdditions
     usage: /<command>
     permission: environmentadditions.admin
     permission-message: ""
     aliases:
+      - "environment"
       - "envadd"
       - "envad"
       - "ea"
