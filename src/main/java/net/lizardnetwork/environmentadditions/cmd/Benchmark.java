@@ -20,12 +20,15 @@ public class Benchmark extends CmdModel implements ICmd {
             "Depending on your current config setup, you may experience some lag."
         ));
         sender.sendMessage(EnvironmentAdditions.formPluginMessage(
+            "If you want to customize the amount of &aiterations &fand &alength &fof the benchmark, " +
+            "use &7/ea bench {iterations} {length in minutes}&f."
+        ));
+        sender.sendMessage(EnvironmentAdditions.formPluginMessage(
             "&cPausing &fcurrently runnning events."
         ));
         EnvironmentAdditions.pauseObservers();
         int numIter = 50;
         int numDur = 1;
-
         if (args.length > 1) {
             numIter = Parser.parse(args[1], numIter);
         }
@@ -34,20 +37,26 @@ public class Benchmark extends CmdModel implements ICmd {
         }
         sender.sendMessage(EnvironmentAdditions.formPluginMessage(
             "Simulating &a" + numIter + " player" + (numIter > 1 ? "s" : "") +
-            " &fon your current location for " + numDur + " &aminute" + (numDur > 1 ? "s" : "") + "&f."
+            " &fon your current location for &a" + numDur + " minute" + (numDur > 1 ? "s" : "") + "&f."
         ));
         for (int i = 0; i < numIter; i++) {
-            EnvironmentAdditions.addNewObserver((Player)sender, UUID.randomUUID());
+            EnvironmentAdditions.addNewObserver((Player)sender, UUID.randomUUID(), true);
         }
 
        new BukkitRunnable() {
             @Override
             public void run() {
+                long avg = EnvironmentAdditions.getBenchmarkAverageTime();
+                long iter = EnvironmentAdditions.getBenchmarkIterations();
                 EnvironmentAdditions.clearObservers();
                 sender.sendMessage(EnvironmentAdditions.formPluginMessage(
                     "Benchmark &adone&f... resuming paused events."
                 ));
                 EnvironmentAdditions.resumeObservers();
+                sender.sendMessage(EnvironmentAdditions.formPluginMessage(
+                    "&aAverage &fexecution time over &a" + iter + "&f iterations: &a" +
+                    Math.round((avg) / 1e6) + "ms &f(&a" + avg + "&f nano seconds)"
+                ));
             }
         }.runTaskTimer(plugin, 20L * 60 * numDur, -1);
         return true;

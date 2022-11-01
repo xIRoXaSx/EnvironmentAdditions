@@ -37,7 +37,7 @@ public class EnvironmentAdditions extends JavaPlugin implements Listener, Comman
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player target = event.getPlayer();
-        addNewObserver(target, target.getUniqueId());
+        addNewObserver(target, target.getUniqueId(), false);
     }
 
     @EventHandler
@@ -56,16 +56,22 @@ public class EnvironmentAdditions extends JavaPlugin implements Listener, Comman
         return EnvironmentAdditions.getColoredPrefix() + " » " + Parser.colorizeText(value);
     }
 
-    public static void addNewObserver(Player target, UUID uuid) {
+    public static long getBenchmarkAverageTime() {
+        return getState().getBenchmarkAverageTime();
+    }
+
+    public static long getBenchmarkIterations() {
+        return getState().getBenchmarkIterations();
+    }
+
+    public static void addNewObserver(Player target, UUID uuid, boolean benchmark) {
         if (target == null || !target.isOnline()) {
             return;
         }
         uuid = uuid == null ? target.getUniqueId() : uuid;
         Observer observer = new Observer(instance);
-        EnvironmentAdditions.getState().appendObserverTask(
-            uuid,
-            observer.initTimeDrivenObserver(target)
-        );
+        observer.initTimeDrivenObserver(target, benchmark);
+        EnvironmentAdditions.getState().appendObserverTask(uuid, observer);
     }
 
     public static void clearObservers() {
@@ -84,7 +90,7 @@ public class EnvironmentAdditions extends JavaPlugin implements Listener, Comman
         state.setConfig();
         Collection<? extends Player> online = instance.getServer().getOnlinePlayers();
         for (Player target : online) {
-            addNewObserver(target, target.getUniqueId());
+            addNewObserver(target, target.getUniqueId(), false);
         }
     }
 
