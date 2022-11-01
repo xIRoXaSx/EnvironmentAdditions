@@ -6,8 +6,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
 public class Reload extends CmdModel implements ICmd {
-    public Reload(String command, String permission, String[] aliases, String description) {
-        super(command, permission, aliases, description);
+    public Reload(String command, String permission, String[] aliases, String description, String usage) {
+        super(command, permission, aliases, description, usage);
     }
 
     @Override

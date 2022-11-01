@@ -10,8 +10,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.UUID;
 
 public class Benchmark extends CmdModel implements ICmd {
-    public Benchmark(String command, String permission, String[] aliases, String description) {
-        super(command, permission, aliases, description);
+    public Benchmark(String command, String permission, String[] aliases, String description, String usage) {
+        super(command, permission, aliases, description, usage);
     }
 
     @Override

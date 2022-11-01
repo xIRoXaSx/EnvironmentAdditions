@@ -9,4 +9,5 @@ public interface ICmd {
     String getPermission();
     String[] getAliases();
     String getDescription();
+    String getUsage();
 }

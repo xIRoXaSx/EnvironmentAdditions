@@ -16,9 +16,18 @@ public class CmdHandler  {
     private final String[] args;
     private final Plugin plugin;
     final static ICmd[] registry = new ICmd[]{
-        new Benchmark("benchmark", rootPerm + ".admin", new String[]{"bench", "b"}, "Benchmark your configuration."),
-        new Reload("reload", rootPerm + ".admin", new String[]{"rl", "r"}, "Reload the configuration file."),
-        new Help("help", rootPerm + ".help", new String[]{"hlp", "h"}, "Print this help message.")
+        new Benchmark(
+            "benchmark", rootPerm + ".admin", new String[]{"bench", "b"},
+            "Benchmark your configuration.", "/ea bench [iterations] [minutes]"
+        ),
+        new Reload(
+            "reload", rootPerm + ".admin", new String[]{"rl", "r"},
+            "Reload the configuration file.", "/ea reload"
+        ),
+        new Help(
+            "help", rootPerm + ".help", new String[]{"hlp", "h"},
+            "Print this help message.", "/ea help"
+        )
     };
 
     public CmdHandler(@NotNull CommandSender sender, @NotNull String[] args, Plugin plugin) {

@@ -124,7 +124,6 @@ public class Parser {
      * @return String - The colorized text.
      */
     public static String colorizeText(String value) {
-        value = ChatColor.translateAlternateColorCodes('&', value);
         Pattern pattern = Pattern.compile("\\{(#[a-fA-F0-9]{3})}|\\{(#[a-fA-F0-9]{6})}");
         Matcher matcher = pattern.matcher(value);
         while (matcher.find()) {
@@ -133,6 +132,6 @@ public class Parser {
             value = value.replace(matcher.group(0), net.md_5.bungee.api.ChatColor.of(hexColor).toString());
             matcher = pattern.matcher(value);
         }
-        return value;
+        return ChatColor.translateAlternateColorCodes('&', value);
     }
 }
