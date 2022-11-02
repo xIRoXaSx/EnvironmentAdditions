@@ -24,8 +24,10 @@ public class State {
         config = new Config();
         settings = config.getSettings();
         biomeEvents = config.getLinkedConfigs();
-        for (Map.Entry<UUID, Observer> entrySet : observers.entrySet()) {
-            removeObserverTask(entrySet.getKey());
+        if (pausedTasks.length == 0) {
+            pauseObservers();
+        } else {
+            clearObservers();
         }
     }
 
@@ -78,8 +80,8 @@ public class State {
         for (Map.Entry<UUID, Observer> entry : observers.entrySet()) {
             UUID uuid = entry.getKey();
             uuids.add(uuid);
-            removeObserverTask(uuid);
         }
+        clearObservers();
         this.pausedTasks = uuids.toArray(new UUID[0]);
     }
 

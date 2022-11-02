@@ -102,20 +102,12 @@ public class Parser {
         startHex = startHex.length() > 1 ? startHex: "000000";
         int hexInteger = Integer.parseInt(startHex, 16);
         for (Character character : text.toCharArray()) {
-            String hex = padHexColor(Integer.toHexString(hexInteger));
+            String hex = Integer.toHexString(hexInteger);
             returnValue.append(colorizeText("{#" + hex + "}" + character));
             hexInteger += 8;
         }
         returnValue.append(colorizeText("&r"));
         return returnValue.toString();
-    }
-
-    private static String padHexColor(String value) {
-        int len = value.length();
-        if (len < 6) {
-            value = "0".repeat(6 - len) + value;
-        }
-        return value;
     }
 
     /**
@@ -127,7 +119,7 @@ public class Parser {
         Pattern pattern = Pattern.compile("\\{(#[a-fA-F0-9]{3})}|\\{(#[a-fA-F0-9]{6})}");
         Matcher matcher = pattern.matcher(value);
         while (matcher.find()) {
-            String hex = padHexColor(value.substring(matcher.start() + 1, matcher.end() - 1));
+            String hex = value.substring(matcher.start() + 1, matcher.end() - 1);
             String hexColor = "#" + validateHexColor(hex);
             value = value.replace(matcher.group(0), net.md_5.bungee.api.ChatColor.of(hexColor).toString());
             matcher = pattern.matcher(value);

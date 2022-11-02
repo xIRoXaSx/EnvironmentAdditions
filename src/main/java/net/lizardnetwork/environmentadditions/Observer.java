@@ -38,7 +38,7 @@ public class Observer {
                         if (!model.matchesEveryCondition(player)) {
                             continue;
                         }
-                        model.execute(player);
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> model.execute(player), 0);
                     }
 
                     for (ModelSound model : event.getSounds()) {

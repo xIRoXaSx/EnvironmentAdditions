@@ -73,7 +73,7 @@ public class Config {
         String[] keys = new String[]{
             rootKey + ".PositionChecksInTicks",
             rootKey + ".PapiBiomePlaceholder",
-            rootKey + ".ExecuteSingleGroupMode"
+            rootKey + ".UseSingleGroupMode"
         };
         return new ModelSettings(
             this.config.getInt(keys[0]),
@@ -124,19 +124,6 @@ public class Config {
             ModelParticle[] particles = getParticlesByName(particleNames);
             List<?> soundNames = (List<?>)wi.get(soundKey);
             ModelSound[] sounds = getSoundsByName(soundNames);
-
-            ModelSettings settings = EnvironmentAdditions.getState().getSettings();
-            if (settings.isSingleModelMode()) {
-                int index = new Random(0, commands.length).getIntResult();
-                commands = new ModelCommand[]{commands[index]};
-
-                index = new Random(0, particles.length).getIntResult();
-                particles = new ModelParticle[]{particles[index]};
-
-                index = new Random(0, sounds.length).getIntResult();
-                sounds = new ModelSound[]{sounds[index]};
-            }
-
             configuredBiomeEvents.add(
                 new ModelBiomeEvent(activeBiomes, condition, commands, particles, sounds)
             );

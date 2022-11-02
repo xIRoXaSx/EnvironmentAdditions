@@ -60,4 +60,4 @@ EnvironmentAdditions:
     # Whether a single group or all of them should be executed.
     # If set to true and multiple groups (e.g.: particles) have been configured, only one will randomly get picked.
     # If set to false and multiple groups (e.g.: particles) have been configured, all of them will get executed.
-    ExecuteSingleGroupMode: true
+    UseSingleGroupMode: true
