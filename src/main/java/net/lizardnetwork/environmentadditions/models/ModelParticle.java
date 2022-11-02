@@ -126,27 +126,7 @@ public class ModelParticle extends ModelCondition implements ICondition, IModelE
         return new Location(target.getWorld(), x, y, z);
     }
 
-    public Particle getParticle() {
-        return particle;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public int getNumParticles() {
-        return numParticles;
-    }
-
     public ModelCondition getCondition() {
         return condition;
-    }
-
-    public ModelParticleAnimation getAnimation() {
-        return animation;
     }
 }

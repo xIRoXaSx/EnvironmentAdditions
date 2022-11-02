@@ -1,5 +1,6 @@
 package net.lizardnetwork.environmentadditions.models;
 
+import net.lizardnetwork.environmentadditions.helper.Random;
 import net.lizardnetwork.environmentadditions.interfaces.ICondition;
 import net.lizardnetwork.environmentadditions.interfaces.IModelExecutor;
 import org.bukkit.Location;
@@ -29,35 +30,15 @@ public class ModelSound extends ModelCondition implements ICondition, IModelExec
     @Override
     public void execute(Player target) {
         Location src = target.getLocation();
+        if (maxRandomOffset > 0) {
+            src.setX(src.getX() + new Random(-maxRandomOffset, maxRandomOffset).getFloatResult());
+            src.setZ(src.getZ() + new Random(-maxRandomOffset, maxRandomOffset).getFloatResult());
+        }
         if (isGlobal) {
-            target.getWorld().playSound(src, sound, volume, pitch);
+            target.getWorld().playSound(src, sound, category, volume, pitch);
             return;
         }
-        target.playSound(src, sound, volume, pitch);
-    }
-
-    public String getSound() {
-        return sound;
-    }
-
-    public SoundCategory getCategory() {
-        return category;
-    }
-
-    public float getVolume() {
-        return volume;
-    }
-
-    public float getPitch() {
-        return pitch;
-    }
-
-    public boolean isGlobal() {
-        return isGlobal;
-    }
-
-    public float getMaxRandomOffset() {
-        return maxRandomOffset;
+        target.playSound(src, sound, category, volume, pitch);
     }
 
     public ModelCondition getCondition() {

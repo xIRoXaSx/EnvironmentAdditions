@@ -11,10 +11,6 @@ public class ModelSettings {
         this.singleModelMode = singleModelMode;
     }
 
-    public static ModelSettings getDefault() {
-        return new ModelSettings(20, "", true);
-    }
-
     public int getCheckTicks() {
         return checkTicks;
     }
