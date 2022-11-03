@@ -1,24 +1,5 @@
 # ========
 #
-# Check out the sound list / sound category list from spigot for all available vanilla sounds / categories
-#    => Sounds:        https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
-#    => SoundCategory: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/SoundCategory.html
-#
-# Check out the particle list from spigot for all available particle names
-#    => Particles: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
-#
-# To understand ticks and times, please use this reference:
-#    => https://www.digminecraft.com/getting_started/game_tick.php
-# ---
-#
-# Bring your own resource - custom sounds and biomes:
-#
-#    If you want to use custom sounds, you can just go ahead and use the full name (including the namespace).
-#    You want to ditch Minecraft's vanilla biomes and have custom ones?
-#    Make use of the PlaceholderAPI integration and have a look at the Placeholder description below!
-#
-# ---
-#
 # Placeholders:
 #
 #    This plugin is capable of PlaceholderAPI (https://www.spigotmc.org/resources/placeholderapi.6245/) placeholders!
@@ -40,159 +21,43 @@
 #       - %z%        => [String] The z coordinates of the player
 #       - %player%   => [String] The players' name
 #
-# ---
-#
-# Color Codes:
-#    For commands you can also use color and hex codes (long and short version) like:
-#       Color codes: &a - &f, &0 - &9, &k - &o, &r
-#       Hex codes:   {#123456}, {#123}
-#
 # ========
-BiomeEvents:
+EnvironmentAdditions:
   Biomes:
-    # The name of the biome (either vanilla or returned from PapiBiomePlaceholder)
-    Swamp:
-      # The commands and sounds that should be executed while players are in this specific biome
+    # The name of the biome group (see biomes.yml).
+    - BiomeGroup: Snowy
+      # The event that should occur WHILE players are IN this specific biome group.
       WhileIn:
-        # The conditions that must apply before any operation for this biome will be performed
-        Conditions:
-          # If this condition block should be enabled / considered.
-          # If set to true, all conditions need to apply before any operation for this biome will be performed.
-          # If set to false, all operations in this biome will be performed regardless of the configured conditions.
-          # You can remove conditions that aren't necessary for you.
-          # You can also copy 'Condition' blocks underneath every operation except 'Commands' as of v1.2.0 (Particles, Sounds, ...)
-          EnableCondition: true
-          # The weather type. Either 'Clear' or 'Downfall'
-          Weather: Clear
-          # The time (in ticks) in which the biome operations will start
-          FromTimeInTicks: 1000
-          # The time (in ticks) in which the biome operations will stop
-          UntilTimeInTicks: 13000
-          # The permission the player needs to have in order to play the sound for him
-          Permission: ''
+        # The conditions that must apply before any event for this biome group will be performed.
+        Condition: WhileRainyAndDay
+        # A list of particle objects (see commands.yml).
         Commands:
-          # A list of command objects to execute every defined PositionChecksInTicks
-          # Whether a random command from the list of commands should be picked or all of them
-          - PickRandomCommand: true
-            # The commands to execute.
-            # Depending on 'PickRandomCommand', either one random or all commands will be executed.
-            Commands:
-              - 'msg %player% {#5ee68b}Hi there!'
-              - 'msg %player% You are currently in the swamp biome!'
-            # An optional condition block.
-            Conditions:
-              EnableCondition: true
-              Weather: Clear
-              FromTimeInTicks: 5000
-              UntilTimeInTicks: 9000
-              Permission: ''
+          - CommonResponse
+          - SnowyResponse
+        # A list of particle objects (see particles.yml).
         Particles:
-          # A list of particle objects to play every defined PositionChecksInTicks
-          # The type of the particle. Have a look at the top description for all available particles
-          - Particle: FIREWORKS_SPARK
-            # If particle is set to REDSTONE, you can define the color as a hex code here
-            RedstoneHexColor: '#55ffff'
-            # If particle is set to REDSTONE, you can define the size of those particles here
-            RedstoneSize: 10
-            # The amount of particles. If greater than 0, the particles will fly more aggressively
-            ParticleCount: 0
-            # If you want to set an offset to the particles, you can define the distance here.
-            Animation:
-              # If you don't know the direction a player faces, you can set the relative distance here.
-              # Otherwise, you can use RelativeOffsetX and RelativeOffsetZ
-              ViewDirectionDistance: 0
-              # The relative x location the particles will spawn
-              RelativeOffsetX: 0
-              # The relative y location the particles will spawn
-              RelativeOffsetY: 5
-              # The relative z location the particles will spawn
-              RelativeOffsetZ: 0
-              # If you want to have an area filled with particles, here are some settings for it
-              LoopOption:
-                # Can be 0 (disabled), 1 or two.
-                # Example (Version 1): A cubic area around the player will be calculated in which particle will spawn
-                #    (more calculation needed as option 2 and does not look as randomized as option 2).
-                # Example (Version 2): Random locations around the player ('RadiusInBlocks' at max each axis) will be picked.
-                #    'ChanceForEachLoop' will be used to tell how many PARTICLES should be spawned in each loop.
-                Version: 2
-                # Setting this greater than 0 will calculate a cube around the player in the dimensions of the configured integer.
-                # Formula for one line: x * 2 + 1
-                # Example (Version 1): Setting this to 1 will spawn a 3x3x3 cube in total (+1 each side, relative of players location).
-                # Example (Version 1): Setting this to 5 will spawn 11x11x11
-                # Example (Version 2): Setting this to 1 will pick a random number between -1 and 1 to spawn the particle
-                # Example (Version 2): Setting this to 5 will pick a random number between -5 and 5 to spawn the particle
-                RadiusInBlocks: 30
-                # Example (Version 1): Setting this higher than 1 will skip some particles of the "cube".
-                #    This is an option to "randomize" particle spawns around the player (eg. for snowflakes, ect)
-                # Example (Version 2): If version 2 is used, this will be used to indicate how many particles should
-                #    be spawned in total! THIS IS NOT THE CHANCE IF VERSION 2 IS PICKED!
-                ChanceForEachLoop: 5
-            # An optional condition block.
-            Conditions:
-              EnableCondition: true
-              Weather: Clear
-              FromTimeInTicks: 5000
-              UntilTimeInTicks: 9000
-              Permission: ''
+          - Snow
+        # A list of sound objects (see sounds.yml).
         Sounds:
-          # A list of sound object. You can add multiple sound objects as shown below
-          # The chance that this sound will be played. Chance is 1 to x
-          - Chance: 20
-            # The sound (with namespace) to play
-            Sound: 'minecraft:block.end_portal_frame.spawn'
-            # The sound category for the sound
-            Category: Ambient
-            # The volume of the sound
-            Volume: 0.1
-            # The pitch of the sound
-            Pitch: 1.0
-            # Whether the sound will follow the player or stays at the last location of the player
-            IsServerWide: true
-            # Randomize the location by this much in X and Z directions (e.g.: +10 and -10)
-            # This will also overwrite 'IsServerWide' to true
-            MaxRandomOffset: 10
-            # The additional conditions that must apply before the sound will be played.
-            # Same as biome conditions
-            # Keep in mind, that all conditions of this biome must ALSO apply
-            Conditions:
-              EnableCondition: true
-              Weather: Clear
-              FromTimeInTicks: 5000
-              UntilTimeInTicks: 9000
-              Permission: ''
-          - Chance: 20
-            Sound: 'minecraft:ambient.crimson_forest.additions'
-            Category: Ambient
-            Volume: 0.1
-            Pitch: 1.0
-            IsServerWide: true
-    Desert:
+          - PortalFrameSpawn
+          - CrimsonAdditions
+
+    - BiomeGroup: Swamp
       WhileIn:
         Commands:
-          - PickRandomCommand: true
-            Commands:
-              - 'msg %player% {#5ee68b}Hi there!'
-              - 'msg %player% You are currently in the swamp biome!'
+          - SwampyResponse
         Sounds:
-          - Chance: 10
-            Sound: 'minecraft:block.end_portal_frame.fill'
-            Category: Ambient
-            Volume: 0.1
-            Pitch: 0.5
-            IsServerWide: false
+          - PortalFrameFill
+
   Settings:
     # The time in ticks in which the plugin should check the current biomes of all players
     # The HIGHER this integer is, the FEWER checks will be made => Better performance, poorer experience
     # The LOWER this integer is, the HIGHER checks will be made => Poorer performance, better experience
     PositionChecksInTicks: 20
-    # The time in ticks in which the plugin should check the current biomes of all players for particles (-1 to disable)
-    # The HIGHER this integer is, the FEWER checks will be made => Better performance, poorer experience
-    # The LOWER this integer is, the HIGHER checks will be made => Poorer performance, better experience
-    PositionParticleChecksInTicks: 20
     # Have a look at the Placeholder description section!
-    # Leave it as it is or empty to use for vanilla worlds
+    # Leave it as it is or empty ('') to use for vanilla worlds.
     PapiBiomePlaceholder: '%player_biome%'
-    # Whether a single command model ('Commands' operation) or all of them (inside a biome configuration) should be executed.
-    # If set to true and multiple command models have been configured, only one will randomly get picked.
-    # If set to false and multiple command models have been configured, all of them will get performed.
-    ExecuteSingleCommandModel: true
+    # Whether a single group or all of them should be executed.
+    # If set to true and multiple groups (e.g.: particles) have been configured, only one will randomly get picked.
+    # If set to false and multiple groups (e.g.: particles) have been configured, all of them will get executed.
+    UseSingleGroupMode: true

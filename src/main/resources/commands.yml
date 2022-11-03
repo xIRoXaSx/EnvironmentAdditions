@@ -1,0 +1,39 @@
+# ========
+#
+# Color Codes:
+#    For commands you can also use color and hex codes (long and short version) like:
+#       Color codes: &a - &f, &0 - &9, &k - &o, &r
+#       Hex codes:   {#123456}, {#123}
+#
+# ========
+Commands:
+  # A mapping of particle objects to play every defined PositionChecksInTicks.
+  CommonResponse:
+    # Whether a random command from the list of commands should be picked or all of them should be executed.
+    PickRandomCommand: false
+    # The target who should execute the command.
+    # Can either be 'Player' or 'Console'.
+    Executor: Console
+    # The commands to execute.
+    # Depending on 'PickRandomCommand', either one random or all commands will be considered.
+    Commands:
+      - 'msg %player% {#5ee68b}Hello %player%!'
+    # An optional condition, leave empty if no condition should be used.
+    # Keep in mind, that all conditions of the BIOME GROUP MUST ALSO APPLY!
+    Condition: ""
+
+  SnowyResponse:
+    PickRandomCommand: false
+    Executor: Console
+    Commands:
+      - 'msg %player% {#5ee68b}Hi there!'
+      - 'msg %player% You are currently in one of the snow biomes!'
+    Condition: ""
+
+  SwampyResponse:
+    PickRandomCommand: true
+    Executor: Console
+    Commands:
+      - 'msg %player% You received a random message!'
+      - 'msg %player% This is another random message!'
+    Condition: ""

@@ -1,0 +1,54 @@
+# ========
+#
+# Check out the particle list from spigot for all available particle names
+#    => Particles: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
+#
+# ========
+Particles:
+  # A mapping of particle objects to play every defined PositionChecksInTicks.
+  Snow:
+    # The type of the particle. Have a look at the top description for all available particles
+    Particle: FIREWORKS_SPARK
+    # If particle is set to REDSTONE, you can define the color as a hex code here
+    RedstoneHexColor: '#55ffff'
+    # If particle is set to REDSTONE, you can define the size of those particles here
+    RedstoneSize: 10
+    # The amount of particles. If greater than 0, the particles will fly more aggressively
+    ParticleCount: 0
+    # If you want to set an offset to the particles, you can define the distance here.
+    Animation:
+      # If you don't know the direction a player faces, you can set the relative distance here.
+      # Otherwise, you can use relative options down below.
+      ViewDirectionDistance: 0
+      # The relative x location the particles will spawn
+      RelativeOffsetX: 0
+      # The relative y location the particles will spawn
+      RelativeOffsetY: 5
+      # The relative z location the particles will spawn
+      RelativeOffsetZ: 0
+      # If you want to have an area filled with particles, here are some settings for it
+      LoopOption:
+        # Can either be Disabled, Static, Cubic or Random.
+        # Example Static: The configured particle(s) will spawn at the current location of the player.
+        #    According to the set direction modifiers (ViewDirectionDistance, RelativeOffsetX, ...), the spawned location
+        #    will be modified.
+        # Example Cubic: A cubic area around the player will be calculated in which particle will spawn
+        #    (more calculation needed as option 2 and does not look as randomized as option 2).
+        # Example Random: Random locations around the player ('RadiusInBlocks' at max each axis) will be picked.
+        #    'ChanceForEachLoop' will be used to tell how many PARTICLES should be spawned in each loop.
+        Type: Random
+        # Setting this greater than 0 will calculate a cube around the player in the dimensions of the configured integer.
+        # Formula for one line: x * 2 + 1
+        # Example (Type Cubic): Setting this to 1 will spawn a 3x3x3 cube in total (+1 each side, relative of players location).
+        # Example (Type Cubic): Setting this to 5 will spawn 11x11x11
+        # Example (Type Random): Setting this to 1 will pick a random number between -1 and 1 to spawn the particle
+        # Example (Type Random): Setting this to 5 will pick a random number between -5 and 5 to spawn the particle
+        RadiusInBlocks: 30
+        # Example (Type 1): Setting this higher than 1 will skip some particles of the "cube".
+        #    This is an option to "randomize" particle spawns around the player (e.g. for snowflakes, ect)
+        # Example (Type 2): If Type 2 is used, this will be used to indicate how many particles should
+        #    be spawned in total! THIS IS NOT THE CHANCE IF VERSION 2 IS PICKED!
+        ChanceForEachLoop: 5
+    # An optional condition, leave empty if no condition should be used.
+    # Keep in mind, that all conditions of the BIOME GROUP MUST ALSO APPLY!
+    Condition: WhileClearAndDay

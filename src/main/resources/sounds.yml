@@ -1,0 +1,49 @@
+# ========
+#
+# Check out the sound list / sound category list from spigot for all available vanilla sounds / categories.
+#    => Sounds:        https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+#    => SoundCategory: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/SoundCategory.html
+#
+#    If you want to use custom sounds, you can just go ahead and use the full name (including the namespace).
+#    The sound must obviously be registered in your resource pack!
+#
+# ========
+Sounds:
+  # A mapping of sound objects to play every defined PositionChecksInTicks.
+  PortalFrameSpawn:
+    # The sound (with namespace) to play.
+    Sound: 'minecraft:block.end_portal_frame.spawn'
+    # The sound category for the sound.
+    Category: Ambient
+    # The volume of the sound.
+    Volume: 0.1
+    # The pitch of the sound.
+    Pitch: 1.0
+    # Whether the sound is publicly audible.
+    # If set to true, all players are able to hear the sound around the played location.
+    # If set to false, only the player who activated the event is able to hear the sound (+ sound is following the player).
+    IsGlobal: true
+    # Randomize the location (X and Z directions) by the given number (e.g.: +10 and -10).
+    # This will also overwrite 'IsGlobal' to true
+    MaxRandomOffset: 10
+    # An optional condition, leave empty if no condition should be used.
+    # Keep in mind, that all conditions of the BIOME GROUP MUST ALSO APPLY!
+    Condition: ""
+
+  CrimsonAdditions:
+    Sound: 'minecraft:ambient.crimson_forest.additions'
+    Category: Ambient
+    Volume: 0.1
+    Pitch: 1.0
+    IsGlobal: true
+    MaxRandomOffset: 0
+    Condition: ""
+
+  PortalFrameFill:
+    Sound: 'minecraft:block.end_portal_frame.fill'
+    Category: Ambient
+    Volume: 0.1
+    Pitch: 1.0
+    IsGlobal: true
+    MaxRandomOffset: 0
+    Condition: ""

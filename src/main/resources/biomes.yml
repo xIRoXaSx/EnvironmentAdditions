@@ -1,0 +1,84 @@
+# ========
+#
+#   Biomes can be grouped into a bundle and used in the main configuration.
+#   All biomes (vanilla and custom ones) can be used.
+#   A list of all vanilla biomes can be found here:
+#     => https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html
+#
+#    You want to ditch Minecraft's vanilla biomes and have custom ones?
+#    Make use of the PlaceholderAPI integration and have a look at the Placeholder description!
+#
+# ========
+Biomes:
+  Temperate:
+    - plains
+    - sunflower_plains
+    - forest
+    - flower_forest
+    - birch_forest
+    - old_growth_birch_forest
+    - dark_forest
+    - swamp
+    - mangrove_swamp
+    - jungle
+    - sparse_jungle
+    - bamboo_jungle
+    - beach
+    - mushroom_fields
+    - meadow
+    - stony_peaks
+
+  Hot:
+    - desert
+    - savanna
+    - savanna_plateau
+    - windswept_savanna
+    - badlands
+    - wooded_badlands
+    - eroded_badlands
+
+  Snowy:
+    - snowy_plains
+    - icy_spikes
+    - snowy_taiga
+    - snowy_beach
+    - grove
+    - snowy_slopes
+    - jagged_peaks
+    - frozen_peaks
+
+  Cold:
+    - grove
+    - windswept_hills
+    - windswept_gravelly_hills
+    - windswept_forest
+    - taiga
+    - old_growth_pine_taiga
+    - stony_shore
+
+  Aquatic:
+    - river
+    - frozen_river
+    - warm_ocean
+    - lukewarm_ocean
+    - deep_lukewarm_ocean
+    - ocean
+    - cold_ocean
+    - frozen_ocean
+    - deep_ocean
+    - deep_cold_ocean
+    - deep_frozen_ocean
+
+  Cave:
+    - deep_dark
+    - dripstone_caves
+    - lush_caves
+
+  Swamp:
+    - swamp
+    - mangrove_swamp
+
+  My_Custom_Group:
+    - custom:my_biome_1
+    - custom:my_biome_2
+    - custom:my_biome_3
