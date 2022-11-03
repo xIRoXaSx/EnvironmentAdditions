@@ -11,21 +11,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CmdHandler  {
-    private static final String rootPerm = EnvironmentAdditions.getPluginDescription().getName().toLowerCase();
+    private static final String adminPerm = EnvironmentAdditions.getPluginDescription().getName().toLowerCase() + ".admin";
     final CommandSender sender;
     private final String[] args;
     private final Plugin plugin;
+
     final static ICmd[] registry = new ICmd[]{
         new Benchmark(
-            "benchmark", rootPerm + ".admin", new String[]{"bench", "b"},
+            "benchmark", adminPerm, new String[]{"bench", "b"},
             "Benchmark your configuration.", "/ea bench [iterations] [minutes]"
         ),
         new Reload(
-            "reload", rootPerm + ".admin", new String[]{"rl", "r"},
+            "reload", adminPerm, new String[]{"rl", "r"},
             "Reload the configuration file.", "/ea reload"
         ),
         new Help(
-            "help", rootPerm + ".help", new String[]{"hlp", "h"},
+            "help", adminPerm, new String[]{"hlp", "h"},
             "Print this help message.", "/ea help"
         )
     };
