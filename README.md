@@ -7,7 +7,7 @@ If you like to add some **sounds** and **particles** to specific biomes, look no
 With this plugin you are finally able to extend the look and feel of vanilla **or even custom biomes** to your liking!  
 If you are using a custom resource pack for the server with lots of custom sounds, you can of course use them as well.    
 A small example here:
-![EnvironmentAdditions-Teaser](https://user-images.githubusercontent.com/38859398/199808292-a468811f-86ff-4111-b51b-803c99ab0830.gif)
+![EnvironmentAdditions](https://user-images.githubusercontent.com/38859398/199825810-c9c201c6-7706-45c5-a677-c3ae95b2999a.gif)
 \[Caption: Particles are being spawned to simulate snow] 
 
 ## Commands
@@ -43,7 +43,7 @@ This has one huge advantage: You don't need to scroll / search the whole day for
     ├ particles.yml   => Contains groups of particles, animations, ...
     └ sounds.yml      => Contains groups of sounds, sound settings, ...
 ```
-The default configs can be found in the [resources](resources) directory.
+The default configs can be found in the [resources](src/main/resources) directory.
 
 ### Useful links:
 - Biomes: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html
