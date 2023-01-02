@@ -6,7 +6,7 @@
 #     => https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html
 #
 #    You want to ditch Minecraft's vanilla biomes and have custom ones?
-#    Make use of the PlaceholderAPI integration and have a look at the Placeholder description!
+#    Make use of the PlaceholderAPI integration and have a look at the Placeholder description in the config!
 #
 # ========
 Biomes:
