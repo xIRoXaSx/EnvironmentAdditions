@@ -6,22 +6,22 @@
 # ========
 Conditions:
   WhileClearAndDay:
-    # If this condition block should be enabled / considered.
-    # If set to true, all conditions need to apply before any operation for linked biome groups will be performed.
-    # If set to false, all operations linked to this condition will be performed regardless of the configured conditions.
-    # You can remove conditions that aren't necessary for you.
+    # Whether this condition block should be enabled.
+    # If set to true, all conditions need to apply before any linked operation will be performed.
+    # If set to false, all linked operations will be performed regardless of the configured conditions.
     IsEnabled: true
     # The chance that the linked event will be executed. Chance is 1 to x.
     # If set to <= 1, the chance will always return true.
     Chance: 20
-    # The time (in ticks) in which the linked events will start.
+    # The time (in ticks) in which the linked events will start, disable with -1.
     FromTimeInTicks: 0
-    # The time (in ticks) in which the linked events will stop.
+    # The time (in ticks) in which the linked events will stop, disable with -1.
     UntilTimeInTicks: 12000
     # The weather type. Either 'Disabled', 'Clear' or 'Downfall'.
     Weather: Clear
-    # The permission the player needs to have in order to activate an event.
+    # The permission a player needs to have in order to activate an event.
     Permission: ''
+
   WhileClearAndDayAndPermission:
     IsEnabled: true
     Chance: 5
@@ -29,6 +29,7 @@ Conditions:
     UntilTimeInTicks: 12000
     Weather: Clear
     Permission: 'ea.condition.specialpermission'
+
   WhileRainyAndDay:
     IsEnabled: true
     Chance: 5
@@ -36,6 +37,7 @@ Conditions:
     UntilTimeInTicks: 12000
     Weather: Downfall
     Permission: ''
+
   WhileClearAndNight:
     IsEnabled: true
     Chance: 5
@@ -43,6 +45,7 @@ Conditions:
     UntilTimeInTicks: 23999
     Weather: Clear
     Permission: ''
+
   WhileClearAndDayWithPermission:
     IsEnabled: true
     Chance: 2
@@ -50,6 +53,7 @@ Conditions:
     UntilTimeInTicks: 9000
     Weather: Clear
     Permission: ea.condition.specialpermission
+
   AlwaysTrue:
     IsEnabled: true
     Chance: -1

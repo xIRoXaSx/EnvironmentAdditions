@@ -6,7 +6,7 @@
 #    If you want to use PlaceholderAPI placeholders for biomes (certain world generators hook into PAPI for custom biomes),
 #       you can set the placeholder of your choice in Settings.PapiBiomePlaceholder.
 #    E.g.: '%player_biome%' will use the placeholder from the PAPI Extension "Player".
-#    YOU NEED TO MAKE SURE THAT YOU HAVE THE CORRESPONDING EXTENSION INSTALLED IF NEEDED!
+#    YOU NEED TO MAKE SURE THAT YOU HAVE THE CORRESPONDING EXTENSION INSTALLED IF USED!
 #
 # ---
 #
@@ -24,20 +24,20 @@
 # ========
 EnvironmentAdditions:
   Biomes:
-    # The name of the biome group (see biomes.yml).
+    # The name of the biome group (see biomes.yml) for the given actions.
     - BiomeGroup: Snowy
-      # The event that should occur WHILE players are IN this specific biome group.
+      # The actions that should occur WHILE players are IN the specified biome group.
       WhileIn:
-        # The conditions that must apply before any event for this biome group will be performed.
-        Condition: WhileRainyAndDay
-        # A list of particle objects (see commands.yml).
+        # The conditions that must apply before any action for this biome group will be performed.
+        Condition: WhileClearAndDay
+        # A list of command object names (see commands.yml).
         Commands:
           - CommonResponse
           - SnowyResponse
-        # A list of particle objects (see particles.yml).
+        # A list of particle object names (see particles.yml).
         Particles:
           - Snow
-        # A list of sound objects (see sounds.yml).
+        # A list of sound object names (see sounds.yml).
         Sounds:
           - PortalFrameSpawn
           - CrimsonAdditions
@@ -50,12 +50,12 @@ EnvironmentAdditions:
           - PortalFrameFill
 
   Settings:
-    # The time in ticks in which the plugin should check the current biomes of all players
-    # The HIGHER this integer is, the FEWER checks will be made => Better performance, poorer experience
-    # The LOWER this integer is, the HIGHER checks will be made => Poorer performance, better experience
+    # The time in ticks in which the plugin should check the current positions of the players (biome) .
+    # The HIGHER this integer is, the FEWER checks will be made => Better performance, poorer experience.
+    # The LOWER this integer is, the HIGHER checks will be made => Poorer performance, better experience.
     PositionChecksInTicks: 20
-    # Have a look at the Placeholder description section!
-    # Leave it as it is or empty ('') to use for vanilla worlds.
+    # Have a look at the Placeholder description section above!
+    # Leave it empty ('') to use the internal placeholder.
     PapiBiomePlaceholder: '%player_biome%'
     # Whether a single group or all of them should be executed.
     # If set to true and multiple groups (e.g.: particles) have been configured, only one will randomly get picked.

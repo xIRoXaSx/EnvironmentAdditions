@@ -7,7 +7,6 @@
 #
 # ========
 Commands:
-  # A mapping of particle objects to play every defined PositionChecksInTicks.
   CommonResponse:
     # Whether a random command from the list of commands should be picked or all of them should be executed.
     PickRandomCommand: false
@@ -19,7 +18,7 @@ Commands:
     Commands:
       - 'msg %player% {#5ee68b}Hello %player%!'
     # An optional condition, leave empty if no condition should be used.
-    # Keep in mind, that all conditions of the BIOME GROUP MUST ALSO APPLY!
+    # Keep in mind, that all conditions need to apply before any linked operation will be performed!
     Condition: ""
 
   SnowyResponse:

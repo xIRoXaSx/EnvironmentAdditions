@@ -70,19 +70,19 @@ public class ModelParticle extends ModelCondition implements ICondition, IModelE
         int srcX = src.getBlockX();
         int srcY = src.getBlockY();
         int srcZ = src.getBlockZ();
-        for (int y = srcY + radius + 1; y > srcY - radius; y--) {
+        for (int y = srcY + radius + 1; y > srcY - radius - 1; y--) {
             EProbability prob = new Probability(probability).achievedProbability();
             if (!prob.equals(EProbability.ACHIEVED)) {
                 continue;
             }
 
-            for (int x = srcX + radius + 1; x > srcX - radius; x--) {
+            for (int x = srcX + radius + 1; x > srcX - radius - 1; x--) {
                 prob = new Probability(probability).achievedProbability();
                 if (!prob.equals(EProbability.ACHIEVED)) {
                     continue;
                 }
 
-                for (int z = srcZ + radius + 1; z > srcZ - radius ; z--) {
+                for (int z = srcZ + radius + 1; z > srcZ - radius - 1; z--) {
                     prob = new Probability(probability).achievedProbability();
                     if (!prob.equals(EProbability.ACHIEVED)) {
                         continue;
@@ -106,9 +106,9 @@ public class ModelParticle extends ModelCondition implements ICondition, IModelE
         Location src = target.getLocation();
         Particle.DustOptions dustOpts = getDustOptions();
         for (int i = 0; i < chance; i++) {
-            double x = new Random(-radius, radius + 1).getFloatResult();
-            double y = new Random(-radius, radius + 1).getFloatResult();
-            double z = new Random(-radius, radius + 1).getFloatResult();
+            double x = new Random(-radius - 1, radius + 1).getFloatResult();
+            double y = new Random(-radius - 1, radius + 1).getFloatResult();
+            double z = new Random(-radius - 1, radius + 1).getFloatResult();
             target.spawnParticle(particle, src.getX() + x, src.getY()+ y, src.getZ() + z, numParticles, dustOpts);
         }
     }
