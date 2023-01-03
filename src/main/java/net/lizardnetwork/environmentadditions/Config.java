@@ -233,8 +233,8 @@ public class Config {
         return new ModelCondition(
             (boolean)configValues.get(subKeys[0]),
             (int)(chance != null ? chance : -1),
-            Caster.castToLong(configValues.get(subKeys[2])),
-            Caster.castToLong(configValues.get(subKeys[3])),
+            Caster.castToLong(configValues.get(subKeys[2]), -1),
+            Caster.castToLong(configValues.get(subKeys[3]), -1),
             Parser.valueOf(EWeatherCondition.class, configValues.get(subKeys[4])),
             Caster.valueOrEmpty(configValues.get(subKeys[5]))
         );
