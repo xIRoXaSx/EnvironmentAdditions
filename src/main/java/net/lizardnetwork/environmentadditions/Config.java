@@ -247,7 +247,7 @@ public class Config {
     private ModelCommand[] getCommandsByName(List<?> groups) {
         ModelCondition condition = ModelCondition.getDefault(false);
         ModelCommand commands = new ModelCommand(new String[0], ECommandExecutor.PLAYER, condition, false);
-        if (groups == null) {
+        if (groups == null || groups.size() == 0) {
             return List.of(commands).toArray(new ModelCommand[0]);
         }
         if (EnvironmentAdditions.getState().getSettings().isSingleModelMode()) {
@@ -293,7 +293,7 @@ public class Config {
         ModelCondition condition = ModelCondition.getDefault(false);
         Color color = Parser.hexToColor("ffffff");
         ModelParticle particles = new ModelParticle(Particle.REDSTONE, color, 1, 1, condition, null);
-        if (groups == null) {
+        if (groups == null || groups.size() == 0) {
             return List.of(particles).toArray(new ModelParticle[0]);
         }
         if (EnvironmentAdditions.getState().getSettings().isSingleModelMode()) {
@@ -360,7 +360,7 @@ public class Config {
     private ModelSound[] getSoundsByName(List<?> groups) {
         ModelCondition condition = ModelCondition.getDefault(false);
         ModelSound sound = new ModelSound(Sound.WEATHER_RAIN.getKey().toString(), SoundCategory.MUSIC, 0, 0, false, 0, condition);
-        if (groups == null) {
+        if (groups == null || groups.size() == 0) {
             return List.of(sound).toArray(new ModelSound[0]);
         }
         if (EnvironmentAdditions.getState().getSettings().isSingleModelMode()) {
