@@ -60,15 +60,15 @@ public class Caster {
     /**
      * Cast o to a long value.
      * @param o Object - The object to cast.
-     * @return long - The long value of o or 0.
+     * @return long - The long value of o or fallback.
      */
-    public static long castToLong(Object o) {
+    public static long castToLong(Object o, long fallback) {
         if (o instanceof Integer) {
             return (long)((int)o);
         }
         if (o instanceof Long) {
             return (long)o;
         }
-        return 0;
+        return fallback;
     }
 }

@@ -233,8 +233,8 @@ public class Config {
         return new ModelCondition(
             (boolean)configValues.get(subKeys[0]),
             (int)(chance != null ? chance : -1),
-            Caster.castToLong(configValues.get(subKeys[2])),
-            Caster.castToLong(configValues.get(subKeys[3])),
+            Caster.castToLong(configValues.get(subKeys[2]), -1),
+            Caster.castToLong(configValues.get(subKeys[3]), -1),
             Parser.valueOf(EWeatherCondition.class, configValues.get(subKeys[4])),
             Caster.valueOrEmpty(configValues.get(subKeys[5]))
         );
@@ -247,7 +247,7 @@ public class Config {
     private ModelCommand[] getCommandsByName(List<?> groups) {
         ModelCondition condition = ModelCondition.getDefault(false);
         ModelCommand commands = new ModelCommand(new String[0], ECommandExecutor.PLAYER, condition, false);
-        if (groups == null) {
+        if (groups == null || groups.size() == 0) {
             return List.of(commands).toArray(new ModelCommand[0]);
         }
         if (EnvironmentAdditions.getState().getSettings().isSingleModelMode()) {
@@ -293,7 +293,7 @@ public class Config {
         ModelCondition condition = ModelCondition.getDefault(false);
         Color color = Parser.hexToColor("ffffff");
         ModelParticle particles = new ModelParticle(Particle.REDSTONE, color, 1, 1, condition, null);
-        if (groups == null) {
+        if (groups == null || groups.size() == 0) {
             return List.of(particles).toArray(new ModelParticle[0]);
         }
         if (EnvironmentAdditions.getState().getSettings().isSingleModelMode()) {
@@ -360,7 +360,7 @@ public class Config {
     private ModelSound[] getSoundsByName(List<?> groups) {
         ModelCondition condition = ModelCondition.getDefault(false);
         ModelSound sound = new ModelSound(Sound.WEATHER_RAIN.getKey().toString(), SoundCategory.MUSIC, 0, 0, false, 0, condition);
-        if (groups == null) {
+        if (groups == null || groups.size() == 0) {
             return List.of(sound).toArray(new ModelSound[0]);
         }
         if (EnvironmentAdditions.getState().getSettings().isSingleModelMode()) {

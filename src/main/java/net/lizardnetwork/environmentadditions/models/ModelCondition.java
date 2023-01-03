@@ -90,7 +90,7 @@ public class ModelCondition implements ICondition, IRandomized {
         }
 
         World world = target.getWorld();
-        return world.isClearWeather() || world.isThundering() ? WeatherType.DOWNFALL : WeatherType.CLEAR;
+        return !world.isClearWeather() || world.isThundering() ? WeatherType.DOWNFALL : WeatherType.CLEAR;
     }
 
     public int getProbability() {
