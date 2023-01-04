@@ -21,6 +21,19 @@ Conditions:
     Weather: Clear
     # The permission a player needs to have in order to activate an event.
     Permission: ''
+    # The block condition a user needs to satisfy.
+    Block:
+      # The type of the block the user needs to stand on.
+      Type: GRASS_BLOCK
+      # The relative location modifier from the position of the player (feet).
+      # If you want to check blocks around instead of under the player, you can set the relative positions here.
+      RelativeOffset:
+        # X-axis modifier.
+        X: 0.0
+        # Y-axis modifier.
+        Y: 0.0
+        # Z-axis modifier.
+        Z: 0.0
 
   WhileClearAndDayAndPermission:
     IsEnabled: true

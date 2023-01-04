@@ -18,7 +18,15 @@ public class ModelCommand extends ModelCondition implements ICondition, IModelEx
     private final boolean pickRandomCommand;
 
     public ModelCommand(String[] commands, ECommandExecutor executor, ModelCondition condition, boolean pickRandomCommand) {
-        super(condition.isEnabled(), condition.getProbability(), condition.getFromTimeInTicks(), condition.getUntilTimeInTicks(),condition.getWeather(), condition.getPermission());
+        super(
+            condition.isEnabled(),
+            condition.getProbability(),
+            condition.getFromTimeInTicks(),
+            condition.getUntilTimeInTicks(),
+            condition.getWeather(),
+            condition.getPermission(),
+            condition.getBlockCondition()
+        );
         this.commands = commands;
         this.executor = executor;
         this.condition = condition;

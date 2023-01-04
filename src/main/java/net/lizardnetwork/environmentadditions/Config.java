@@ -213,13 +213,19 @@ public class Config {
             return ModelCondition.getDefault(true);
         }
 
+        String blockSubKey = "Block";
+        String relativeOffsetSubKey = "RelativeOffset";
         String[] subKeys = new String[]{
             "IsEnabled",
             "Chance",
             "FromTimeInTicks",
             "UntilTimeInTicks",
             "Weather",
-            "Permission"
+            "Permission",
+            blockSubKey + ".Type",
+            blockSubKey + "." + relativeOffsetSubKey + ".X",
+            blockSubKey + "." + relativeOffsetSubKey + ".Y",
+            blockSubKey + "." + relativeOffsetSubKey + ".Z",
         };
         String rootKey = "Conditions." + name;
         Map<String, Object> configValues = getConfigValues(this.conditions, rootKey, subKeys);
@@ -233,10 +239,18 @@ public class Config {
         return new ModelCondition(
             (boolean)configValues.get(subKeys[0]),
             (int)(chance != null ? chance : -1),
-            Caster.castToLong(configValues.get(subKeys[2]), -1),
-            Caster.castToLong(configValues.get(subKeys[3]), -1),
+            Caster.castToDouble(configValues.get(subKeys[2]), -1),
+            Caster.castToDouble(configValues.get(subKeys[3]), -1),
             Parser.valueOf(EWeatherCondition.class, configValues.get(subKeys[4])),
-            Caster.valueOrEmpty(configValues.get(subKeys[5]))
+            Caster.valueOrEmpty(configValues.get(subKeys[5])),
+            new ModelConditionBlock(
+                Caster.valueOrEmpty(configValues.get(subKeys[6])),
+                new ModelPosOffset(
+                    Caster.castToDouble(configValues.get(subKeys[7]), 0),
+                    Caster.castToDouble(configValues.get(subKeys[8]), 0),
+                    Caster.castToDouble(configValues.get(subKeys[9]), 0)
+                )
+            )
         );
     }
 

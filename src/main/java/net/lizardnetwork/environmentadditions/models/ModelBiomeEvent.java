@@ -17,7 +17,15 @@ public class ModelBiomeEvent extends ModelCondition implements ICondition {
     private final ModelSound[] sounds;
 
     public ModelBiomeEvent(String[] biomes, ModelCondition condition, ModelCommand[] commands, ModelParticle[] particles, ModelSound[] sounds) {
-        super(condition.isEnabled(), condition.getProbability(), condition.getFromTimeInTicks(), condition.getUntilTimeInTicks(),condition.getWeather(), condition.getPermission());
+        super(
+            condition.isEnabled(),
+            condition.getProbability(),
+            condition.getFromTimeInTicks(),
+            condition.getUntilTimeInTicks(),
+            condition.getWeather(),
+            condition.getPermission(),
+            condition.getBlockCondition()
+        );
         this.biomes = biomes;
         this.condition = condition;
         this.commands = commands;
@@ -35,9 +43,11 @@ public class ModelBiomeEvent extends ModelCondition implements ICondition {
         ModelCommand[] commands = getCommands();
         ModelParticle[] particles = getParticles();
         ModelSound[] sounds = getSounds();
-        return getBiomes().length > 0 && isInSpecifiedBiome(target) && condition.hasPermission(target) &&
+        return getBiomes().length > 0 && isInSpecifiedBiome(target) &&
+            condition.hasPermission(target) &&
             condition.isBetweenTicks(target.getPlayerTime()) &&
-            condition.matchesWeather(getRealWeatherType(target)) && (
+            condition.matchesWeather(getRealWeatherType(target)) &&
+            condition.matchesBlock(target) && (
             (commands.length > 0 && anyBasicMatchingCondition(target, commands)) ||
             (particles.length > 0 && anyBasicMatchingCondition(target, particles)) ||
             (sounds.length > 0 && anyBasicMatchingCondition(target, sounds))

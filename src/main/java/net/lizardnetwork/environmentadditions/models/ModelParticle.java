@@ -20,7 +20,15 @@ public class ModelParticle extends ModelCondition implements ICondition, IModelE
     private final ModelParticleAnimation animation;
 
     public ModelParticle(Particle particle, Color color, int size, int numParticles, ModelCondition condition, ModelParticleAnimation animation) {
-        super(condition.isEnabled(), condition.getProbability() , condition.getFromTimeInTicks(), condition.getUntilTimeInTicks(),condition.getWeather(), condition.getPermission());
+        super(
+            condition.isEnabled(),
+            condition.getProbability(),
+            condition.getFromTimeInTicks(),
+            condition.getUntilTimeInTicks(),
+            condition.getWeather(),
+            condition.getPermission(),
+            condition.getBlockCondition()
+        );
         this.particle = particle;
         this.color = color;
         this.size = size;

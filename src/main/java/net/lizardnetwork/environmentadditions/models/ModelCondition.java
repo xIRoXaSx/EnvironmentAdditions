@@ -6,33 +6,40 @@ import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.helper.Probability;
 import net.lizardnetwork.environmentadditions.interfaces.ICondition;
 import net.lizardnetwork.environmentadditions.interfaces.IRandomized;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.WeatherType;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import java.util.Objects;
 
 public class ModelCondition implements ICondition, IRandomized {
     private final boolean enabled;
     private final int probability;
-    private final long fromTimeInTicks;
-    private final long untilTimeInTicks;
+    private final double fromTimeInTicks;
+    private final double untilTimeInTicks;
     private final EWeatherCondition weather;
     private final String permission;
+    private final ModelConditionBlock blockCondition;
 
-    public ModelCondition(boolean enabled, int probability, long fromTimeInTicks, long untilTimeInTicks, EWeatherCondition weather, String permission) {
+    public ModelCondition(boolean enabled, int probability, double fromTimeInTicks, double untilTimeInTicks, EWeatherCondition weather, String permission, ModelConditionBlock blockCondition) {
         this.enabled = enabled;
         this.probability = probability;
         this.fromTimeInTicks = fromTimeInTicks;
         this.untilTimeInTicks = untilTimeInTicks;
         this.weather = weather;
         this.permission = permission;
+        this.blockCondition = blockCondition;
     }
 
     public static ModelCondition getDefault(boolean enabled) {
+        ModelConditionBlock condBlock = new ModelConditionBlock(Material.VOID_AIR.toString(), new ModelPosOffset(0,0,0));
         if (enabled) {
-            return new ModelCondition(true, 1, -1, -1, EWeatherCondition.DISABLED,"");
+            return new ModelCondition(true, 1, -1, -1, EWeatherCondition.DISABLED,"", condBlock);
         }
-        return new ModelCondition(false, -1, 0, 0, EWeatherCondition.CLEAR,"");
+        condBlock = new ModelConditionBlock(Material.GRASS_BLOCK.toString(), new ModelPosOffset(1,1,1));
+        return new ModelCondition(false, -1, 0, 0, EWeatherCondition.CLEAR,"", condBlock);
     }
 
     public static boolean hasPermission(CommandSender target, String permission) {
@@ -54,7 +61,8 @@ public class ModelCondition implements ICondition, IRandomized {
         return isEnabled() &&
             hasPermission(player) && achievedProbability() &&
             matchesWeather(getRealWeatherType(player)) &&
-            isBetweenTicks(player.getPlayerTime());
+            isBetweenTicks(player.getPlayerTime()) &&
+            matchesBlock(player);
     }
 
     @Override
@@ -93,15 +101,25 @@ public class ModelCondition implements ICondition, IRandomized {
         return !world.isClearWeather() || world.isThundering() ? WeatherType.DOWNFALL : WeatherType.CLEAR;
     }
 
+    public boolean matchesBlock(Player target) {
+        if (Objects.equals(blockCondition.getMaterial(), Material.VOID_AIR.toString()) || Objects.equals(blockCondition.getMaterial(), "")) {
+            return true;
+        }
+
+        ModelPosOffset offset = blockCondition.getPosOffset();
+        Location loc = target.getLocation().add(offset.getRelativeX(), offset.getRelativeY(), offset.getRelativeZ());
+        return Objects.equals(loc.getBlock().getType().toString(), blockCondition.getMaterial());
+    }
+
     public int getProbability() {
         return probability;
     }
 
-    public long getFromTimeInTicks() {
+    public double getFromTimeInTicks() {
         return fromTimeInTicks;
     }
 
-    public long getUntilTimeInTicks() {
+    public double getUntilTimeInTicks() {
         return untilTimeInTicks;
     }
 
@@ -111,5 +129,9 @@ public class ModelCondition implements ICondition, IRandomized {
 
     public String getPermission() {
         return permission;
+    }
+
+    public ModelConditionBlock getBlockCondition() {
+        return blockCondition;
     }
 }
