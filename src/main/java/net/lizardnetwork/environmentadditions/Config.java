@@ -239,8 +239,8 @@ public class Config {
         return new ModelCondition(
             (boolean)configValues.get(subKeys[0]),
             (int)(chance != null ? chance : -1),
-            Caster.castToDouble(configValues.get(subKeys[2]), -1),
-            Caster.castToDouble(configValues.get(subKeys[3]), -1),
+            Caster.castToInt(configValues.get(subKeys[2]), -1),
+            Caster.castToInt(configValues.get(subKeys[3]), -1),
             Parser.valueOf(EWeatherCondition.class, configValues.get(subKeys[4])),
             Caster.valueOrEmpty(configValues.get(subKeys[5])),
             new ModelConditionBlock(

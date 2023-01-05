@@ -58,11 +58,11 @@ public class Caster {
     }
 
     /**
-     * Cast o to a long value.
+     * Cast o to a double value.
      * @param o Object - The object to cast.
-     * @return long - The long value of o or fallback.
+     * @return double - The double value of o or fallback.
      */
-    public static double castToDouble(Object o, long fallback) {
+    public static double castToDouble(Object o, double fallback) {
         if (o instanceof Integer) {
             return (double)((int)o);
         }
@@ -71,6 +71,24 @@ public class Caster {
         }
         if (o instanceof Double) {
             return (double)o;
+        }
+        return fallback;
+    }
+
+    /**
+     * Cast o to a int value.
+     * @param o Object - The object to cast.
+     * @return int - The int value of o or fallback.
+     */
+    public static int castToInt(Object o, int fallback) {
+        if (o instanceof Integer) {
+            return ((int)o);
+        }
+        if (o instanceof Long) {
+            return (int)((long)o);
+        }
+        if (o instanceof Double) {
+            return (int)((double)o);
         }
         return fallback;
     }

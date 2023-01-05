@@ -45,7 +45,7 @@ public class ModelBiomeEvent extends ModelCondition implements ICondition {
         ModelSound[] sounds = getSounds();
         return getBiomes().length > 0 && isInSpecifiedBiome(target) &&
             condition.hasPermission(target) &&
-            condition.isBetweenTicks(target.getPlayerTime()) &&
+            condition.isBetweenTicks(target.getWorld().getTime()) &&
             condition.matchesWeather(getRealWeatherType(target)) &&
             condition.matchesBlock(target) && (
             (commands.length > 0 && anyBasicMatchingCondition(target, commands)) ||

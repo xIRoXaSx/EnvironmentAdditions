@@ -17,13 +17,13 @@ import java.util.Objects;
 public class ModelCondition implements ICondition, IRandomized {
     private final boolean enabled;
     private final int probability;
-    private final double fromTimeInTicks;
-    private final double untilTimeInTicks;
+    private final int fromTimeInTicks;
+    private final int untilTimeInTicks;
     private final EWeatherCondition weather;
     private final String permission;
     private final ModelConditionBlock blockCondition;
 
-    public ModelCondition(boolean enabled, int probability, double fromTimeInTicks, double untilTimeInTicks, EWeatherCondition weather, String permission, ModelConditionBlock blockCondition) {
+    public ModelCondition(boolean enabled, int probability, int fromTimeInTicks, int untilTimeInTicks, EWeatherCondition weather, String permission, ModelConditionBlock blockCondition) {
         this.enabled = enabled;
         this.probability = probability;
         this.fromTimeInTicks = fromTimeInTicks;
@@ -61,7 +61,7 @@ public class ModelCondition implements ICondition, IRandomized {
         return isEnabled() &&
             hasPermission(player) && achievedProbability() &&
             matchesWeather(getRealWeatherType(player)) &&
-            isBetweenTicks(player.getPlayerTime()) &&
+            isBetweenTicks(player.getWorld().getTime()) &&
             matchesBlock(player);
     }
 
@@ -115,11 +115,11 @@ public class ModelCondition implements ICondition, IRandomized {
         return probability;
     }
 
-    public double getFromTimeInTicks() {
+    public int getFromTimeInTicks() {
         return fromTimeInTicks;
     }
 
-    public double getUntilTimeInTicks() {
+    public int getUntilTimeInTicks() {
         return untilTimeInTicks;
     }
 
