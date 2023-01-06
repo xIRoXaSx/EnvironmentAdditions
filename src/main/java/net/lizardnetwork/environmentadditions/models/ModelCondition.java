@@ -36,10 +36,10 @@ public class ModelCondition implements ICondition, IRandomized {
     public static ModelCondition getDefault(boolean enabled) {
         ModelConditionBlock condBlock = new ModelConditionBlock(Material.VOID_AIR.toString(), new ModelPosOffset(0,0,0));
         if (enabled) {
-            return new ModelCondition(true, 1, -1, -1, EWeatherCondition.DISABLED,"", condBlock);
+            return new ModelCondition(true, 1, -1, -1, EWeatherCondition.DISABLED, "", condBlock);
         }
         condBlock = new ModelConditionBlock(Material.GRASS_BLOCK.toString(), new ModelPosOffset(1,1,1));
-        return new ModelCondition(false, -1, 0, 0, EWeatherCondition.CLEAR,"", condBlock);
+        return new ModelCondition(false, -1, 0, 0, EWeatherCondition.CLEAR, "", condBlock);
     }
 
     public static boolean hasPermission(CommandSender target, String permission) {
