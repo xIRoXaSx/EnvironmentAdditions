@@ -1,6 +1,6 @@
 name: EnvironmentAdditions
 main: net.lizardnetwork.environmentadditions.EnvironmentAdditions
-version: 2.0.1
+version: 2.1.0
 api-version: 1.19
 author: xIRoXaSx
 softdepend: [PlaceholderAPI]

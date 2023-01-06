@@ -213,13 +213,19 @@ public class Config {
             return ModelCondition.getDefault(true);
         }
 
+        String blockSubKey = "Block";
+        String relativeOffsetSubKey = "RelativeOffset";
         String[] subKeys = new String[]{
             "IsEnabled",
             "Chance",
             "FromTimeInTicks",
             "UntilTimeInTicks",
             "Weather",
-            "Permission"
+            "Permission",
+            blockSubKey + ".Type",
+            blockSubKey + "." + relativeOffsetSubKey + ".X",
+            blockSubKey + "." + relativeOffsetSubKey + ".Y",
+            blockSubKey + "." + relativeOffsetSubKey + ".Z",
         };
         String rootKey = "Conditions." + name;
         Map<String, Object> configValues = getConfigValues(this.conditions, rootKey, subKeys);
@@ -233,10 +239,18 @@ public class Config {
         return new ModelCondition(
             (boolean)configValues.get(subKeys[0]),
             (int)(chance != null ? chance : -1),
-            Caster.castToLong(configValues.get(subKeys[2]), -1),
-            Caster.castToLong(configValues.get(subKeys[3]), -1),
+            Caster.castToInt(configValues.get(subKeys[2]), -1),
+            Caster.castToInt(configValues.get(subKeys[3]), -1),
             Parser.valueOf(EWeatherCondition.class, configValues.get(subKeys[4])),
-            Caster.valueOrEmpty(configValues.get(subKeys[5]))
+            Caster.valueOrEmpty(configValues.get(subKeys[5])),
+            new ModelConditionBlock(
+                Caster.valueOrEmpty(configValues.get(subKeys[6])),
+                new ModelPosOffset(
+                    Caster.castToDouble(configValues.get(subKeys[7]), 0),
+                    Caster.castToDouble(configValues.get(subKeys[8]), 0),
+                    Caster.castToDouble(configValues.get(subKeys[9]), 0)
+                )
+            )
         );
     }
 
@@ -302,6 +316,7 @@ public class Config {
         }
 
         String animationSubKey = "Animation";
+        String relativeOffsetSubKey = animationSubKey + ".RelativeOffset";
         String loopOptionSubKey = animationSubKey + ".LoopOption";
         String[] subKeys = new String[]{
             "Particle",
@@ -310,9 +325,9 @@ public class Config {
             "ParticleCount",
             "Condition",
             animationSubKey + ".ViewDirectionDistance",
-            animationSubKey + ".RelativeOffsetX",
-            animationSubKey + ".RelativeOffsetY",
-            animationSubKey + ".RelativeOffsetZ",
+            relativeOffsetSubKey + ".X",
+            relativeOffsetSubKey + ".Y",
+            relativeOffsetSubKey + ".Z",
             loopOptionSubKey + ".Type",
             loopOptionSubKey + ".ChanceForEachLoop",
             loopOptionSubKey + ".RadiusInBlocks",
@@ -339,9 +354,11 @@ public class Config {
                 getConditionByName(rootKey, configValues.get(subKeys[4])),
                 new ModelParticleAnimation(
                     Caster.castToFloat(configValues.get(subKeys[5])),
-                    Caster.castToFloat(configValues.get(subKeys[6])),
-                    Caster.castToFloat(configValues.get(subKeys[7])),
-                    Caster.castToFloat(configValues.get(subKeys[8])),
+                    new ModelPosOffset(
+                        Caster.castToDouble(configValues.get(subKeys[6]), 0),
+                        Caster.castToDouble(configValues.get(subKeys[7]), 0),
+                        Caster.castToDouble(configValues.get(subKeys[8]), 0)
+                    ),
                     new ModelParticleLoop(
                         Parser.valueOf(EParticleLoop.class, configValues.get(subKeys[9])),
                         (int)configValues.get(subKeys[10]),

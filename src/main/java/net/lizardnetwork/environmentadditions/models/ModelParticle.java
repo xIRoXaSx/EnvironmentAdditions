@@ -20,7 +20,15 @@ public class ModelParticle extends ModelCondition implements ICondition, IModelE
     private final ModelParticleAnimation animation;
 
     public ModelParticle(Particle particle, Color color, int size, int numParticles, ModelCondition condition, ModelParticleAnimation animation) {
-        super(condition.isEnabled(), condition.getProbability() , condition.getFromTimeInTicks(), condition.getUntilTimeInTicks(),condition.getWeather(), condition.getPermission());
+        super(
+            condition.isEnabled(),
+            condition.getProbability(),
+            condition.getFromTimeInTicks(),
+            condition.getUntilTimeInTicks(),
+            condition.getWeather(),
+            condition.getPermission(),
+            condition.getBlockCondition()
+        );
         this.particle = particle;
         this.color = color;
         this.size = size;
@@ -44,9 +52,10 @@ public class ModelParticle extends ModelCondition implements ICondition, IModelE
      * @param target - The target to spawn the particles for.
      */
     private void spawnStatic(Player target) {
-        float relX = animation.getRelOffsetX();
-        float relY = animation.getRelOffsetY();
-        float relZ = animation.getRelOffsetZ();
+        ModelPosOffset posOffset = animation.getPosOffset();
+        float relX = (float)posOffset.getRelativeX();
+        float relY = (float)posOffset.getRelativeY();
+        float relZ = (float)posOffset.getRelativeZ();
         float vdd = animation.getViewDirectionDistance();
         Location src = target.getLocation();
         Particle.DustOptions dustOpts = getDustOptions();

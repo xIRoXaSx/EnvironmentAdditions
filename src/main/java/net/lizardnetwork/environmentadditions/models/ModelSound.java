@@ -17,7 +17,15 @@ public class ModelSound extends ModelCondition implements ICondition, IModelExec
     private final ModelCondition condition;
 
     public ModelSound(String sound, SoundCategory category, float volume, float pitch, boolean isGlobal, float maxRandomOffset, ModelCondition condition) {
-        super(condition.isEnabled(), condition.getProbability(), condition.getFromTimeInTicks(), condition.getUntilTimeInTicks(),condition.getWeather(), condition.getPermission());
+        super(
+            condition.isEnabled(),
+            condition.getProbability(),
+            condition.getFromTimeInTicks(),
+            condition.getUntilTimeInTicks(),
+            condition.getWeather(),
+            condition.getPermission(),
+            condition.getBlockCondition()
+        );
         this.sound = sound;
         this.category = category;
         this.volume = volume;
