@@ -316,6 +316,7 @@ public class Config {
         }
 
         String animationSubKey = "Animation";
+        String relativeOffsetSubKey = animationSubKey + ".RelativeOffset";
         String loopOptionSubKey = animationSubKey + ".LoopOption";
         String[] subKeys = new String[]{
             "Particle",
@@ -324,9 +325,9 @@ public class Config {
             "ParticleCount",
             "Condition",
             animationSubKey + ".ViewDirectionDistance",
-            animationSubKey + ".RelativeOffsetX",
-            animationSubKey + ".RelativeOffsetY",
-            animationSubKey + ".RelativeOffsetZ",
+            relativeOffsetSubKey + ".X",
+            relativeOffsetSubKey + ".Y",
+            relativeOffsetSubKey + ".Z",
             loopOptionSubKey + ".Type",
             loopOptionSubKey + ".ChanceForEachLoop",
             loopOptionSubKey + ".RadiusInBlocks",
@@ -353,9 +354,11 @@ public class Config {
                 getConditionByName(rootKey, configValues.get(subKeys[4])),
                 new ModelParticleAnimation(
                     Caster.castToFloat(configValues.get(subKeys[5])),
-                    Caster.castToFloat(configValues.get(subKeys[6])),
-                    Caster.castToFloat(configValues.get(subKeys[7])),
-                    Caster.castToFloat(configValues.get(subKeys[8])),
+                    new ModelPosOffset(
+                        Caster.castToDouble(configValues.get(subKeys[6]), 0),
+                        Caster.castToDouble(configValues.get(subKeys[7]), 0),
+                        Caster.castToDouble(configValues.get(subKeys[8]), 0)
+                    ),
                     new ModelParticleLoop(
                         Parser.valueOf(EParticleLoop.class, configValues.get(subKeys[9])),
                         (int)configValues.get(subKeys[10]),

@@ -98,17 +98,18 @@ public class ModelCondition implements ICondition, IRandomized {
         }
 
         World world = target.getWorld();
-        return !world.isClearWeather() || world.isThundering() ? WeatherType.DOWNFALL : WeatherType.CLEAR;
+        return world.isClearWeather() ? WeatherType.CLEAR : WeatherType.DOWNFALL;
     }
 
     public boolean matchesBlock(Player target) {
-        if (Objects.equals(blockCondition.getMaterial(), Material.VOID_AIR.toString()) || Objects.equals(blockCondition.getMaterial(), "")) {
+        String material = blockCondition.getMaterial();
+        if (Objects.equals(material, Material.VOID_AIR.toString()) || Objects.equals(material, "")) {
             return true;
         }
 
         ModelPosOffset offset = blockCondition.getPosOffset();
         Location loc = target.getLocation().add(offset.getRelativeX(), offset.getRelativeY(), offset.getRelativeZ());
-        return Objects.equals(loc.getBlock().getType().toString(), blockCondition.getMaterial());
+        return Objects.equals(loc.getBlock().getType().toString(), material);
     }
 
     public int getProbability() {

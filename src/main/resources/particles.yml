@@ -18,12 +18,14 @@ Particles:
       # If you want to spawn "Static" particles, and you don't know the direction a player faces, you can set the relative distance here.
       # Otherwise, you can use relative options down below.
       ViewDirectionDistance: 0
-      # The relative x location the particles will spawn at.
-      RelativeOffsetX: 0
-      # The relative y location the particles will spawn at.
-      RelativeOffsetY: 5
-      # The relative z location the particles will spawn at.
-      RelativeOffsetZ: 0
+      # The relative location modifier from the position of the player (feet).
+      RelativeOffset:
+        # X-axis modifier.
+        X: 0.0
+        # Y-axis modifier.
+        Y: 0.0
+        # Z-axis modifier.
+        Z: 0.0
       LoopOption:
         # Can either be "Disabled", "Static", "Cubic" or "Random".
         # Example "Static": The configured particle(s) will spawn at the current location of the player.

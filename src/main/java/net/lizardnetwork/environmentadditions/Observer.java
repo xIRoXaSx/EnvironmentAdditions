@@ -22,7 +22,8 @@ public class Observer {
             @Override
             public void run() {
                 long start = System.nanoTime();
-                for (ModelBiomeEvent event : EnvironmentAdditions.getState().getBiomeEvents()) {
+                ModelBiomeEvent[] be = EnvironmentAdditions.getState().getBiomeEvents();
+                for (ModelBiomeEvent event : be) {
                     if (!event.hasAnyValueFor(player)) {
                         continue;
                     }
