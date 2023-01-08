@@ -25,6 +25,7 @@ public class ModelCommand extends ModelCondition implements ICondition, IModelEx
             condition.getUntilTimeInTicks(),
             condition.getWeather(),
             condition.getPermission(),
+            condition.getLightCondition(),
             condition.getBlockCondition()
         );
         this.commands = commands;

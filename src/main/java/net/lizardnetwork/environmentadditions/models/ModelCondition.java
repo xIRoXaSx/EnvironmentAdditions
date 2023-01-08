@@ -1,5 +1,6 @@
 package net.lizardnetwork.environmentadditions.models;
 
+import net.lizardnetwork.environmentadditions.enums.ELightSource;
 import net.lizardnetwork.environmentadditions.enums.EProbability;
 import net.lizardnetwork.environmentadditions.enums.EWeatherCondition;
 import net.lizardnetwork.environmentadditions.helper.Parser;
@@ -10,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.WeatherType;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import java.util.Objects;
@@ -22,24 +24,38 @@ public class ModelCondition implements ICondition, IRandomized {
     private final EWeatherCondition weather;
     private final String permission;
     private final ModelConditionBlock blockCondition;
+    private final ModelConditionLight lightCondition;
 
-    public ModelCondition(boolean enabled, int probability, int fromTimeInTicks, int untilTimeInTicks, EWeatherCondition weather, String permission, ModelConditionBlock blockCondition) {
+    public ModelCondition(
+            boolean enabled,
+            int probability,
+            int fromTimeInTicks,
+            int untilTimeInTicks,
+            EWeatherCondition weather,
+            String permission,
+            ModelConditionLight lightCondition,
+            ModelConditionBlock blockCondition
+        ) {
         this.enabled = enabled;
         this.probability = probability;
         this.fromTimeInTicks = fromTimeInTicks;
         this.untilTimeInTicks = untilTimeInTicks;
         this.weather = weather;
         this.permission = permission;
+        this.lightCondition = lightCondition;
         this.blockCondition = blockCondition;
     }
 
     public static ModelCondition getDefault(boolean enabled) {
         ModelConditionBlock condBlock = new ModelConditionBlock(Material.VOID_AIR.toString(), new ModelPosOffset(0,0,0));
+        ModelConditionLight condLight = new ModelConditionLight(ELightSource.GENERIC, -1, -1);
         if (enabled) {
-            return new ModelCondition(true, 1, -1, -1, EWeatherCondition.DISABLED, "", condBlock);
+            return new ModelCondition(true, 1, -1, -1, EWeatherCondition.DISABLED, "", condLight, condBlock);
         }
+
         condBlock = new ModelConditionBlock(Material.GRASS_BLOCK.toString(), new ModelPosOffset(1,1,1));
-        return new ModelCondition(false, -1, 0, 0, EWeatherCondition.CLEAR, "", condBlock);
+        condLight = new ModelConditionLight(ELightSource.GENERIC, 0, 15);
+        return new ModelCondition(false, -1, 0, 0, EWeatherCondition.CLEAR, "", condLight, condBlock);
     }
 
     public static boolean hasPermission(CommandSender target, String permission) {
@@ -62,7 +78,8 @@ public class ModelCondition implements ICondition, IRandomized {
             hasPermission(player) && achievedProbability() &&
             matchesWeather(getRealWeatherType(player)) &&
             isBetweenTicks(player.getWorld().getTime()) &&
-            matchesBlock(player);
+            matchesLight(player.getLocation()) &&
+            matchesBlock(player.getLocation());
     }
 
     @Override
@@ -101,14 +118,25 @@ public class ModelCondition implements ICondition, IRandomized {
         return world.isClearWeather() ? WeatherType.CLEAR : WeatherType.DOWNFALL;
     }
 
-    public boolean matchesBlock(Player target) {
+    public boolean matchesLight(Location target) {
+        Block block = target.getBlock();
+        byte light = 0;
+        switch (lightCondition.getType()) {
+            case SKY -> light = block.getLightFromSky();
+            case BLOCK -> light = block.getLightFromBlocks();
+            case GENERIC -> light = block.getLightLevel();
+        }
+        return lightCondition.isBetween(light);
+    }
+
+    public boolean matchesBlock(Location target) {
         String material = blockCondition.getMaterial();
         if (Objects.equals(material, Material.VOID_AIR.toString()) || Objects.equals(material, "")) {
             return true;
         }
 
         ModelPosOffset offset = blockCondition.getPosOffset();
-        Location loc = target.getLocation().add(offset.getRelativeX(), offset.getRelativeY(), offset.getRelativeZ());
+        Location loc = target.add(offset.getRelativeX(), offset.getRelativeY(), offset.getRelativeZ());
         return Objects.equals(loc.getBlock().getType().toString(), material);
     }
 
@@ -130,6 +158,10 @@ public class ModelCondition implements ICondition, IRandomized {
 
     public String getPermission() {
         return permission;
+    }
+
+    public ModelConditionLight getLightCondition() {
+        return lightCondition;
     }
 
     public ModelConditionBlock getBlockCondition() {

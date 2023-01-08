@@ -27,6 +27,7 @@ public class ModelParticle extends ModelCondition implements ICondition, IModelE
             condition.getUntilTimeInTicks(),
             condition.getWeather(),
             condition.getPermission(),
+            condition.getLightCondition(),
             condition.getBlockCondition()
         );
         this.particle = particle;

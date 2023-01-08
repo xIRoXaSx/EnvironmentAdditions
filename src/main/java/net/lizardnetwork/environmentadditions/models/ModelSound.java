@@ -24,6 +24,7 @@ public class ModelSound extends ModelCondition implements ICondition, IModelExec
             condition.getUntilTimeInTicks(),
             condition.getWeather(),
             condition.getPermission(),
+            condition.getLightCondition(),
             condition.getBlockCondition()
         );
         this.sound = sound;

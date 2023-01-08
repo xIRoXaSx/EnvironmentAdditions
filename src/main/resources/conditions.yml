@@ -21,6 +21,26 @@ Conditions:
     Weather: Clear
     # The permission a player needs to have in order to activate an event.
     Permission: ''
+    # The light level at the player's position.
+    LightLevel:
+      # The light source type (can either be "Sky", "Block" or "Generic").
+      # TIP:    Use the F3 menu to check the current client light.
+      # NOTICE: Using "Sky" WILL NOT measure the current light level coming from the sun!
+      #         It will act as an indicator for ceilings.
+      #         The maximum value (15) can only be achieved when a player doesn't stand under blocks, (no matter the distance).
+      #         One block above the player will reduce the level to 14, a 3x3 area to 13, ...
+      #         The only exceptions are (stained) glass blocks, tinted glass counts as solid.
+      #         "Block" will only count the light emitted from blocks.
+      #         "Generic" will count any light source.
+      #          Have a look at this wiki for further information: https://minecraft.fandom.com/wiki/Light
+      Type: Sky
+      # The light intensity.
+      # Minimum Level = 0, Maximum = 15.
+      Level:
+        # The minimum light level needed in order to activate an event.
+        Minimum: 15
+        # The maximum light level needed in order to activate an event.
+        Maximum: 15
     # The block condition a user needs to satisfy.
     Block:
       # The type of the block the user needs to stand on.
