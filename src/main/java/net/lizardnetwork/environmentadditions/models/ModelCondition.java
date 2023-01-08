@@ -78,8 +78,8 @@ public class ModelCondition implements ICondition, IRandomized {
             hasPermission(player) && achievedProbability() &&
             matchesWeather(getRealWeatherType(player)) &&
             isBetweenTicks(player.getWorld().getTime()) &&
-            matchesLight(player) &&
-            matchesBlock(player);
+            matchesLight(player.getLocation()) &&
+            matchesBlock(player.getLocation());
     }
 
     @Override
@@ -118,8 +118,8 @@ public class ModelCondition implements ICondition, IRandomized {
         return world.isClearWeather() ? WeatherType.CLEAR : WeatherType.DOWNFALL;
     }
 
-    public boolean matchesLight(Player target) {
-        Block block = target.getLocation().getBlock();
+    public boolean matchesLight(Location target) {
+        Block block = target.getBlock();
         byte light = 0;
         switch (lightCondition.getType()) {
             case SKY -> light = block.getLightFromSky();
@@ -129,14 +129,14 @@ public class ModelCondition implements ICondition, IRandomized {
         return lightCondition.isBetween(light);
     }
 
-    public boolean matchesBlock(Player target) {
+    public boolean matchesBlock(Location target) {
         String material = blockCondition.getMaterial();
         if (Objects.equals(material, Material.VOID_AIR.toString()) || Objects.equals(material, "")) {
             return true;
         }
 
         ModelPosOffset offset = blockCondition.getPosOffset();
-        Location loc = target.getLocation().add(offset.getRelativeX(), offset.getRelativeY(), offset.getRelativeZ());
+        Location loc = target.add(offset.getRelativeX(), offset.getRelativeY(), offset.getRelativeZ());
         return Objects.equals(loc.getBlock().getType().toString(), material);
     }
 
