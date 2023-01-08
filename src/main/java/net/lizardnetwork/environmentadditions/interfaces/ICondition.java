@@ -10,5 +10,7 @@ public interface ICondition {
     boolean matchesWeather(WeatherType current);
     boolean isBetweenTicks(long current);
     boolean hasPermission(CommandSender target);
+    boolean matchesLight(Player target);
+    boolean matchesBlock(Player target);
     boolean matchesEveryCondition(Player target);
 }

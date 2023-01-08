@@ -1,6 +1,7 @@
 package net.lizardnetwork.environmentadditions;
 
 import net.lizardnetwork.environmentadditions.enums.ECommandExecutor;
+import net.lizardnetwork.environmentadditions.enums.ELightSource;
 import net.lizardnetwork.environmentadditions.enums.EParticleLoop;
 import net.lizardnetwork.environmentadditions.enums.EWeatherCondition;
 import net.lizardnetwork.environmentadditions.helper.Caster;
@@ -213,8 +214,10 @@ public class Config {
             return ModelCondition.getDefault(true);
         }
 
+        String lightLevelSubKey = "LightLevel";
+        String lightLevelLevelSubKey = lightLevelSubKey + ".Level";
         String blockSubKey = "Block";
-        String relativeOffsetSubKey = "RelativeOffset";
+        String relativeOffsetSubKey = blockSubKey + ".RelativeOffset";
         String[] subKeys = new String[]{
             "IsEnabled",
             "Chance",
@@ -222,10 +225,13 @@ public class Config {
             "UntilTimeInTicks",
             "Weather",
             "Permission",
+            lightLevelSubKey + ".Type",
+            lightLevelLevelSubKey + ".Minimum",
+            lightLevelLevelSubKey + ".Maximum",
             blockSubKey + ".Type",
-            blockSubKey + "." + relativeOffsetSubKey + ".X",
-            blockSubKey + "." + relativeOffsetSubKey + ".Y",
-            blockSubKey + "." + relativeOffsetSubKey + ".Z",
+            relativeOffsetSubKey + ".X",
+            relativeOffsetSubKey + ".Y",
+            relativeOffsetSubKey + ".Z"
         };
         String rootKey = "Conditions." + name;
         Map<String, Object> configValues = getConfigValues(this.conditions, rootKey, subKeys);
@@ -243,12 +249,17 @@ public class Config {
             Caster.castToInt(configValues.get(subKeys[3]), -1),
             Parser.valueOf(EWeatherCondition.class, configValues.get(subKeys[4])),
             Caster.valueOrEmpty(configValues.get(subKeys[5])),
+            new ModelConditionLight(
+                Parser.valueOf(ELightSource.class, configValues.get(subKeys[6])),
+                Caster.castToInt(configValues.get(subKeys[7]), -1),
+                Caster.castToInt(configValues.get(subKeys[8]), -1)
+            ),
             new ModelConditionBlock(
-                Caster.valueOrEmpty(configValues.get(subKeys[6])),
+                Caster.valueOrEmpty(configValues.get(subKeys[9])),
                 new ModelPosOffset(
-                    Caster.castToDouble(configValues.get(subKeys[7]), 0),
-                    Caster.castToDouble(configValues.get(subKeys[8]), 0),
-                    Caster.castToDouble(configValues.get(subKeys[9]), 0)
+                    Caster.castToDouble(configValues.get(subKeys[10]), 0),
+                    Caster.castToDouble(configValues.get(subKeys[11]), 0),
+                    Caster.castToDouble(configValues.get(subKeys[12]), 0)
                 )
             )
         );
