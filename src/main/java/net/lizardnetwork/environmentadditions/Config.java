@@ -218,6 +218,12 @@ public class Config {
         String lightLevelLevelSubKey = lightLevelSubKey + ".Level";
         String blockSubKey = "Block";
         String relativeOffsetSubKey = blockSubKey + ".RelativeOffset";
+        String areaSubKey = "Area";
+        String areaMinSubKey = areaSubKey + ".Minimum";
+        String areaMaxSubKey = areaSubKey + ".Maximum";
+        String offsetXSubKey = "X";
+        String offsetYSubKey = "Y";
+        String offsetZSubKey = "Z";
         String[] subKeys = new String[]{
             "IsEnabled",
             "Chance",
@@ -225,13 +231,20 @@ public class Config {
             "UntilTimeInTicks",
             "Weather",
             "Permission",
-            lightLevelSubKey + ".Type",
-            lightLevelLevelSubKey + ".Minimum",
-            lightLevelLevelSubKey + ".Maximum",
-            blockSubKey + ".Type",
-            relativeOffsetSubKey + ".X",
-            relativeOffsetSubKey + ".Y",
-            relativeOffsetSubKey + ".Z"
+            combineKeys(lightLevelSubKey, "Type"),
+            combineKeys(lightLevelLevelSubKey, "Minimum"),
+            combineKeys(lightLevelLevelSubKey, "Maximum"),
+            combineKeys(blockSubKey, "Type"),
+            combineKeys(relativeOffsetSubKey, offsetXSubKey),
+            combineKeys(relativeOffsetSubKey, offsetYSubKey),
+            combineKeys(relativeOffsetSubKey, offsetZSubKey),
+            combineKeys(areaSubKey, "CompareExactly"),
+            combineKeys(areaMinSubKey, offsetXSubKey),
+            combineKeys(areaMinSubKey, offsetYSubKey),
+            combineKeys(areaMinSubKey, offsetZSubKey),
+            combineKeys(areaMaxSubKey, offsetXSubKey),
+            combineKeys(areaMaxSubKey, offsetYSubKey),
+            combineKeys(areaMaxSubKey, offsetZSubKey),
         };
         String rootKey = "Conditions." + name;
         Map<String, Object> configValues = getConfigValues(this.conditions, rootKey, subKeys);
@@ -260,6 +273,19 @@ public class Config {
                     Caster.castToDouble(configValues.get(subKeys[10]), 0),
                     Caster.castToDouble(configValues.get(subKeys[11]), 0),
                     Caster.castToDouble(configValues.get(subKeys[12]), 0)
+                )
+            ),
+            new ModelConditionArea(
+                Caster.castToBoolean(configValues.get(subKeys[13]), false),
+                new ModelPosOffset(
+                    Caster.castToDouble(configValues.get(subKeys[14]), 0),
+                    Caster.castToDouble(configValues.get(subKeys[15]), 0),
+                    Caster.castToDouble(configValues.get(subKeys[16]), 0)
+                ),
+                new ModelPosOffset(
+                    Caster.castToDouble(configValues.get(subKeys[17]), 0),
+                    Caster.castToDouble(configValues.get(subKeys[18]), 0),
+                    Caster.castToDouble(configValues.get(subKeys[19]), 0)
                 )
             )
         );
@@ -327,21 +353,21 @@ public class Config {
         }
 
         String animationSubKey = "Animation";
-        String relativeOffsetSubKey = animationSubKey + ".RelativeOffset";
-        String loopOptionSubKey = animationSubKey + ".LoopOption";
+        String relativeOffsetSubKey = combineKeys(animationSubKey, "RelativeOffset");
+        String loopOptionSubKey = combineKeys(animationSubKey, "LoopOption");
         String[] subKeys = new String[]{
             "Particle",
             "RedstoneHexColor",
             "RedstoneSize",
             "ParticleCount",
             "Condition",
-            animationSubKey + ".ViewDirectionDistance",
-            relativeOffsetSubKey + ".X",
-            relativeOffsetSubKey + ".Y",
-            relativeOffsetSubKey + ".Z",
-            loopOptionSubKey + ".Type",
-            loopOptionSubKey + ".ChanceForEachLoop",
-            loopOptionSubKey + ".RadiusInBlocks",
+            combineKeys(animationSubKey, "ViewDirectionDistance"),
+            combineKeys(relativeOffsetSubKey, "X"),
+            combineKeys(relativeOffsetSubKey, "Y"),
+            combineKeys(relativeOffsetSubKey, "Z"),
+            combineKeys(loopOptionSubKey, "Type"),
+            combineKeys(loopOptionSubKey, "ChanceForEachLoop"),
+            combineKeys(loopOptionSubKey, "RadiusInBlocks")
         };
         List<ModelParticle> modelList = new ArrayList<>();
         for (Object group : groups) {
@@ -430,5 +456,9 @@ public class Config {
             ));
         }
         return modelList.toArray(new ModelSound[0]);
+    }
+
+    private String combineKeys(String... keys) {
+        return String.join(".", keys);
     }
 }

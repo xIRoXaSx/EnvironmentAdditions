@@ -28,7 +28,8 @@ public class ModelParticle extends ModelCondition implements ICondition, IModelE
             condition.getWeather(),
             condition.getPermission(),
             condition.getLightCondition(),
-            condition.getBlockCondition()
+            condition.getBlockCondition(),
+            condition.getAreaCondition()
         );
         this.particle = particle;
         this.color = color;

@@ -6,6 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 public class Caster {
+    public static boolean castToBoolean(Object o, boolean fallback) {
+        if (!(o instanceof Boolean)) {
+            return fallback;
+        }
+        return (boolean)o;
+    }
+
     public static Map<?,?> castToMap(Object o) {
         if (!(o instanceof Map<?, ?> map)) {
             Logging.warn("Unable to cast object to map");

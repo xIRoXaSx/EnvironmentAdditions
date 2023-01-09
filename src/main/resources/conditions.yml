@@ -54,6 +54,26 @@ Conditions:
         Y: 0.0
         # Z-axis modifier.
         Z: 0.0
+    # The area a player must be in to be able to activate an event.
+    Area:
+      # To ignore one / more axes, you can set them to 0 or leave them out and set "CompareExactly" to false.
+      CompareExactly: true
+      # The minimum coordinate.
+      Minimum:
+        # X-axis modifier.
+        X: -100.0
+        # Y-axis modifier.
+        Y: -64.0
+        # Z-axis modifier.
+        Z: -100.0
+      # The maximum coordinate.
+      Maximum:
+        # X-axis modifier.
+        X: 100.0
+        # Y-axis modifier.
+        Y: 320.0
+        # Z-axis modifier.
+        Z: 100.0
 
   WhileClearAndDayAndPermission:
     IsEnabled: true
