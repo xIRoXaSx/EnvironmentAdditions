@@ -61,7 +61,7 @@ public class ModelCondition implements ICondition, IRandomized {
             return new ModelCondition(true, 1, -1, -1, EWeatherCondition.DISABLED, "", condLight, condBlock, condArea);
         }
 
-        condBlock = new ModelConditionBlock(Material.GRASS_BLOCK.toString(), new ModelPosOffset(1,1,1));
+        condBlock = new ModelConditionBlock(Material.GRASS_BLOCK.toString(), new ModelPosOffset(1, 1, 1));
         condLight = new ModelConditionLight(ELightSource.GENERIC, 0, 15);
         condArea = new ModelConditionArea(
             false,
