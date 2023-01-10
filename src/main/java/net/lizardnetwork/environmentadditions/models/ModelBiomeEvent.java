@@ -25,7 +25,8 @@ public class ModelBiomeEvent extends ModelCondition implements ICondition {
             condition.getWeather(),
             condition.getPermission(),
             condition.getLightCondition(),
-            condition.getBlockCondition()
+            condition.getBlockCondition(),
+            condition.getAreaCondition()
         );
         this.biomes = biomes;
         this.condition = condition;
@@ -49,7 +50,8 @@ public class ModelBiomeEvent extends ModelCondition implements ICondition {
             condition.isBetweenTicks(target.getWorld().getTime()) &&
             condition.matchesWeather(getRealWeatherType(target)) &&
             condition.matchesLight(target.getLocation()) &&
-            condition.matchesBlock(target.getLocation()) && (
+            condition.matchesBlock(target.getLocation()) &&
+            condition.isInArea(target.getLocation()) && (
             (commands.length > 0 && anyBasicMatchingCondition(target, commands)) ||
             (particles.length > 0 && anyBasicMatchingCondition(target, particles)) ||
             (sounds.length > 0 && anyBasicMatchingCondition(target, sounds))

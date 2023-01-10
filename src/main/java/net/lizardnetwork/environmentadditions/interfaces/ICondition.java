@@ -13,5 +13,6 @@ public interface ICondition {
     boolean hasPermission(CommandSender target);
     boolean matchesLight(Location target);
     boolean matchesBlock(Location target);
+    boolean isInArea(Location target);
     boolean matchesEveryCondition(Player target);
 }

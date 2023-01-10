@@ -25,6 +25,7 @@ public class ModelCondition implements ICondition, IRandomized {
     private final String permission;
     private final ModelConditionBlock blockCondition;
     private final ModelConditionLight lightCondition;
+    private final ModelConditionArea areaCondition;
 
     public ModelCondition(
             boolean enabled,
@@ -34,7 +35,8 @@ public class ModelCondition implements ICondition, IRandomized {
             EWeatherCondition weather,
             String permission,
             ModelConditionLight lightCondition,
-            ModelConditionBlock blockCondition
+            ModelConditionBlock blockCondition,
+            ModelConditionArea areaCondition
         ) {
         this.enabled = enabled;
         this.probability = probability;
@@ -44,18 +46,29 @@ public class ModelCondition implements ICondition, IRandomized {
         this.permission = permission;
         this.lightCondition = lightCondition;
         this.blockCondition = blockCondition;
+        this.areaCondition = areaCondition;
     }
 
     public static ModelCondition getDefault(boolean enabled) {
         ModelConditionBlock condBlock = new ModelConditionBlock(Material.VOID_AIR.toString(), new ModelPosOffset(0,0,0));
         ModelConditionLight condLight = new ModelConditionLight(ELightSource.GENERIC, -1, -1);
+        ModelConditionArea condArea = new ModelConditionArea(
+            true,
+            new ModelPosOffset(0, 0, 0),
+            new ModelPosOffset(0, 0, 0)
+        );
         if (enabled) {
-            return new ModelCondition(true, 1, -1, -1, EWeatherCondition.DISABLED, "", condLight, condBlock);
+            return new ModelCondition(true, 1, -1, -1, EWeatherCondition.DISABLED, "", condLight, condBlock, condArea);
         }
 
-        condBlock = new ModelConditionBlock(Material.GRASS_BLOCK.toString(), new ModelPosOffset(1,1,1));
+        condBlock = new ModelConditionBlock(Material.GRASS_BLOCK.toString(), new ModelPosOffset(1, 1, 1));
         condLight = new ModelConditionLight(ELightSource.GENERIC, 0, 15);
-        return new ModelCondition(false, -1, 0, 0, EWeatherCondition.CLEAR, "", condLight, condBlock);
+        condArea = new ModelConditionArea(
+            false,
+            new ModelPosOffset(-100, -64, -100),
+            new ModelPosOffset(100, 320, 100)
+        );
+        return new ModelCondition(false, -1, 0, 0, EWeatherCondition.CLEAR, "", condLight, condBlock, condArea);
     }
 
     public static boolean hasPermission(CommandSender target, String permission) {
@@ -79,7 +92,8 @@ public class ModelCondition implements ICondition, IRandomized {
             matchesWeather(getRealWeatherType(player)) &&
             isBetweenTicks(player.getWorld().getTime()) &&
             matchesLight(player.getLocation()) &&
-            matchesBlock(player.getLocation());
+            matchesBlock(player.getLocation()) &&
+            isInArea(player.getLocation());
     }
 
     @Override
@@ -140,6 +154,10 @@ public class ModelCondition implements ICondition, IRandomized {
         return Objects.equals(loc.getBlock().getType().toString(), material);
     }
 
+    public boolean isInArea(Location target) {
+        return areaCondition.isInArea(target);
+    }
+
     public int getProbability() {
         return probability;
     }
@@ -166,5 +184,9 @@ public class ModelCondition implements ICondition, IRandomized {
 
     public ModelConditionBlock getBlockCondition() {
         return blockCondition;
+    }
+
+    public ModelConditionArea getAreaCondition() {
+        return areaCondition;
     }
 }
