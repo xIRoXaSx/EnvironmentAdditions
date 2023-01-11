@@ -2,6 +2,7 @@ package net.lizardnetwork.environmentadditions;
 
 import net.lizardnetwork.environmentadditions.cmd.CmdHandler;
 import net.lizardnetwork.environmentadditions.enums.EDependency;
+import net.lizardnetwork.environmentadditions.events.EventPlayerTeleport;
 import net.lizardnetwork.environmentadditions.events.EventTabComplete;
 import net.lizardnetwork.environmentadditions.models.ModelBiomeEvent;
 import net.lizardnetwork.environmentadditions.models.ModelSettings;
@@ -32,11 +33,10 @@ public class State {
     }
 
     void subscribeToEvents() {
-        Logging.info("Registering PlayerJoinEvent event");
-        Bukkit.getServer().getPluginManager().registerEvents((Listener)EnvironmentAdditions.getInstance(), EnvironmentAdditions.getInstance());
-
-        Logging.info("Registering TabCompleter event");
+        Logging.info("Registering events.");
         JavaPlugin instance = (JavaPlugin)EnvironmentAdditions.getInstance();
+        Bukkit.getServer().getPluginManager().registerEvents((Listener)EnvironmentAdditions.getInstance(), instance);
+        Bukkit.getServer().getPluginManager().registerEvents(new EventPlayerTeleport(), instance);
         PluginCommand command = instance.getCommand(instance.getName());
         if (command != null) {
             command.setTabCompleter(new EventTabComplete(CmdHandler.getCompletionArgs()));
@@ -73,6 +73,12 @@ public class State {
             observer.getObserverTask().cancel();
         }
         observers.remove(uuid);
+    }
+
+    public void restartObserverTask(Player target) {
+        UUID uuid = target.getUniqueId();
+        removeObserverTask(uuid);
+        EnvironmentAdditions.addNewObserver(target, uuid, false);
     }
 
     void pauseObservers() {
