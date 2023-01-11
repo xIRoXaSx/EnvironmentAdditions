@@ -8,6 +8,7 @@ import net.lizardnetwork.environmentadditions.interfaces.IModelExecutor;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -16,10 +17,11 @@ public class ModelParticle extends ModelCondition implements ICondition, IModelE
     private final Color color;
     private final int size;
     private final int numParticles;
+    private final boolean isGlobal;
     private final ModelCondition condition;
     private final ModelParticleAnimation animation;
 
-    public ModelParticle(Particle particle, Color color, int size, int numParticles, ModelCondition condition, ModelParticleAnimation animation) {
+    public ModelParticle(Particle particle, Color color, int size, int numParticles, boolean isGlobal, ModelCondition condition, ModelParticleAnimation animation) {
         super(
             condition.isEnabled(),
             condition.getProbability(),
@@ -35,6 +37,7 @@ public class ModelParticle extends ModelCondition implements ICondition, IModelE
         this.color = color;
         this.size = size;
         this.numParticles = numParticles;
+        this.isGlobal = isGlobal;
         this.condition = condition;
         this.animation = animation;
     }
@@ -47,6 +50,14 @@ public class ModelParticle extends ModelCondition implements ICondition, IModelE
             case CUBIC -> spawnCubic(target, loopOpts);
             case RANDOM -> spawnRandom(target, loopOpts);
         }
+    }
+
+    private void spawn(Player target, World world, Location loc, Particle.DustOptions dustOpts) {
+        if (isGlobal) {
+            world.spawnParticle(particle, loc, numParticles, dustOpts);
+            return;
+        }
+        target.spawnParticle(particle, loc, numParticles, dustOpts);
     }
 
     /**
@@ -65,7 +76,7 @@ public class ModelParticle extends ModelCondition implements ICondition, IModelE
             src = calculateViewDirection(target, vdd);
         }
         ModelBiomeEvent.shift(src, relX, relY, relZ, false);
-        target.spawnParticle(particle, src, numParticles, dustOpts);
+        spawn(target, target.getWorld(), src, dustOpts);
     }
 
     /**
@@ -98,7 +109,7 @@ public class ModelParticle extends ModelCondition implements ICondition, IModelE
                     if (!prob.equals(EProbability.ACHIEVED)) {
                         continue;
                     }
-                    target.spawnParticle(particle, x, y, z, numParticles, dustOpts);
+                    spawn(target, target.getWorld(), new Location(target.getWorld(), x, y, z), dustOpts);
                 }
             }
         }
@@ -120,7 +131,7 @@ public class ModelParticle extends ModelCondition implements ICondition, IModelE
             double x = new Random(-radius - 1, radius + 1).getFloatResult();
             double y = new Random(-radius - 1, radius + 1).getFloatResult();
             double z = new Random(-radius - 1, radius + 1).getFloatResult();
-            target.spawnParticle(particle, src.getX() + x, src.getY()+ y, src.getZ() + z, numParticles, dustOpts);
+            spawn(target, target.getWorld(), new Location(target.getWorld(), src.getX() + x, src.getY()+ y, src.getZ() + z), dustOpts);
         }
     }
 

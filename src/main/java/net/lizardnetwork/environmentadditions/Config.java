@@ -343,7 +343,7 @@ public class Config {
     private ModelParticle[] getParticlesByName(List<?> groups) {
         ModelCondition condition = ModelCondition.getDefault(false);
         Color color = Parser.hexToColor("ffffff");
-        ModelParticle particles = new ModelParticle(Particle.REDSTONE, color, 1, 1, condition, null);
+        ModelParticle particles = new ModelParticle(Particle.REDSTONE, color, 1, 1, false, condition, null);
         if (groups == null || groups.size() == 0) {
             return List.of(particles).toArray(new ModelParticle[0]);
         }
@@ -360,6 +360,7 @@ public class Config {
             "RedstoneHexColor",
             "RedstoneSize",
             "ParticleCount",
+            "IsGlobal",
             "Condition",
             combineKeys(animationSubKey, "ViewDirectionDistance"),
             combineKeys(relativeOffsetSubKey, "X"),
@@ -388,18 +389,19 @@ public class Config {
                 Parser.hexToColor(configValues.get(subKeys[1])),
                 (int)configValues.get(subKeys[2]),
                 (int)configValues.get(subKeys[3]),
-                getConditionByName(rootKey, configValues.get(subKeys[4])),
+                Caster.castToBoolean(configValues.get(subKeys[4]), false),
+                getConditionByName(rootKey, configValues.get(subKeys[5])),
                 new ModelParticleAnimation(
-                    Caster.castToFloat(configValues.get(subKeys[5])),
+                    Caster.castToFloat(configValues.get(subKeys[6])),
                     new ModelPosOffset(
-                        Caster.castToDouble(configValues.get(subKeys[6]), 0),
                         Caster.castToDouble(configValues.get(subKeys[7]), 0),
-                        Caster.castToDouble(configValues.get(subKeys[8]), 0)
+                        Caster.castToDouble(configValues.get(subKeys[8]), 0),
+                        Caster.castToDouble(configValues.get(subKeys[9]), 0)
                     ),
                     new ModelParticleLoop(
-                        Parser.valueOf(EParticleLoop.class, configValues.get(subKeys[9])),
-                        (int)configValues.get(subKeys[10]),
-                        (int)configValues.get(subKeys[11])
+                        Parser.valueOf(EParticleLoop.class, configValues.get(subKeys[10])),
+                        (int)configValues.get(subKeys[11]),
+                        (int)configValues.get(subKeys[12])
                     )
                 )
             ));

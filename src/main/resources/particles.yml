@@ -14,6 +14,9 @@ Particles:
     RedstoneSize: 10
     # The amount of particles. If greater than 0, the particles will fly more aggressively.
     ParticleCount: 0
+    # Whether to spawn the particles for all players or not.
+    # Setting this to true might cause lag (dependent on your server & amount of particles).
+    IsGlobal: false
     Animation:
       # If you want to spawn "Static" particles, and you don't know the direction a player faces, you can set the relative distance here.
       # Otherwise, you can use relative options down below.
