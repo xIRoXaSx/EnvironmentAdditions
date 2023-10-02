@@ -1,13 +1,12 @@
 package net.lizardnetwork.environmentadditions.models;
 
 import net.lizardnetwork.environmentadditions.helper.Random;
-import net.lizardnetwork.environmentadditions.interfaces.ICondition;
 import net.lizardnetwork.environmentadditions.interfaces.IModelExecutor;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 
-public class ModelSound extends ModelCondition implements ICondition, IModelExecutor {
+public class ModelSound extends ModelCondition implements IModelExecutor {
     private final String sound;
     private final SoundCategory category;
     private final float volume;
@@ -26,7 +25,8 @@ public class ModelSound extends ModelCondition implements ICondition, IModelExec
             condition.getPermission(),
             condition.getLightCondition(),
             condition.getBlockCondition(),
-            condition.getAreaCondition()
+            condition.getAreaCondition(),
+            condition.getWorldGuardCondition()
         );
         this.sound = sound;
         this.category = category;

@@ -1,9 +1,11 @@
 package net.lizardnetwork.environmentadditions.cmd;
 
 import net.lizardnetwork.environmentadditions.EnvironmentAdditions;
+import net.lizardnetwork.environmentadditions.Logging;
 import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.interfaces.ICmd;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -16,6 +18,10 @@ public class Benchmark extends CmdModel implements ICmd {
 
     @Override
     public boolean execute(CommandSender sender, String[] args, Plugin plugin) {
+        if (sender instanceof ConsoleCommandSender) {
+            Logging.info(getCmd() + " can only be executed in game.");
+            return true;
+        }
         sender.sendMessage(EnvironmentAdditions.formPluginMessage(
             "Depending on your current config setup, you may experience some lag."
         ));

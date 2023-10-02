@@ -1,7 +1,6 @@
 package net.lizardnetwork.environmentadditions;
 
 import net.lizardnetwork.environmentadditions.cmd.CmdHandler;
-import net.lizardnetwork.environmentadditions.enums.EDependency;
 import net.lizardnetwork.environmentadditions.events.EventPlayerTeleport;
 import net.lizardnetwork.environmentadditions.events.EventTabComplete;
 import net.lizardnetwork.environmentadditions.models.ModelBiomeEvent;
@@ -15,7 +14,7 @@ import java.util.*;
 
 public class State {
     private Config config;
-    private EDependency dependency;
+    private int dependency;
     private ModelBiomeEvent[] biomeEvents;
     private ModelSettings settings;
     private final Map<UUID, Observer> observers = new HashMap<>();
@@ -43,7 +42,7 @@ public class State {
         }
     }
 
-    void setDependency(EDependency value) {
+    void setDependencies(int value) {
         this.dependency = value;
     }
 
@@ -118,7 +117,7 @@ public class State {
         return settings.getBiomePlaceholder();
     }
 
-    public EDependency getDependency() {
+    public int getDependencies() {
         return dependency;
     }
 
