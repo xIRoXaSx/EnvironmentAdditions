@@ -49,9 +49,9 @@ public class ModelBiomeEvent extends ModelCondition {
             condition.matchesWeather(getRealWeatherType(target)) &&
             condition.matchesLight(target.getLocation()) &&
             condition.matchesBlock(target.getLocation()) &&
+            condition.isInArea(target.getLocation()) &&
             condition.isInRegion(target.getLocation()) &&
-            condition.isNotInRegion(target.getLocation()) &&
-            condition.isInArea(target.getLocation());
+            condition.isNotInRegion(target.getLocation());
     }
 
     private boolean isInSpecifiedBiome(Player target) {

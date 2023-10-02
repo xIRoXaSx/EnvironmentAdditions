@@ -74,14 +74,15 @@ Conditions:
         Y: 320.0
         # Z-axis modifier.
         Z: 100.0
-    # WorldGuard checks. Requires the WorldGuard plugin.
+    # WorldGuard checks, requires WorldGuard to be installed.
+    # To disable WorldGuard checks, empty "InRegion" and "NotInRegion" (e.g.: InRegion: []) or delete those nodes entirely.
     WorldGuard:
       # Whether every region is required or just a single one.
       # Example "InRegion":
       #   With "UseSingleRegionMode" set to true, a player needs to be in just one listed region.
       #   With "UseSingleRegionMode" set to false, a player needs to be in every listed region.
       UseSingleRegionMode: true
-      # The names of the WorldGuard regions a player must be in (at least one), in order to activate an event.
+      # The names of the WorldGuard regions a player must be in, in order to activate an event.
       InRegion: 
         - "global"
       # The name of the WorldGuard region a player must not be in, in order to activate an event.
