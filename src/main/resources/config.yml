@@ -50,6 +50,9 @@ EnvironmentAdditions:
           - PortalFrameFill
 
   Settings:
+    # Version info, don't touch unless you know what you're doing.
+    Version: 2
+
     # The time in ticks in which the plugin should check the current positions of the players (biome) .
     # The HIGHER this integer is, the FEWER checks will be made => Better performance, poorer experience.
     # The LOWER this integer is, the HIGHER checks will be made => Poorer performance, better experience.

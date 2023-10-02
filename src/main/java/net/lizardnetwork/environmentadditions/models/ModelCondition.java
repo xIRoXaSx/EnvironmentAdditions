@@ -26,6 +26,7 @@ public class ModelCondition implements ICondition, IRandomized {
     private final ModelConditionBlock blockCondition;
     private final ModelConditionLight lightCondition;
     private final ModelConditionArea areaCondition;
+    private final ModelConditionWorldGuard wgCondition;
 
     public ModelCondition(
             boolean enabled,
@@ -36,7 +37,8 @@ public class ModelCondition implements ICondition, IRandomized {
             String permission,
             ModelConditionLight lightCondition,
             ModelConditionBlock blockCondition,
-            ModelConditionArea areaCondition
+            ModelConditionArea areaCondition,
+            ModelConditionWorldGuard wgCondition
         ) {
         this.enabled = enabled;
         this.probability = probability;
@@ -47,18 +49,31 @@ public class ModelCondition implements ICondition, IRandomized {
         this.lightCondition = lightCondition;
         this.blockCondition = blockCondition;
         this.areaCondition = areaCondition;
+        this.wgCondition = wgCondition;
     }
 
     public static ModelCondition getDefault(boolean enabled) {
         ModelConditionBlock condBlock = new ModelConditionBlock(Material.VOID_AIR.toString(), new ModelPosOffset(0,0,0));
         ModelConditionLight condLight = new ModelConditionLight(ELightSource.GENERIC, -1, -1);
+        ModelConditionWorldGuard wgCondition = new ModelConditionWorldGuard(false, new String[]{"global"}, new String[]{"private"});
         ModelConditionArea condArea = new ModelConditionArea(
-            true,
+            false,
             new ModelPosOffset(0, 0, 0),
             new ModelPosOffset(0, 0, 0)
         );
         if (enabled) {
-            return new ModelCondition(true, 1, -1, -1, EWeatherCondition.DISABLED, "", condLight, condBlock, condArea);
+            return new ModelCondition(
+                true,
+                1,
+                -1,
+                -1,
+                EWeatherCondition.DISABLED,
+                "",
+                condLight,
+                condBlock,
+                condArea,
+                new ModelConditionWorldGuard(false, new String[0], new String[0])
+            );
         }
 
         condBlock = new ModelConditionBlock(Material.GRASS_BLOCK.toString(), new ModelPosOffset(1, 1, 1));
@@ -68,7 +83,7 @@ public class ModelCondition implements ICondition, IRandomized {
             new ModelPosOffset(-100, -64, -100),
             new ModelPosOffset(100, 320, 100)
         );
-        return new ModelCondition(false, -1, 0, 0, EWeatherCondition.CLEAR, "", condLight, condBlock, condArea);
+        return new ModelCondition(false, -1, 0, 0, EWeatherCondition.CLEAR, "", condLight, condBlock, condArea, wgCondition);
     }
 
     public static boolean hasPermission(CommandSender target, String permission) {
@@ -88,12 +103,15 @@ public class ModelCondition implements ICondition, IRandomized {
     @Override
     public boolean matchesEveryCondition(Player player) {
         return isEnabled() &&
-            hasPermission(player) && achievedProbability() &&
+            hasPermission(player) && 
+            achievedProbability() &&
             matchesWeather(getRealWeatherType(player)) &&
             isBetweenTicks(player.getWorld().getTime()) &&
             matchesLight(player.getLocation()) &&
             matchesBlock(player.getLocation()) &&
-            isInArea(player.getLocation());
+            isInArea(player.getLocation()) &&
+            isInRegion(player.getLocation()) &&
+            isNotInRegion(player.getLocation());
     }
 
     @Override
@@ -158,6 +176,14 @@ public class ModelCondition implements ICondition, IRandomized {
         return areaCondition.isInArea(target);
     }
 
+    public boolean isInRegion(Location target) {
+        return wgCondition.isInside(target);
+    }
+
+    public boolean isNotInRegion(Location target) {
+        return wgCondition.isOutside(target);
+    }
+
     public int getProbability() {
         return probability;
     }
@@ -188,5 +214,9 @@ public class ModelCondition implements ICondition, IRandomized {
 
     public ModelConditionArea getAreaCondition() {
         return areaCondition;
+    }
+
+    public ModelConditionWorldGuard getWorldGuardCondition() {
+        return wgCondition;
     }
 }

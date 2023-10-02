@@ -5,13 +5,12 @@ import net.lizardnetwork.environmentadditions.enums.ECommandExecutor;
 import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.helper.Placeholder;
 import net.lizardnetwork.environmentadditions.helper.Random;
-import net.lizardnetwork.environmentadditions.interfaces.ICondition;
 import net.lizardnetwork.environmentadditions.interfaces.IModelExecutor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ModelCommand extends ModelCondition implements ICondition, IModelExecutor {
+public class ModelCommand extends ModelCondition implements IModelExecutor {
     private final String[] commands;
     private final ECommandExecutor executor;
     private final ModelCondition condition;
@@ -27,7 +26,8 @@ public class ModelCommand extends ModelCondition implements ICondition, IModelEx
             condition.getPermission(),
             condition.getLightCondition(),
             condition.getBlockCondition(),
-            condition.getAreaCondition()
+            condition.getAreaCondition(),
+            condition.getWorldGuardCondition()
         );
         this.commands = commands;
         this.executor = executor;

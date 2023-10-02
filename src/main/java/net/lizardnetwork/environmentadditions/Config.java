@@ -1,12 +1,14 @@
 package net.lizardnetwork.environmentadditions;
 
 import net.lizardnetwork.environmentadditions.enums.ECommandExecutor;
+import net.lizardnetwork.environmentadditions.enums.EDependency;
 import net.lizardnetwork.environmentadditions.enums.ELightSource;
 import net.lizardnetwork.environmentadditions.enums.EParticleLoop;
 import net.lizardnetwork.environmentadditions.enums.EWeatherCondition;
 import net.lizardnetwork.environmentadditions.helper.Caster;
 import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.helper.Random;
+import net.lizardnetwork.environmentadditions.helper.Resolve;
 import net.lizardnetwork.environmentadditions.models.*;
 import org.bukkit.Color;
 import org.bukkit.Particle;
@@ -98,6 +100,7 @@ public class Config {
             return null;
         }
 
+        boolean wgEnabled = false;
         List<ModelBiomeEvent> configuredBiomeEvents = new ArrayList<>();
         List<?> biomeEvents = config.getList(biomesKey);
         if (biomeEvents == null) {
@@ -128,7 +131,14 @@ public class Config {
             configuredBiomeEvents.add(
                 new ModelBiomeEvent(activeBiomes, condition, commands, particles, sounds)
             );
+            wgEnabled |= condition.getWorldGuardCondition().isConfigured();
         }
+
+        int deps = Resolve.resolveDependencies().getValue();
+        if (wgEnabled) {
+            deps += EDependency.WordGuard.getValue();
+        }
+        EnvironmentAdditions.getState().setDependencies(deps);
         return configuredBiomeEvents.toArray(new ModelBiomeEvent[0]);
     }
 
@@ -224,6 +234,7 @@ public class Config {
         String offsetXSubKey = "X";
         String offsetYSubKey = "Y";
         String offsetZSubKey = "Z";
+        String worldGuardRegionSubKey = "WorldGuard";
         String[] subKeys = new String[]{
             "IsEnabled",
             "Chance",
@@ -245,6 +256,9 @@ public class Config {
             combineKeys(areaMaxSubKey, offsetXSubKey),
             combineKeys(areaMaxSubKey, offsetYSubKey),
             combineKeys(areaMaxSubKey, offsetZSubKey),
+            combineKeys(worldGuardRegionSubKey, "UseSingleRegionMode"),
+            combineKeys(worldGuardRegionSubKey, "InRegion"),
+            combineKeys(worldGuardRegionSubKey, "NotInRegion"),
         };
         String rootKey = "Conditions." + name;
         Map<String, Object> configValues = getConfigValues(this.conditions, rootKey, subKeys);
@@ -255,8 +269,9 @@ public class Config {
             return ModelCondition.getDefault(false);
         }
         Object chance = configValues.get(subKeys[1]);
+        Object isEnabled = configValues.get(subKeys[0]);
         return new ModelCondition(
-            (boolean)configValues.get(subKeys[0]),
+            isEnabled != null ? (boolean)isEnabled : true,
             (int)(chance != null ? chance : -1),
             Caster.castToInt(configValues.get(subKeys[2]), -1),
             Caster.castToInt(configValues.get(subKeys[3]), -1),
@@ -287,6 +302,11 @@ public class Config {
                     Caster.castToDouble(configValues.get(subKeys[18]), 0),
                     Caster.castToDouble(configValues.get(subKeys[19]), 0)
                 )
+            ),
+            new ModelConditionWorldGuard(
+                Caster.castToBoolean(configValues.get(subKeys[20]), false),
+                Caster.castToList(String.class, configValues.get(subKeys[21])).toArray(new String[0]),
+                Caster.castToList(String.class, configValues.get(subKeys[22])).toArray(new String[0])
             )
         );
     }

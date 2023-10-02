@@ -24,7 +24,7 @@ public class Caster {
     public static <T> List<T> castToList(Class<T> c, Object o) {
         List<T> values = new ArrayList<>();
         if (!(o instanceof List<?> casted)) {
-            Logging.warn("Unable to cast " + o.getClass().getSimpleName() + " to " + c.getSimpleName());
+            Logging.warn("Unable to cast " + c.toString() + " to " + c.toString());
             return values;
         }
 

@@ -1,0 +1,57 @@
+# =~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
+#
+# ___________           .__                                            __
+# \_   _____/ _______  _|__|______  ____   ____   _____   ____   _____/  |_
+#  |    __)_ /    \  \/ /  \_  __ \/  _ \ /    \ /     \_/ __ \ /    \   __\
+#  |        \   |  \   /|  ||  | \(  <_> )   |  \  Y Y  \  ___/|   |  \  |
+# /_______  /___|  /\_/ |__||__|   \____/|___|  /__|_|  /\___  >___|  /__|
+#         \/     \/                           \/      \/     \/     \/
+#                   _____       .___  .___.__  __  .__
+#                  /  _  \    __| _/__| _/|__|/  |_|__| ____   ____   ______
+#                 /  /_\  \  / __ |/ __ | |  \   __\  |/  _ \ /    \ /  ___/
+#                /    |    \/ /_/ / /_/ | |  ||  | |  (  <_> )   |  \\___ \
+#                \____|__  /\____ \____ | |__||__| |__|\____/|___|  /____  >
+#                        \/      \/    \/                         \/     \/
+#
+# =~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
+#
+# > What is this file used for?
+#    This file is designed to run with grml to simplify various tasks.
+#    Head over to https://github.com/desertbit/grml, get / compile and setup grml.
+#    Afterwards you can use these tasks.
+version: 2
+project: EnvironmentAdditions
+
+env:
+    VERSION:  1.0.0
+    DOCKER_DIR: ${ROOT}/docker
+    DOCKER_IMG_LABEL: eabuilder:latest
+
+interpreter: sh
+
+commands:
+    build:
+        help: build the project
+        exec: |
+            sudo docker run --rm -it \
+                -v="$PWD:/work" \
+                -v="$PWD/bin:/out" \
+                "${DOCKER_IMG_LABEL}"
+    
+        commands:
+            docker:
+                help: build the docker image
+                exec: |
+                    sudo docker build "${DOCKER_DIR}" \
+                        --tag="${DOCKER_IMG_LABEL}" \
+                        --progress="tty"
+
+
+    mvn:
+        help: maven commands
+        commands:
+            pkg:
+                help: create the jar file locally
+                exec: |
+                    mvn clean package
+

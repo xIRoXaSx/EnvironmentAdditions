@@ -4,12 +4,11 @@ import net.lizardnetwork.environmentadditions.EnvironmentAdditions;
 import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.helper.Placeholder;
 import net.lizardnetwork.environmentadditions.helper.Random;
-import net.lizardnetwork.environmentadditions.interfaces.ICondition;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ModelBiomeEvent extends ModelCondition implements ICondition {
+public class ModelBiomeEvent extends ModelCondition {
     private final String[] biomes;
     private final ModelCondition condition;
     private final ModelCommand[] commands;
@@ -26,7 +25,8 @@ public class ModelBiomeEvent extends ModelCondition implements ICondition {
             condition.getPermission(),
             condition.getLightCondition(),
             condition.getBlockCondition(),
-            condition.getAreaCondition()
+            condition.getAreaCondition(),
+            condition.getWorldGuardCondition()
         );
         this.biomes = biomes;
         this.condition = condition;
@@ -42,20 +42,16 @@ public class ModelBiomeEvent extends ModelCondition implements ICondition {
      * @return boolean - Valuable or not.
      */
     public boolean hasAnyValueFor(Player target) {
-        ModelCommand[] commands = getCommands();
-        ModelParticle[] particles = getParticles();
-        ModelSound[] sounds = getSounds();
-        return getBiomes().length > 0 && isInSpecifiedBiome(target) &&
+        return getBiomes().length > 0 && 
+            isInSpecifiedBiome(target) &&
             condition.hasPermission(target) &&
             condition.isBetweenTicks(target.getWorld().getTime()) &&
             condition.matchesWeather(getRealWeatherType(target)) &&
             condition.matchesLight(target.getLocation()) &&
             condition.matchesBlock(target.getLocation()) &&
-            condition.isInArea(target.getLocation()) && (
-            (commands.length > 0 && anyBasicMatchingCondition(target, commands)) ||
-            (particles.length > 0 && anyBasicMatchingCondition(target, particles)) ||
-            (sounds.length > 0 && anyBasicMatchingCondition(target, sounds))
-        );
+            condition.isInRegion(target.getLocation()) &&
+            condition.isNotInRegion(target.getLocation()) &&
+            condition.isInArea(target.getLocation());
     }
 
     private boolean isInSpecifiedBiome(Player target) {
@@ -72,21 +68,6 @@ public class ModelBiomeEvent extends ModelCondition implements ICondition {
         String papiBiome = new Placeholder(biomePlaceholder).resolve(target).getReplaced();
         for (String biome : biomes) {
             if (biome.equalsIgnoreCase(papiBiome)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Check if any of the provided conditions is enabled and if the player has the permission for it.
-     * @param player Player - The targeted player.
-     * @param conditions ICondition[] - All conditions.
-     * @return boolean - True if any condition returned true, false otherwise.
-     */
-    private boolean anyBasicMatchingCondition(Player player, ICondition[] conditions) {
-        for (ICondition condition : conditions) {
-            if (condition.isEnabled() && condition.hasPermission(player)) {
                 return true;
             }
         }

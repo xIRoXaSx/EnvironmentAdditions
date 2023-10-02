@@ -70,8 +70,8 @@ public class Placeholder {
      * @return String - The replaced string.
      */
     public String resolvePlaceholder(Player target, String text, EDependency defaultSystem) {
-        EDependency dependency = EnvironmentAdditions.getState().getDependency();
-        if (dependency.equals(EDependency.PlaceholderAPI) && !defaultSystem.equals(EDependency.None)) {
+        int dependencies = EnvironmentAdditions.getState().getDependencies();
+        if ((dependencies & EDependency.PlaceholderAPI.getValue()) > 0) {
             // Return the replaced string.
             // If PlaceholderAPI could not resolve the placeholder(s), the return value
             // will contain the raw message instead of trying to parse them internally in favor of performance.

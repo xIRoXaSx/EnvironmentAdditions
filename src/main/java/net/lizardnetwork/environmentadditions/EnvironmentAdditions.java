@@ -1,10 +1,9 @@
 package net.lizardnetwork.environmentadditions;
 
 import net.lizardnetwork.environmentadditions.cmd.CmdHandler;
+import net.lizardnetwork.environmentadditions.enums.EDependency;
 import net.lizardnetwork.environmentadditions.helper.Parser;
-import net.lizardnetwork.environmentadditions.helper.Resolve;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,9 +15,10 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
-public class EnvironmentAdditions extends JavaPlugin implements Listener, CommandExecutor {
+public class EnvironmentAdditions extends JavaPlugin implements Listener {
     private static EnvironmentAdditions instance;
     private static final State state = new State();
     private static final String coloredPrefix = Parser.gradientText("EnvironmentAdditions", "#5ee667");
@@ -27,10 +27,12 @@ public class EnvironmentAdditions extends JavaPlugin implements Listener, Comman
     public void onEnable() {
         long start = System.nanoTime();
         instance = this;
-        state.setDependency(Resolve.resolveDependencies());
         state.setConfig();
         state.subscribeToEvents();
-        long end = System.nanoTime();
+        long end = System.nanoTime();                
+
+        List<String> deps = EDependency.parse(state.getDependencies()).stream().map(EDependency::toString).toList();
+        Logging.info("Detected dependencies: " +  String.join(", ", deps));
         Logging.info("Enabled within " + Math.round((end - start) / 1e6) + "ms");
     }
 

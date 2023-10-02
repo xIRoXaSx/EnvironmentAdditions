@@ -3,7 +3,6 @@ package net.lizardnetwork.environmentadditions.models;
 import net.lizardnetwork.environmentadditions.enums.EProbability;
 import net.lizardnetwork.environmentadditions.helper.Probability;
 import net.lizardnetwork.environmentadditions.helper.Random;
-import net.lizardnetwork.environmentadditions.interfaces.ICondition;
 import net.lizardnetwork.environmentadditions.interfaces.IModelExecutor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -12,7 +11,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class ModelParticle extends ModelCondition implements ICondition, IModelExecutor {
+public class ModelParticle extends ModelCondition implements IModelExecutor {
     private final Particle particle;
     private final Color color;
     private final int size;
@@ -31,7 +30,8 @@ public class ModelParticle extends ModelCondition implements ICondition, IModelE
             condition.getPermission(),
             condition.getLightCondition(),
             condition.getBlockCondition(),
-            condition.getAreaCondition()
+            condition.getAreaCondition(),
+            condition.getWorldGuardCondition()
         );
         this.particle = particle;
         this.color = color;
@@ -49,6 +49,7 @@ public class ModelParticle extends ModelCondition implements ICondition, IModelE
             case STATIC -> spawnStatic(target);
             case CUBIC -> spawnCubic(target, loopOpts);
             case RANDOM -> spawnRandom(target, loopOpts);
+            case DISABLED -> {}
         }
     }
 

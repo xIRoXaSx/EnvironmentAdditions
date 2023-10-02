@@ -14,5 +14,7 @@ public interface ICondition {
     boolean matchesLight(Location target);
     boolean matchesBlock(Location target);
     boolean isInArea(Location target);
+    boolean isInRegion(Location target);
+    boolean isNotInRegion(Location target);
     boolean matchesEveryCondition(Player target);
 }
