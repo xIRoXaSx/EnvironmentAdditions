@@ -6,7 +6,7 @@ import java.util.List;
 public enum EDependency {
     None(0),
     PlaceholderAPI(1),
-    WordGuard(2);
+    WorldGuard(2);
 
     private final int id;
 
@@ -27,8 +27,8 @@ public enum EDependency {
         if ((id & EDependency.PlaceholderAPI.getValue()) > 0) {
             deps.add(EDependency.PlaceholderAPI);
         }
-        if ((id & EDependency.WordGuard.getValue()) > 0) {
-            deps.add(EDependency.WordGuard);
+        if ((id & EDependency.WorldGuard.getValue()) > 0) {
+            deps.add(EDependency.WorldGuard);
         }
         return deps;
     }

@@ -1,14 +1,12 @@
 package net.lizardnetwork.environmentadditions;
 
 import net.lizardnetwork.environmentadditions.enums.ECommandExecutor;
-import net.lizardnetwork.environmentadditions.enums.EDependency;
 import net.lizardnetwork.environmentadditions.enums.ELightSource;
 import net.lizardnetwork.environmentadditions.enums.EParticleLoop;
 import net.lizardnetwork.environmentadditions.enums.EWeatherCondition;
 import net.lizardnetwork.environmentadditions.helper.Caster;
 import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.helper.Random;
-import net.lizardnetwork.environmentadditions.helper.Resolve;
 import net.lizardnetwork.environmentadditions.models.*;
 import org.bukkit.Color;
 import org.bukkit.Particle;
@@ -100,7 +98,6 @@ public class Config {
             return null;
         }
 
-        boolean wgEnabled = false;
         List<ModelBiomeEvent> configuredBiomeEvents = new ArrayList<>();
         List<?> biomeEvents = config.getList(biomesKey);
         if (biomeEvents == null) {
@@ -131,14 +128,7 @@ public class Config {
             configuredBiomeEvents.add(
                 new ModelBiomeEvent(activeBiomes, condition, commands, particles, sounds)
             );
-            wgEnabled |= condition.getWorldGuardCondition().isConfigured();
         }
-
-        int deps = Resolve.resolveDependencies().getValue();
-        if (wgEnabled) {
-            deps += EDependency.WordGuard.getValue();
-        }
-        EnvironmentAdditions.getState().setDependencies(deps);
         return configuredBiomeEvents.toArray(new ModelBiomeEvent[0]);
     }
 

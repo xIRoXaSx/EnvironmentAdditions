@@ -1,0 +1,44 @@
+# ========
+#
+# To be able to spawn MythicMobs, you require the MythicMobs plugin (free / paid):
+#    => https://mythiccraft.io/index.php?ewr-porta/
+#
+# ========
+
+Mobs:
+  MyMythicMob:
+    # The actual MythicMobs mob name to spawn.
+    Name: "MyMythicMob"
+    # The health of the spawned mob(s).
+    # Set to < 1 to use the default value.
+    Health: 20
+    # The amount of mobs to spawn.
+    Amount: 1
+    # The level of the spawned mob(s).
+    Level: 1
+    # The time in ticks after the mob(s) disappear.
+    # Set to < 1 to disable despawns.
+    DespawnTime: 0
+    # Boss bar styling.
+    Bar:
+      # The title of the boss bar.
+      Title: "My Mythic Mob"
+      # The color of the boss bar.
+      # Must be one of the following colors (case insensitive).
+      # PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE
+      Color: PURPLE
+      # The style of the boss bar.
+      # Must be one of the following styles (case insensitive).
+      # SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20
+      Style: SEGMENTED_6
+    # The relative location modifier from the position of the player (feet).
+    RelativeOffset:
+      # X-axis modifier.
+      X: 0.0
+      # Y-axis modifier.
+      Y: 0.0
+      # Z-axis modifier.
+      Z: 0.0
+    # An optional condition, leave empty if no condition should be used.
+    # Keep in mind, that all conditions need to apply before any linked operation will be performed!
+    Condition: ""

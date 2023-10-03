@@ -3,6 +3,7 @@ package net.lizardnetwork.environmentadditions;
 import net.lizardnetwork.environmentadditions.cmd.CmdHandler;
 import net.lizardnetwork.environmentadditions.enums.EDependency;
 import net.lizardnetwork.environmentadditions.helper.Parser;
+import net.lizardnetwork.environmentadditions.helper.Resolve;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -28,11 +29,16 @@ public class EnvironmentAdditions extends JavaPlugin implements Listener {
         long start = System.nanoTime();
         instance = this;
         state.setConfig();
+        
+        // After the config has been read, determine the required dependencies.
+        state.setDependencies();
         state.subscribeToEvents();
-        long end = System.nanoTime();                
-
         List<String> deps = EDependency.parse(state.getDependencies()).stream().map(EDependency::toString).toList();
-        Logging.info("Detected dependencies: " +  String.join(", ", deps));
+        List<String> optDeps = EDependency.parse(Resolve.hookableDependencies()).stream().map(EDependency::toString).toList();
+        long end = System.nanoTime(); 
+
+        Logging.info("Detected soft dependencies: " +  String.join(", ", optDeps));
+        Logging.info("Used dependencies: " +  String.join(", ", deps));
         Logging.info("Enabled within " + Math.round((end - start) / 1e6) + "ms");
     }
 

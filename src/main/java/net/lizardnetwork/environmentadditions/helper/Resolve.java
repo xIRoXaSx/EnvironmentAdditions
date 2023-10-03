@@ -7,17 +7,20 @@ import org.bukkit.plugin.Plugin;
 public class Resolve {
     /**
      * Get dependencies from the installed plugins.
-     * @return Dependency - The enum which represents the installed plugin dependency.
+     * @return int - The dependency value which represents the installed plugins.
      */
-    public static EDependency resolveDependencies() {
-        String lookup = "PlaceholderAPI";
+    public static int hookableDependencies() {
+        int retValue = EDependency.None.getValue();
+        String[] plugins = {"PlaceholderAPI", "WorldGuard"};
         Plugin[] availablePlugins = Bukkit.getPluginManager().getPlugins();
         for (Plugin plugin : availablePlugins) {
-            if (!plugin.isEnabled() || !plugin.getName().equals(lookup)) {
-                continue;
+            for (String lookup : plugins) {
+                if (plugin.getName().equals(lookup)) {
+                    retValue += EDependency.valueOf(lookup).getValue();
+                    break;
+                }
             }
-            return EDependency.PlaceholderAPI;
         }
-        return EDependency.None;
+        return retValue;
     }
 }

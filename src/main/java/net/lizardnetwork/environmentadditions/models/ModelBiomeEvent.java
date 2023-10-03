@@ -1,6 +1,5 @@
 package net.lizardnetwork.environmentadditions.models;
 
-import net.lizardnetwork.environmentadditions.EnvironmentAdditions;
 import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.helper.Placeholder;
 import net.lizardnetwork.environmentadditions.helper.Random;
@@ -41,9 +40,9 @@ public class ModelBiomeEvent extends ModelCondition {
      * @param target Player - The player to run the check for.
      * @return boolean - Valuable or not.
      */
-    public boolean hasAnyValueFor(Player target) {
+    public boolean hasAnyValueFor(Player target, String biomePlaceholder) {
         return getBiomes().length > 0 && 
-            isInSpecifiedBiome(target) &&
+            isInSpecifiedBiome(target, biomePlaceholder) &&
             condition.hasPermission(target) &&
             condition.isBetweenTicks(target.getWorld().getTime()) &&
             condition.matchesWeather(getRealWeatherType(target)) &&
@@ -54,8 +53,7 @@ public class ModelBiomeEvent extends ModelCondition {
             condition.isNotInRegion(target.getLocation());
     }
 
-    private boolean isInSpecifiedBiome(Player target) {
-        String biomePlaceholder = EnvironmentAdditions.getState().getBiomePlaceholder();
+    private boolean isInSpecifiedBiome(Player target, String biomePlaceholder) {
         if (Parser.isEmpty(biomePlaceholder)) {
             for (String biome : biomes) {
                 if (biome.equalsIgnoreCase(target.getLocation().getBlock().getBiome().name())) {

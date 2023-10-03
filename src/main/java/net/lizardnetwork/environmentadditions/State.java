@@ -1,6 +1,7 @@
 package net.lizardnetwork.environmentadditions;
 
 import net.lizardnetwork.environmentadditions.cmd.CmdHandler;
+import net.lizardnetwork.environmentadditions.enums.EDependency;
 import net.lizardnetwork.environmentadditions.events.EventPlayerTeleport;
 import net.lizardnetwork.environmentadditions.events.EventTabComplete;
 import net.lizardnetwork.environmentadditions.models.ModelBiomeEvent;
@@ -20,14 +21,29 @@ public class State {
     private final Map<UUID, Observer> observers = new HashMap<>();
     private UUID[] pausedTasks = new UUID[0];
 
-    public void setConfig() {
+    void setConfig() {
         config = new Config();
         settings = config.getSettings();
         biomeEvents = config.getLinkedConfigs();
+
         if (pausedTasks.length == 0) {
             pauseObservers();
         } else {
             clearObservers();
+        }
+    }
+
+    void setDependencies() {
+        String biomePlaceholder = this.settings.getBiomePlaceholder();
+        if (biomePlaceholder != "") {
+            dependency += EDependency.PlaceholderAPI.getValue();
+        }
+
+        for (ModelBiomeEvent be : this.biomeEvents) {
+            if (be.getCondition().getWorldGuardCondition().isConfigured()) {
+                dependency += EDependency.WorldGuard.getValue();
+                break;
+            }
         }
     }
 
@@ -40,10 +56,6 @@ public class State {
         if (command != null) {
             command.setTabCompleter(new EventTabComplete(CmdHandler.getCompletionArgs()));
         }
-    }
-
-    void setDependencies(int value) {
-        this.dependency = value;
     }
 
     long getBenchmarkAverageTime() {
