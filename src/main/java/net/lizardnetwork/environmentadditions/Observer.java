@@ -51,6 +51,12 @@ public class Observer {
                         model.execute(player);
                     }
 
+                    for (ModelSpawner model : event.getSpawners()) {
+                        if (!model.matchesEveryCondition(player)) {
+                            continue;
+                        }
+                        model.execute(player);
+                    }
                 }
                 long end = System.nanoTime();
                 if (benchmark) {

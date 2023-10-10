@@ -1,28 +1,37 @@
 package net.lizardnetwork.environmentadditions.models;
 
+import javax.annotation.Nullable;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-
-import io.lumine.mythic.api.adapters.AbstractBossBar.BarColor;
-import io.lumine.mythic.api.adapters.AbstractBossBar.BarStyle;
-import io.lumine.mythic.api.mobs.MythicMob;
-import io.lumine.mythic.bukkit.BukkitAdapter;
-import io.lumine.mythic.bukkit.MythicBukkit;
-import io.lumine.mythic.bukkit.adapters.bossbars.BukkitBossBar;
-import io.lumine.mythic.core.mobs.ActiveMob;
 import net.lizardnetwork.environmentadditions.Logging;
+import net.lizardnetwork.environmentadditions.helper.Calculation;
+import net.lizardnetwork.environmentadditions.helper.Random;
 import net.lizardnetwork.environmentadditions.interfaces.IModelExecutor;
 
 public class ModelSpawner extends ModelCondition implements IModelExecutor {
     private final String name;
-    private final Integer health;
-    private final Integer amount;
-    private final Integer level;
-    private final Integer despawnTime; // Time in ticks.
-    private final ModelBossBar bar;
+    private final int health;
+    private final int amount;
+    private final int radius;
+    private final float viewDirectionDistance;
+    private final boolean scatter;
     private final ModelPosOffset offset;
+    private final ModelSpawnerMythicMobs mythicMobs;
 
-    public ModelSpawner(String name, Integer health, Integer amount, Integer level, Integer despawnTime, ModelBossBar bar, ModelCondition condition, ModelPosOffset offset) {
+    public ModelSpawner(
+        String name,
+        int health,
+        int amount,
+        int radius,
+        float viewDirectionDistance,
+        boolean scatter,
+        ModelPosOffset offset,
+        ModelCondition condition,
+        @Nullable ModelSpawnerMythicMobs mythicMobs
+    ) {
         super(
             condition.isEnabled(),
             condition.getProbability(),
@@ -38,74 +47,108 @@ public class ModelSpawner extends ModelCondition implements IModelExecutor {
         this.name = name;
         this.health = health;
         this.amount = amount;
-        this.level = level;
-        this.despawnTime = despawnTime;
-        this.bar = bar;
+        this.radius = radius;
+        this.viewDirectionDistance = viewDirectionDistance;
+        this.scatter = scatter;
         this.offset = offset;
+        this.mythicMobs = mythicMobs;
     }
 
     @Override
     public void execute(Player target) {
-        if (this.name == "") {
-            Logging.warn("MythicMob names may not be empty");
+        if (this.mythicMobs != null) {
+            mythicMobs.execute(target);
             return;
         }
 
-        MythicMob mm = MythicBukkit.inst().getMobManager().getMythicMob(this.name).orElse(null);
-        if (mm == null) {
-            Logging.warn("MythicMob with name " + this.name + " not found");
+        if (this.getName() == "") {
+            Logging.warn("MobSpawner names may not be empty");
             return;
         }
-        for (int i = 0; i < this.amount; ++i) {            
-            spawn(mm, target.getLocation());
+        
+        EntityType entity;
+        try {
+            entity = EntityType.valueOf(this.name.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            Logging.warn("Mob with name " + this.name + " not found");
+            return;
+        }
+
+        if (this.scatter) {
+            for (int i = 0; i < this.getAmount(); ++i) {
+                spawn(entity, target, getNextLocation(target, target.getLocation()));
+            }
+            return;
+        }
+        Location loc = getNextLocation(target, target.getLocation());
+        for (int i = 0; i < this.getAmount(); ++i) {
+            spawn(entity, target, loc);
         }
     }
 
-    private void spawn(MythicMob mm, Location target) {       
-        ActiveMob mob = mm.spawn(BukkitAdapter.adapt(target), this.level);
-        if (this.health > 0) {
-            mob.getEntity().setHealth(this.health);
+    private void spawn(EntityType entity, Player targeted, Location loc) {
+        Entity mob = loc.getWorld().spawnEntity(loc, entity, false);
+        if (mob == null) {
+            Logging.warn("Mob with name " + this.getName() + " not found");
+            return;
+        }
+        if (this.health == 0) {
+            return;
         }
 
-        if (this.bar != null && this.bar.getTitle() != "") {
-            BukkitBossBar mmBar = new BukkitBossBar(this.bar.getTitle(), toMythicBossColor(), toMythicBossStyle());
-            mob.addBar(this.bar.getTitle(), mmBar);
+        if (!(mob instanceof LivingEntity)) {
+            Logging.warn("Entity " + entity.name() + " is not an instance of a living entity, health cannot be set!");
+            return;
         }
+        ((LivingEntity)mob).setHealth(health);
     }
 
-    private BarColor toMythicBossColor() {
-        switch (this.bar.getColor()) {
-            case BLUE:
-                return BarColor.BLUE;
-            case GREEN:
-                return BarColor.GREEN;
-            case PINK:
-                return BarColor.PINK;
-            case PURPLE:
-                return BarColor.PURPLE;
-            case RED:
-                return BarColor.RED;
-            case YELLOW:
-                return BarColor.YELLOW;
-            case WHITE:
-            default:
-                return BarColor.WHITE;
+    Location getNextLocation(Player targeted, Location loc) {
+        if (this.getRadius() < 1) {
+            return loc.add(
+                new Random(-this.getRadius(), this.getRadius()).getFloatResult(),
+                0,
+                new Random(-this.getRadius(), this.getRadius()).getFloatResult()
+            );
         }
+        if (this.getViewDirectionDistance() > 0) {
+            return Calculation.calculateViewDirection(targeted, this.getViewDirectionDistance());
+        }
+        if (this.getOffset() != null) {
+            return loc.add(
+                this.getOffset().getRelativeX(),
+                this.getOffset().getRelativeY(),
+                this.getOffset().getRelativeZ()
+            );
+        }
+        return loc;
     }
 
-    private BarStyle toMythicBossStyle() {
-        switch (this.bar.getStyle()) {
-            case SEGMENTED_6:
-                return BarStyle.SEGMENTED_6;
-            case SEGMENTED_10:
-                return BarStyle.SEGMENTED_10;
-            case SEGMENTED_12:
-                return BarStyle.SEGMENTED_12;
-            case SEGMENTED_20:
-                return BarStyle.SEGMENTED_20;
-            case SOLID:
-            default:
-                return BarStyle.SOLID;
-        }
+    public String getName() {
+        return this.name;
+    }
+
+    public int getHealth() {
+        return this.health;
+    }
+
+    public int getAmount() {
+        return this.amount;
+    }
+
+    public int getRadius() {
+        return this.radius;
+    }
+
+    public float getViewDirectionDistance() {
+        return this.viewDirectionDistance;
+    }
+
+    public boolean getScatter() {
+        return this.scatter;
+    }
+
+    public ModelPosOffset getOffset() {
+        return this.offset;
     }
 }

@@ -41,6 +41,7 @@ EnvironmentAdditions:
         Sounds:
           - PortalFrameSpawn
           - CrimsonAdditions
+        Spawners: []
 
     - BiomeGroup: Swamp
       WhileIn:
@@ -48,6 +49,7 @@ EnvironmentAdditions:
           - SwampyResponse
         Sounds:
           - PortalFrameFill
+        Spawners: []
 
   Settings:
     # Version info, don't touch unless you know what you're doing.

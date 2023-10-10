@@ -1,5 +1,7 @@
 package net.lizardnetwork.environmentadditions;
 
+import net.lizardnetwork.environmentadditions.enums.EBossBarColor;
+import net.lizardnetwork.environmentadditions.enums.EBossBarStyle;
 import net.lizardnetwork.environmentadditions.enums.ECommandExecutor;
 import net.lizardnetwork.environmentadditions.enums.ELightSource;
 import net.lizardnetwork.environmentadditions.enums.EParticleLoop;
@@ -28,6 +30,7 @@ public class Config {
     private final FileConfiguration conditions = new YamlConfiguration();
     private final FileConfiguration particles = new YamlConfiguration();
     private final FileConfiguration sounds = new YamlConfiguration();
+    private final FileConfiguration spawners = new YamlConfiguration();
 
     public Config() {
         Plugin plugin = EnvironmentAdditions.getInstance();
@@ -42,7 +45,8 @@ public class Config {
             "commands", this.commands,
             "conditions", this.conditions,
             "particles", this.particles,
-            "sounds", this.sounds
+            "sounds", this.sounds,
+            "spawners", this.spawners
         );
         for (Map.Entry<String, FileConfiguration> file : files.entrySet()) {
             createOrLoad(plugin, file);
@@ -91,6 +95,7 @@ public class Config {
         String commandKey = "Commands";
         String particleKey = "Particles";
         String soundKey = "Sounds";
+        String spawnersKey = "Spawners";
         String biomesKey = "EnvironmentAdditions." + biomesGroupKey;
         ConfigurationSection biomeGroups = this.biomes.getConfigurationSection(biomesGroupKey);
         if (biomeGroups == null) {
@@ -125,8 +130,10 @@ public class Config {
             ModelParticle[] particles = getParticlesByName(particleNames);
             List<?> soundNames = (List<?>)wi.get(soundKey);
             ModelSound[] sounds = getSoundsByName(soundNames);
+            List<?> spawnerNames = (List<?>)wi.get(spawnersKey);
+            ModelSpawner[] spawners = getSpawnersByName(spawnerNames);
             configuredBiomeEvents.add(
-                new ModelBiomeEvent(activeBiomes, condition, commands, particles, sounds)
+                new ModelBiomeEvent(activeBiomes, condition, commands, particles, sounds, spawners)
             );
         }
         return configuredBiomeEvents.toArray(new ModelBiomeEvent[0]);
@@ -468,6 +475,116 @@ public class Config {
             ));
         }
         return modelList.toArray(new ModelSound[0]);
+    }
+
+    /**
+     * Get the configured spawners by name.
+     * @return ModelCommand - The commands.
+     */
+    private ModelSpawner[] getSpawnersByName(List<?> groups) {
+        ModelCondition condition = ModelCondition.getDefault(false);
+        ModelSpawner spawner = new ModelSpawner(
+            "",
+            0,
+            0,
+            0,
+            0,
+            false,
+            new ModelPosOffset(0, 0, 0),
+            condition,
+            null
+        );
+        if (groups == null || groups.size() == 0) {
+            return List.of(spawner).toArray(new ModelSpawner[0]);
+        }
+        if (EnvironmentAdditions.getState().getSettings().isSingleModelMode()) {
+            int index = new Random(0, groups.size()).getIntResult();
+            groups = List.of(groups.get(index));
+        }
+
+        String randomizeSubKey = "Randomize";
+        String mythicMobsSubKey = "MythicMobs";
+        String barSubKey = "Bar";
+        String relativeOffsetSubKey = "RelativeOffset";
+        String[] subKeys = new String[]{
+            "Name",                                            // 0
+            "Health",                                          // 1
+            "Amount",                                          // 2
+            "ViewDirectionDistance",                           // 3
+            "Condition",                                       // 4
+            combineKeys(mythicMobsSubKey, "Level"),            // 5
+            combineKeys(mythicMobsSubKey, "IsEnabled"),        // 6
+            combineKeys(mythicMobsSubKey, barSubKey, "Title"), // 7
+            combineKeys(mythicMobsSubKey, barSubKey, "Color"), // 8
+            combineKeys(mythicMobsSubKey, barSubKey, "Style"), // 9
+            combineKeys(randomizeSubKey, "RadiusInBlocks"),    // 10
+            combineKeys(randomizeSubKey, "ScatterSpawns"),     // 11
+            combineKeys(relativeOffsetSubKey, "X"),            // 12
+            combineKeys(relativeOffsetSubKey, "Y"),            // 13
+            combineKeys(relativeOffsetSubKey, "Z")             // 14
+        };
+        List<ModelSpawner> modelList = new ArrayList<>();
+        for (Object group : groups) {
+            if (Parser.isEmpty(group)) {
+                continue;
+            }
+
+            String rootKey = "Spawners." + group;
+            Map<String, Object> configValues = getConfigValues(this.spawners, rootKey, subKeys);
+            if (configValues.size() == 0) {
+                Logging.warn("Unable to retrieve spawner object: " + rootKey + ", " +
+                    "fallback: disabling event executing!"
+                );
+                return new ModelSpawner[]{spawner};
+            }
+            String name = Caster.valueOrEmpty(configValues.get(subKeys[0]));
+            int health = Caster.castToInt(configValues.get(subKeys[1]), -1);
+            int amount = Caster.castToInt(configValues.get(subKeys[2]), -1);
+            int radius = Caster.castToInt(configValues.get(subKeys[10]), 0);
+            float vdd = Caster.castToFloat(configValues.get(subKeys[3]));
+            boolean scatter = Caster.castToBoolean(configValues.get(subKeys[11]), false);
+            String barColor = Caster.valueOrEmpty(configValues.get(subKeys[8]));
+            String barStyle = Caster.valueOrEmpty(configValues.get(subKeys[9]));
+            ModelCondition cond = getConditionByName(rootKey, configValues.get(subKeys[4]));
+            boolean mmEnable = Caster.castToBoolean(configValues.get(subKeys[6]), false);
+            ModelPosOffset offset = new ModelPosOffset(
+                Caster.castToFloat(configValues.get(subKeys[12])),
+                Caster.castToFloat(configValues.get(subKeys[13])),
+                Caster.castToFloat(configValues.get(subKeys[14]))
+            );
+            ModelSpawnerMythicMobs mm = null;
+            if (mmEnable) {
+                mm = new ModelSpawnerMythicMobs(
+                    name,
+                    health,
+                    amount,
+                    radius,
+                    vdd,
+                    scatter,
+                    Caster.castToInt(configValues.get(subKeys[5]), -1), // Level
+                    offset,
+                    cond,
+                    new ModelBossBar(
+                        Caster.valueOrEmpty(configValues.get(subKeys[7])),
+                        barColor == "" ? EBossBarColor.WHITE : EBossBarColor.valueOf(barColor.toUpperCase()),
+                        barStyle == "" ? EBossBarStyle.SOLID : EBossBarStyle.valueOf(barColor.toUpperCase())
+                    )
+                );
+            }
+
+            modelList.add(new ModelSpawner(
+                name,
+                health,
+                amount,
+                radius,
+                vdd,
+                scatter,
+                offset,
+                cond,
+                mm
+            ));
+        }
+        return modelList.toArray(new ModelSpawner[0]);
     }
 
     private String combineKeys(String... keys) {

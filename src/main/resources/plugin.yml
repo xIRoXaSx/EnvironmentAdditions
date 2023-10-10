@@ -3,7 +3,7 @@ main: net.lizardnetwork.environmentadditions.EnvironmentAdditions
 version: 2.3.0
 api-version: 1.20
 author: xIRoXaSx
-softdepend: [PlaceholderAPI, WorldGuard]
+softdepend: [PlaceholderAPI, WorldGuard, MythicMobs]
 commands:
   environmentadditions:
     description: Main command for EnvironmentAdditions

@@ -40,6 +40,7 @@
                     <include>conditions.yml</include>
                     <include>particles.yml</include>
                     <include>sounds.yml</include>
+                    <include>spawners.yml</include>
                 </includes>
             </resource>
         </resources>

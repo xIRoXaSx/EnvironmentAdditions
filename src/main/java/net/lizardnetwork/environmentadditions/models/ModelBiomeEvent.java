@@ -13,8 +13,16 @@ public class ModelBiomeEvent extends ModelCondition {
     private final ModelCommand[] commands;
     private final ModelParticle[] particles;
     private final ModelSound[] sounds;
+    private final ModelSpawner[] spawners;
 
-    public ModelBiomeEvent(String[] biomes, ModelCondition condition, ModelCommand[] commands, ModelParticle[] particles, ModelSound[] sounds) {
+    public ModelBiomeEvent(
+        String[] biomes,
+        ModelCondition condition,
+        ModelCommand[] commands,
+        ModelParticle[] particles,
+        ModelSound[] sounds,
+        ModelSpawner[] spawners
+    ) {
         super(
             condition.isEnabled(),
             condition.getProbability(),
@@ -32,6 +40,7 @@ public class ModelBiomeEvent extends ModelCondition {
         this.commands = commands;
         this.particles = particles;
         this.sounds = sounds;
+        this.spawners = spawners;
     }
 
     /**
@@ -106,5 +115,9 @@ public class ModelBiomeEvent extends ModelCondition {
 
     public ModelSound[] getSounds() {
         return sounds;
+    }
+
+    public ModelSpawner[] getSpawners() {
+        return spawners;
     }
 }
