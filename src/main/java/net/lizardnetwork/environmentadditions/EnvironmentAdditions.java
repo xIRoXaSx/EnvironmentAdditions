@@ -30,7 +30,7 @@ public class EnvironmentAdditions extends JavaPlugin implements Listener {
         state.setConfig();
         state.subscribeToEvents();
         long end = System.nanoTime();                
-
+        
         List<String> deps = EDependency.parse(state.getDependencies()).stream().map(EDependency::toString).toList();
         Logging.info("Detected dependencies: " +  String.join(", ", deps));
         Logging.info("Enabled within " + Math.round((end - start) / 1e6) + "ms");

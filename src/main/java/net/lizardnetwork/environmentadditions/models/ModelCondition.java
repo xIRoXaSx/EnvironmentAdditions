@@ -27,6 +27,7 @@ public class ModelCondition implements ICondition, IRandomized {
     private final ModelConditionLight lightCondition;
     private final ModelConditionArea areaCondition;
     private final ModelConditionWorldGuard wgCondition;
+    private final ModelConditionDate dateCondition;
 
     public ModelCondition(
             boolean enabled,
@@ -38,7 +39,8 @@ public class ModelCondition implements ICondition, IRandomized {
             ModelConditionLight lightCondition,
             ModelConditionBlock blockCondition,
             ModelConditionArea areaCondition,
-            ModelConditionWorldGuard wgCondition
+            ModelConditionWorldGuard wgCondition,
+            ModelConditionDate dateCondition
         ) {
         this.enabled = enabled;
         this.probability = probability;
@@ -50,12 +52,14 @@ public class ModelCondition implements ICondition, IRandomized {
         this.blockCondition = blockCondition;
         this.areaCondition = areaCondition;
         this.wgCondition = wgCondition;
+        this.dateCondition = dateCondition;
     }
 
     public static ModelCondition getDefault(boolean enabled) {
         ModelConditionBlock condBlock = new ModelConditionBlock(Material.VOID_AIR.toString(), new ModelPosOffset(0,0,0));
         ModelConditionLight condLight = new ModelConditionLight(ELightSource.GENERIC, -1, -1);
         ModelConditionWorldGuard wgCondition = new ModelConditionWorldGuard(false, new String[]{"global"}, new String[]{"private"});
+        ModelConditionDate dateCondition = new ModelConditionDate("", "");
         ModelConditionArea condArea = new ModelConditionArea(
             false,
             new ModelPosOffset(0, 0, 0),
@@ -72,7 +76,8 @@ public class ModelCondition implements ICondition, IRandomized {
                 condLight,
                 condBlock,
                 condArea,
-                new ModelConditionWorldGuard(false, new String[0], new String[0])
+                new ModelConditionWorldGuard(false, new String[0], new String[0]),
+                dateCondition
             );
         }
 
@@ -83,7 +88,7 @@ public class ModelCondition implements ICondition, IRandomized {
             new ModelPosOffset(-100, -64, -100),
             new ModelPosOffset(100, 320, 100)
         );
-        return new ModelCondition(false, -1, 0, 0, EWeatherCondition.CLEAR, "", condLight, condBlock, condArea, wgCondition);
+        return new ModelCondition(false, -1, 0, 0, EWeatherCondition.CLEAR, "", condLight, condBlock, condArea, wgCondition, dateCondition);
     }
 
     public static boolean hasPermission(CommandSender target, String permission) {
@@ -111,7 +116,8 @@ public class ModelCondition implements ICondition, IRandomized {
             matchesBlock(player.getLocation()) &&
             isInArea(player.getLocation()) &&
             isInRegion(player.getLocation()) &&
-            isNotInRegion(player.getLocation());
+            isNotInRegion(player.getLocation()) &&
+            isBetweenTime();
     }
 
     @Override
@@ -184,6 +190,10 @@ public class ModelCondition implements ICondition, IRandomized {
         return wgCondition.isOutside(target);
     }
 
+    public boolean isBetweenTime() {
+        return dateCondition.isBetween();
+    }
+
     public int getProbability() {
         return probability;
     }
@@ -218,5 +228,9 @@ public class ModelCondition implements ICondition, IRandomized {
 
     public ModelConditionWorldGuard getWorldGuardCondition() {
         return wgCondition;
+    }
+
+    public ModelConditionDate getDateCondition() {
+        return dateCondition;
     }
 }

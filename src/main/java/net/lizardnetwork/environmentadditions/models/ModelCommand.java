@@ -27,7 +27,8 @@ public class ModelCommand extends ModelCondition implements IModelExecutor {
             condition.getLightCondition(),
             condition.getBlockCondition(),
             condition.getAreaCondition(),
-            condition.getWorldGuardCondition()
+            condition.getWorldGuardCondition(),
+            condition.getDateCondition()
         );
         this.commands = commands;
         this.executor = executor;

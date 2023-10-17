@@ -21,6 +21,17 @@ Conditions:
     Weather: Clear
     # The permission a player needs to have in order to activate an event.
     Permission: ''
+    # The date and time in which the events activate.
+    # Use a "T" to seperate the time from the date.
+    # Format: YYYY-MM-DDTHH:MM:SS
+    # Remove this node or use empty strings to disable it completely.
+    DateTime:
+      # The date and time from which the linked event is active.
+      # Use an empty string ("") to ignore it.
+      From: "2023-10-17T00:00:00"
+      # The date and time until the linked event is active.
+      # Use an empty string ("") to ignore it.
+      To: "3000-10-17T00:00:00"
     # The light level at the player's position.
     LightLevel:
       # The light source type (can either be "Sky", "Block" or "Generic").
