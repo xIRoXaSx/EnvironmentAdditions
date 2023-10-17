@@ -19,6 +19,10 @@ Conditions:
     UntilTimeInTicks: 12000
     # The weather type. Either 'Disabled', 'Clear' or 'Downfall'.
     Weather: Clear
+    # A list of world names in which the event should be activated.
+    # Empty the list or remove this node to enable the event in every world.
+    Worlds: 
+      - overworld
     # The permission a player needs to have in order to activate an event.
     Permission: ''
     # The date and time in which the events activate.
