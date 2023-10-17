@@ -33,6 +33,7 @@ public class EnvironmentAdditions extends JavaPlugin implements Listener {
         // After the config has been read, determine the required dependencies.
         state.setDependencies();
         state.subscribeToEvents();
+        long end = System.nanoTime();                
         List<String> deps = EDependency.parse(state.getDependencies()).stream().map(EDependency::toString).toList();
         List<String> optDeps = EDependency.parse(Resolve.hookableDependencies()).stream().map(EDependency::toString).toList();
         long end = System.nanoTime(); 

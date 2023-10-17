@@ -31,7 +31,8 @@ public class ModelParticle extends ModelCondition implements IModelExecutor {
             condition.getLightCondition(),
             condition.getBlockCondition(),
             condition.getAreaCondition(),
-            condition.getWorldGuardCondition()
+            condition.getWorldGuardCondition(),
+            condition.getDateCondition()
         );
         this.particle = particle;
         this.color = color;

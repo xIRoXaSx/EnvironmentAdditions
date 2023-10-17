@@ -232,6 +232,7 @@ public class Config {
         String offsetYSubKey = "Y";
         String offsetZSubKey = "Z";
         String worldGuardRegionSubKey = "WorldGuard";
+        String dateTimeSubKey = "DateTime";
         String[] subKeys = new String[]{
             "IsEnabled",
             "Chance",
@@ -256,6 +257,8 @@ public class Config {
             combineKeys(worldGuardRegionSubKey, "UseSingleRegionMode"),
             combineKeys(worldGuardRegionSubKey, "InRegion"),
             combineKeys(worldGuardRegionSubKey, "NotInRegion"),
+            combineKeys(dateTimeSubKey, "From"),
+            combineKeys(dateTimeSubKey, "To"),
         };
         String rootKey = "Conditions." + name;
         Map<String, Object> configValues = getConfigValues(this.conditions, rootKey, subKeys);
@@ -304,6 +307,10 @@ public class Config {
                 Caster.castToBoolean(configValues.get(subKeys[20]), false),
                 Caster.castToList(String.class, configValues.get(subKeys[21])).toArray(new String[0]),
                 Caster.castToList(String.class, configValues.get(subKeys[22])).toArray(new String[0])
+            ),
+            new ModelConditionDate(
+                Caster.valueOrEmpty(configValues.get(subKeys[23])),
+                Caster.valueOrEmpty(configValues.get(subKeys[24]))
             )
         );
     }

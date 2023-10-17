@@ -33,7 +33,8 @@ public class ModelBiomeEvent extends ModelCondition {
             condition.getLightCondition(),
             condition.getBlockCondition(),
             condition.getAreaCondition(),
-            condition.getWorldGuardCondition()
+            condition.getWorldGuardCondition(),
+            condition.getDateCondition()
         );
         this.biomes = biomes;
         this.condition = condition;
@@ -59,7 +60,8 @@ public class ModelBiomeEvent extends ModelCondition {
             condition.matchesBlock(target.getLocation()) &&
             condition.isInArea(target.getLocation()) &&
             condition.isInRegion(target.getLocation()) &&
-            condition.isNotInRegion(target.getLocation());
+            condition.isNotInRegion(target.getLocation()) &&
+            condition.isBetweenTime();
     }
 
     private boolean isInSpecifiedBiome(Player target, String biomePlaceholder) {
