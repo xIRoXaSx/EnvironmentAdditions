@@ -38,11 +38,13 @@ public class ModelSpawner extends ModelCondition implements IModelExecutor {
             condition.getFromTimeInTicks(),
             condition.getUntilTimeInTicks(),
             condition.getWeather(),
+            condition.getWorlds(),
             condition.getPermission(),
             condition.getLightCondition(),
             condition.getBlockCondition(),
             condition.getAreaCondition(),
-            condition.getWorldGuardCondition()
+            condition.getWorldGuardCondition(),
+            condition.getDateCondition()
         );
         this.name = name;
         this.health = health;
