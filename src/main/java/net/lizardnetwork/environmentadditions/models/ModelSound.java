@@ -26,7 +26,8 @@ public class ModelSound extends ModelCondition implements IModelExecutor {
             condition.getLightCondition(),
             condition.getBlockCondition(),
             condition.getAreaCondition(),
-            condition.getWorldGuardCondition()
+            condition.getWorldGuardCondition(),
+            condition.getDateCondition()
         );
         this.sound = sound;
         this.category = category;
