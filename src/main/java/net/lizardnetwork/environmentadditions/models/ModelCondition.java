@@ -22,6 +22,7 @@ public class ModelCondition implements ICondition, IRandomized {
     private final int fromTimeInTicks;
     private final int untilTimeInTicks;
     private final EWeatherCondition weather;
+    private final String[] worlds;
     private final String permission;
     private final ModelConditionBlock blockCondition;
     private final ModelConditionLight lightCondition;
@@ -35,6 +36,7 @@ public class ModelCondition implements ICondition, IRandomized {
             int fromTimeInTicks,
             int untilTimeInTicks,
             EWeatherCondition weather,
+            String[] worlds,
             String permission,
             ModelConditionLight lightCondition,
             ModelConditionBlock blockCondition,
@@ -47,6 +49,7 @@ public class ModelCondition implements ICondition, IRandomized {
         this.fromTimeInTicks = fromTimeInTicks;
         this.untilTimeInTicks = untilTimeInTicks;
         this.weather = weather;
+        this.worlds = worlds;
         this.permission = permission;
         this.lightCondition = lightCondition;
         this.blockCondition = blockCondition;
@@ -72,6 +75,7 @@ public class ModelCondition implements ICondition, IRandomized {
                 -1,
                 -1,
                 EWeatherCondition.DISABLED,
+                new String[0],
                 "",
                 condLight,
                 condBlock,
@@ -88,7 +92,7 @@ public class ModelCondition implements ICondition, IRandomized {
             new ModelPosOffset(-100, -64, -100),
             new ModelPosOffset(100, 320, 100)
         );
-        return new ModelCondition(false, -1, 0, 0, EWeatherCondition.CLEAR, "", condLight, condBlock, condArea, wgCondition, dateCondition);
+        return new ModelCondition(false, -1, 0, 0, EWeatherCondition.CLEAR, new String[0], "", condLight, condBlock, condArea, wgCondition, dateCondition);
     }
 
     public static boolean hasPermission(CommandSender target, String permission) {
@@ -108,6 +112,7 @@ public class ModelCondition implements ICondition, IRandomized {
     @Override
     public boolean matchesEveryCondition(Player player) {
         return isEnabled() &&
+            isInWorld(player) &&
             hasPermission(player) && 
             achievedProbability() &&
             matchesWeather(getRealWeatherType(player)) &&
@@ -128,6 +133,19 @@ public class ModelCondition implements ICondition, IRandomized {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public boolean isInWorld(Player target) {
+        if (this.worlds == null || this.worlds.length == 0) {
+            return true;
+        }
+
+        for (String world : this.worlds) {
+            if (target.getWorld().getName().equals(world)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -208,6 +226,10 @@ public class ModelCondition implements ICondition, IRandomized {
 
     public EWeatherCondition getWeather() {
         return weather;
+    }
+
+    public String[] getWorlds() {
+        return worlds;
     }
 
     public String getPermission() {
