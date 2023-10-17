@@ -29,6 +29,7 @@ public class ModelBiomeEvent extends ModelCondition {
             condition.getFromTimeInTicks(),
             condition.getUntilTimeInTicks(),
             condition.getWeather(),
+            condition.getWorlds(),
             condition.getPermission(),
             condition.getLightCondition(),
             condition.getBlockCondition(),
@@ -53,6 +54,7 @@ public class ModelBiomeEvent extends ModelCondition {
     public boolean hasAnyValueFor(Player target, String biomePlaceholder) {
         return getBiomes().length > 0 && 
             isInSpecifiedBiome(target, biomePlaceholder) &&
+            isInWorld(target) &&
             condition.hasPermission(target) &&
             condition.isBetweenTicks(target.getWorld().getTime()) &&
             condition.matchesWeather(getRealWeatherType(target)) &&

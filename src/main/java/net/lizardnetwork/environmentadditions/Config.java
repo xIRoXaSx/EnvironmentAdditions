@@ -239,6 +239,7 @@ public class Config {
             "FromTimeInTicks",
             "UntilTimeInTicks",
             "Weather",
+            "Worlds",
             "Permission",
             combineKeys(lightLevelSubKey, "Type"),
             combineKeys(lightLevelLevelSubKey, "Minimum"),
@@ -276,41 +277,42 @@ public class Config {
             Caster.castToInt(configValues.get(subKeys[2]), -1),
             Caster.castToInt(configValues.get(subKeys[3]), -1),
             Parser.valueOf(EWeatherCondition.class, configValues.get(subKeys[4])),
-            Caster.valueOrEmpty(configValues.get(subKeys[5])),
+            Caster.castToList(String.class, configValues.get(subKeys[5])).toArray(new String[0]),
+            Caster.valueOrEmpty(configValues.get(subKeys[6])),
             new ModelConditionLight(
-                Parser.valueOf(ELightSource.class, configValues.get(subKeys[6])),
-                Caster.castToInt(configValues.get(subKeys[7]), -1),
-                Caster.castToInt(configValues.get(subKeys[8]), -1)
+                Parser.valueOf(ELightSource.class, configValues.get(subKeys[7])),
+                Caster.castToInt(configValues.get(subKeys[8]), -1),
+                Caster.castToInt(configValues.get(subKeys[9]), -1)
             ),
             new ModelConditionBlock(
-                Caster.valueOrEmpty(configValues.get(subKeys[9])),
+                Caster.valueOrEmpty(configValues.get(subKeys[10])),
                 new ModelPosOffset(
-                    Caster.castToDouble(configValues.get(subKeys[10]), 0),
                     Caster.castToDouble(configValues.get(subKeys[11]), 0),
-                    Caster.castToDouble(configValues.get(subKeys[12]), 0)
+                    Caster.castToDouble(configValues.get(subKeys[12]), 0),
+                    Caster.castToDouble(configValues.get(subKeys[13]), 0)
                 )
             ),
             new ModelConditionArea(
-                Caster.castToBoolean(configValues.get(subKeys[13]), false),
+                Caster.castToBoolean(configValues.get(subKeys[14]), false),
                 new ModelPosOffset(
-                    Caster.castToDouble(configValues.get(subKeys[14]), 0),
                     Caster.castToDouble(configValues.get(subKeys[15]), 0),
-                    Caster.castToDouble(configValues.get(subKeys[16]), 0)
+                    Caster.castToDouble(configValues.get(subKeys[16]), 0),
+                    Caster.castToDouble(configValues.get(subKeys[17]), 0)
                 ),
                 new ModelPosOffset(
-                    Caster.castToDouble(configValues.get(subKeys[17]), 0),
                     Caster.castToDouble(configValues.get(subKeys[18]), 0),
-                    Caster.castToDouble(configValues.get(subKeys[19]), 0)
+                    Caster.castToDouble(configValues.get(subKeys[19]), 0),
+                    Caster.castToDouble(configValues.get(subKeys[20]), 0)
                 )
             ),
             new ModelConditionWorldGuard(
-                Caster.castToBoolean(configValues.get(subKeys[20]), false),
-                Caster.castToList(String.class, configValues.get(subKeys[21])).toArray(new String[0]),
-                Caster.castToList(String.class, configValues.get(subKeys[22])).toArray(new String[0])
+                Caster.castToBoolean(configValues.get(subKeys[21]), false),
+                Caster.castToList(String.class, configValues.get(subKeys[22])).toArray(new String[0]),
+                Caster.castToList(String.class, configValues.get(subKeys[23])).toArray(new String[0])
             ),
             new ModelConditionDate(
-                Caster.valueOrEmpty(configValues.get(subKeys[23])),
-                Caster.valueOrEmpty(configValues.get(subKeys[24]))
+                Caster.valueOrEmpty(configValues.get(subKeys[24])),
+                Caster.valueOrEmpty(configValues.get(subKeys[25]))
             )
         );
     }
