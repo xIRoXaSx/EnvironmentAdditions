@@ -9,12 +9,22 @@ Spawners:
   MyCustomMob:
     # The name of the mob to spawn.
     # If you want to spawn MythicMobs, insert it's name here.
-    Name: ""
+    Name: "Zombie"
     # The health of the spawned mob(s).
     # Set to < 1 to use the default value.
     Health: 20
     # The amount of mobs to spawn.
     Amount: 1
+    # Sometimes spawning locations aren't safe (eg. near a cliff, while crawling ...) when the mobs are spawned.
+    # These options help mitigating that.
+    SafeLocation:
+      # If you want to prevent mobs from falling / stucking inside a block, set this to true.
+      # This will enable an additional y-axis check (+/-10 blocks).
+      IsEnabled: false
+      # The minimum required height for the mob.
+      # To prevent the mob from suffocation (spawning inside blocks), this amount of blocks need to be available (air, ...) to spawn it.
+      # If the original location does not allow the mob to spawn, we will look for the next location along the y-axis.
+      MinimumHeight: 2
     # Settings for MythicMobs.
     # Requires MythicMobs to be installed.
     MythicMobs:
@@ -25,6 +35,7 @@ Spawners:
       # Boss bar styling.
       Bar:
         # The title of the boss bar.
+        # Keep empty to use the default title.
         Title: ""
         # The color of the boss bar.
         # Must be one of the following colors (case insensitive).

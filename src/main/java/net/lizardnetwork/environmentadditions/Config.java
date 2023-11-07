@@ -499,6 +499,8 @@ public class Config {
             0,
             0,
             false,
+            false,
+            0,
             new ModelPosOffset(0, 0, 0),
             condition,
             null
@@ -515,22 +517,25 @@ public class Config {
         String mythicMobsSubKey = "MythicMobs";
         String barSubKey = "Bar";
         String relativeOffsetSubKey = "RelativeOffset";
+        String safeLocationSubKey = "SafeLocation";
         String[] subKeys = new String[]{
-            "Name",                                            // 0
-            "Health",                                          // 1
-            "Amount",                                          // 2
-            "ViewDirectionDistance",                           // 3
-            "Condition",                                       // 4
-            combineKeys(mythicMobsSubKey, "Level"),            // 5
-            combineKeys(mythicMobsSubKey, "IsEnabled"),        // 6
-            combineKeys(mythicMobsSubKey, barSubKey, "Title"), // 7
-            combineKeys(mythicMobsSubKey, barSubKey, "Color"), // 8
-            combineKeys(mythicMobsSubKey, barSubKey, "Style"), // 9
-            combineKeys(randomizeSubKey, "RadiusInBlocks"),    // 10
-            combineKeys(randomizeSubKey, "ScatterSpawns"),     // 11
-            combineKeys(relativeOffsetSubKey, "X"),            // 12
-            combineKeys(relativeOffsetSubKey, "Y"),            // 13
-            combineKeys(relativeOffsetSubKey, "Z")             // 14
+            "Name",
+            "Health",
+            "Amount",
+            "ViewDirectionDistance",
+            "Condition",
+            combineKeys(mythicMobsSubKey, "Level"),
+            combineKeys(mythicMobsSubKey, "IsEnabled"),
+            combineKeys(mythicMobsSubKey, barSubKey, "Title"),
+            combineKeys(mythicMobsSubKey, barSubKey, "Color"),
+            combineKeys(mythicMobsSubKey, barSubKey, "Style"),
+            combineKeys(randomizeSubKey, "RadiusInBlocks"),
+            combineKeys(randomizeSubKey, "ScatterSpawns"),
+            combineKeys(safeLocationSubKey, "IsEnabled"),
+            combineKeys(safeLocationSubKey, "MinimumHeight"),
+            combineKeys(relativeOffsetSubKey, "X"),
+            combineKeys(relativeOffsetSubKey, "Y"),
+            combineKeys(relativeOffsetSubKey, "Z")
         };
         List<ModelSpawner> modelList = new ArrayList<>();
         for (Object group : groups) {
@@ -552,14 +557,16 @@ public class Config {
             int radius = Caster.castToInt(configValues.get(subKeys[10]), 0);
             float vdd = Caster.castToFloat(configValues.get(subKeys[3]));
             boolean scatter = Caster.castToBoolean(configValues.get(subKeys[11]), false);
+            boolean safeLocationEnabled = Caster.castToBoolean(configValues.get(subKeys[12]), false);
+            int safeLocationHeight = Caster.castToInt(configValues.get(subKeys[13]), 2);
             String barColor = Caster.valueOrEmpty(configValues.get(subKeys[8]));
             String barStyle = Caster.valueOrEmpty(configValues.get(subKeys[9]));
             ModelCondition cond = getConditionByName(rootKey, configValues.get(subKeys[4]));
             boolean mmEnable = Caster.castToBoolean(configValues.get(subKeys[6]), false);
             ModelPosOffset offset = new ModelPosOffset(
-                Caster.castToFloat(configValues.get(subKeys[12])),
-                Caster.castToFloat(configValues.get(subKeys[13])),
-                Caster.castToFloat(configValues.get(subKeys[14]))
+                Caster.castToFloat(configValues.get(subKeys[14])),
+                Caster.castToFloat(configValues.get(subKeys[15])),
+                Caster.castToFloat(configValues.get(subKeys[16]))
             );
             ModelSpawnerMythicMobs mm = null;
             if (mmEnable) {
@@ -570,13 +577,15 @@ public class Config {
                     radius,
                     vdd,
                     scatter,
+                    safeLocationEnabled,
+                    safeLocationHeight,
                     Caster.castToInt(configValues.get(subKeys[5]), -1), // Level
                     offset,
                     cond,
                     new ModelBossBar(
                         Caster.valueOrEmpty(configValues.get(subKeys[7])),
                         barColor == "" ? EBossBarColor.WHITE : EBossBarColor.valueOf(barColor.toUpperCase()),
-                        barStyle == "" ? EBossBarStyle.SOLID : EBossBarStyle.valueOf(barColor.toUpperCase())
+                        barStyle == "" ? EBossBarStyle.SOLID : EBossBarStyle.valueOf(barStyle.toUpperCase())
                     )
                 );
             }
@@ -588,6 +597,8 @@ public class Config {
                 radius,
                 vdd,
                 scatter,
+                safeLocationEnabled,
+                safeLocationHeight,
                 offset,
                 cond,
                 mm

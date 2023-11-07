@@ -24,12 +24,14 @@ public class ModelSpawnerMythicMobs implements IModelExecutor {
         int radius,
         float viewDirectionDistance,
         boolean scatter,
+        boolean safeLocation,
+        int safeLocationHeight,
         int level,
         ModelPosOffset offset,
         ModelCondition condition,
         ModelBossBar bar
     ) {
-        this.spawner = new ModelSpawner(name, health, amount, radius, viewDirectionDistance, scatter, offset, condition, null);
+        this.spawner = new ModelSpawner(name, health, amount, radius, viewDirectionDistance, scatter, safeLocation, safeLocationHeight, offset, condition, null);
         this.level = level;
         this.bar = bar;
     }
