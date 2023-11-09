@@ -10,61 +10,44 @@ import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.bukkit.adapters.bossbars.BukkitBossBar;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import net.lizardnetwork.environmentadditions.Logging;
-import net.lizardnetwork.environmentadditions.interfaces.IModelExecutor;
 
-public class ModelSpawnerMythicMobs implements IModelExecutor {
-    private ModelSpawner spawner;
+public class ModelSpawnerMythicMobs {
     private final int level;
     private final ModelBossBar bar;
 
-    public ModelSpawnerMythicMobs(
-        String name,
-        int health,
-        int amount,
-        int radius,
-        float viewDirectionDistance,
-        boolean scatter,
-        boolean safeLocation,
-        int safeLocationHeight,
-        int level,
-        ModelPosOffset offset,
-        ModelCondition condition,
-        ModelBossBar bar
-    ) {
-        this.spawner = new ModelSpawner(name, health, amount, radius, viewDirectionDistance, scatter, safeLocation, safeLocationHeight, offset, condition, null);
+    public ModelSpawnerMythicMobs(int level, ModelBossBar bar) {
         this.level = level;
         this.bar = bar;
     }
 
-    @Override
-    public void execute(Player target) {
-        if (this.spawner.getName() == "") {
+    public void execute(Player target, ModelSpawner spawner) {
+        if (spawner.getName() == "") {
             Logging.warn("MythicMob names may not be empty");
             return;
         }
 
-        MythicMob mm = MythicBukkit.inst().getMobManager().getMythicMob(this.spawner.getName()).orElse(null);
+        MythicMob mm = MythicBukkit.inst().getMobManager().getMythicMob(spawner.getName()).orElse(null);
         if (mm == null) {
-            Logging.warn("MythicMob with name " + this.spawner.getName() + " not found");
+            Logging.warn("MythicMob with name " + spawner.getName() + " not found");
             return;
         }
         
-        if (this.spawner.getScatter()) {
-            for (int i = 0; i < this.spawner.getAmount(); ++i) {
-                spawn(mm, target, this.spawner.getNextLocation(target, target.getLocation()));
+        if (spawner.getScatter()) {
+            for (int i = 0; i < spawner.getAmount(); ++i) {
+                spawn(spawner, mm, target, spawner.getNextLocation(target, target.getLocation()));
             }
             return;
         }
-        Location loc = this.spawner.getNextLocation(target, target.getLocation());
-        for (int i = 0; i < this.spawner.getAmount(); ++i) {
-            spawn(mm, target, loc);
+        Location loc = spawner.getNextLocation(target, target.getLocation());
+        for (int i = 0; i < spawner.getAmount(); ++i) {
+            spawn(spawner, mm, target, loc);
         }
     }
 
-    private void spawn(MythicMob mm, Player targeted, Location loc) {
+    private void spawn(ModelSpawner spawner, MythicMob mm, Player targeted, Location loc) {
         ActiveMob mob = mm.spawn(BukkitAdapter.adapt(loc), this.level);
-        if (this.spawner.getHealth() > 0) {
-            mob.getEntity().setHealth(this.spawner.getHealth());
+        if (spawner.getHealth() > 0) {
+            mob.getEntity().setHealth(spawner.getHealth());
         }
         mob.setTarget(BukkitAdapter.adapt(targeted));
 

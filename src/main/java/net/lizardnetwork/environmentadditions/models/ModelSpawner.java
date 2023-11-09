@@ -70,7 +70,7 @@ public class ModelSpawner extends ModelCondition implements IModelExecutor {
     @Override
     public void execute(Player target) {
         if (this.mythicMobs != null) {
-            mythicMobs.execute(target);
+            mythicMobs.execute(target, this);
             return;
         }
 

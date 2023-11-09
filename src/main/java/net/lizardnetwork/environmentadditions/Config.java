@@ -571,17 +571,7 @@ public class Config {
             ModelSpawnerMythicMobs mm = null;
             if (mmEnable) {
                 mm = new ModelSpawnerMythicMobs(
-                    name,
-                    health,
-                    amount,
-                    radius,
-                    vdd,
-                    scatter,
-                    safeLocationEnabled,
-                    safeLocationHeight,
-                    Caster.castToInt(configValues.get(subKeys[5]), -1), // Level
-                    offset,
-                    cond,
+                    Caster.castToInt(configValues.get(subKeys[5]), -1),
                     new ModelBossBar(
                         Caster.valueOrEmpty(configValues.get(subKeys[7])),
                         barColor == "" ? EBossBarColor.WHITE : EBossBarColor.valueOf(barColor.toUpperCase()),
