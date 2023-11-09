@@ -67,15 +67,31 @@ public class ModelSpawner extends ModelCondition implements IModelExecutor {
         this.mythicMobs = mythicMobs;
     }
 
+    public static ModelSpawner getDefault() {
+        return new ModelSpawner(
+            "",
+            0,
+            0,
+            0,
+            0,
+            false,
+            false,
+            0,
+            new ModelPosOffset(0, 0, 0),
+            ModelCondition.getDefault(false),
+            null
+        );
+    }
+
     @Override
     public void execute(Player target) {
-        if (this.mythicMobs != null) {
-            mythicMobs.execute(target, this);
+        if (this.getName() == "") {
+            Logging.warn("Spawner names may not be empty");
             return;
         }
-
-        if (this.getName() == "") {
-            Logging.warn("MobSpawner names may not be empty");
+        
+        if (this.mythicMobs != null) {
+            mythicMobs.execute(target, this);
             return;
         }
         
@@ -106,13 +122,38 @@ public class ModelSpawner extends ModelCondition implements IModelExecutor {
         }
     }
 
+    public boolean isMythicMobsMob() {
+        return this.mythicMobs != null;
+    }
+
+    @Nullable
+    Location getNextLocation(Player targeted, Location loc) {
+        Location l = loc;
+        if (this.getRadius() > 1) {
+            l = loc.add(
+                new Random(-this.getRadius(), this.getRadius()).getFloatResult(),
+                0,
+                new Random(-this.getRadius(), this.getRadius()).getFloatResult()
+            );
+        } else if (this.getViewDirectionDistance() > 0) {
+            l = Calculation.calculateViewDirection(targeted, this.getViewDirectionDistance());
+        } else if (this.getOffset() != null) {
+            l = loc.add(
+                this.getOffset().getRelativeX(),
+                this.getOffset().getRelativeY(),
+                this.getOffset().getRelativeZ()
+            );
+        }
+        return this.safeLocation ? nextSafeLocation(l) : l;
+    }
+
     @Nullable
     private Location nextSafeLocation(Location loc) {
         if (isLocationSafe(loc)) {
             return addBlockHeight(loc);
         }
 
-        for (int i = 0; i < this.maxSafeLocationDrift; i++) {
+        for (int i = 1; i < this.maxSafeLocationDrift+1; i++) {
             Location l = loc.clone().add(0, i, 0);
             if (isLocationSafe(l)) {
                 return addBlockHeight(l);
@@ -126,7 +167,7 @@ public class ModelSpawner extends ModelCondition implements IModelExecutor {
     }
 
     private boolean isLocationSafe(Location loc) {
-        Material[] mats = new Material[]{Material.AIR, Material.CAVE_AIR, Material.VOID_AIR};
+        Material[] mats = new Material[]{Material.AIR, Material.CAVE_AIR, Material.VOID_AIR, Material.GRASS};
         Location lo = loc.clone().add(0, -1, 0);
         for (int i = 0; i < mats.length; i++) {
             // Block below must not be air.
@@ -180,30 +221,6 @@ public class ModelSpawner extends ModelCondition implements IModelExecutor {
             return;
         }
         ((LivingEntity)mob).setHealth(health);
-    }
-
-    @Nullable
-    Location getNextLocation(Player targeted, Location loc) {
-        Location l = loc;
-        if (this.getRadius() > 1) {
-            l = loc.add(
-                new Random(-this.getRadius(), this.getRadius()).getFloatResult(),
-                0,
-                new Random(-this.getRadius(), this.getRadius()).getFloatResult()
-            );
-        } else if (this.getViewDirectionDistance() > 0) {
-            l = Calculation.calculateViewDirection(targeted, this.getViewDirectionDistance());
-        } else if (this.getOffset() != null) {
-            l = loc.add(
-                this.getOffset().getRelativeX(),
-                this.getOffset().getRelativeY(),
-                this.getOffset().getRelativeZ()
-            );
-        } 
-        if (this.safeLocation) {
-            l = nextSafeLocation(l);
-        }
-        return l;
     }
 
     public String getName() {

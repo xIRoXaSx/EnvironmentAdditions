@@ -53,8 +53,8 @@ public class ModelBiomeEvent extends ModelCondition {
      */
     public boolean hasAnyValueFor(Player target, String biomePlaceholder) {
         return getBiomes().length > 0 && 
-            isInSpecifiedBiome(target, biomePlaceholder) &&
             isInWorld(target) &&
+            isInSpecifiedBiome(target, biomePlaceholder) &&
             condition.hasPermission(target) &&
             condition.isBetweenTicks(target.getWorld().getTime()) &&
             condition.matchesWeather(getRealWeatherType(target)) &&

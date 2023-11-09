@@ -4,8 +4,10 @@ import net.lizardnetwork.environmentadditions.cmd.CmdHandler;
 import net.lizardnetwork.environmentadditions.enums.EDependency;
 import net.lizardnetwork.environmentadditions.events.EventPlayerTeleport;
 import net.lizardnetwork.environmentadditions.events.EventTabComplete;
+import net.lizardnetwork.environmentadditions.interfaces.ICondition;
 import net.lizardnetwork.environmentadditions.models.ModelBiomeEvent;
 import net.lizardnetwork.environmentadditions.models.ModelSettings;
+import net.lizardnetwork.environmentadditions.models.ModelSpawner;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
@@ -34,15 +36,43 @@ public class State {
     }
 
     void setDependencies() {
+        this.dependency = EDependency.None.getValue();
         String biomePlaceholder = this.settings.getBiomePlaceholder();
         if (biomePlaceholder != "") {
-            dependency += EDependency.PlaceholderAPI.getValue();
+            this.dependency = EDependency.PlaceholderAPI.getValue();
         }
 
+        boolean wg = false;
+        boolean mm = false;
         for (ModelBiomeEvent be : this.biomeEvents) {
-            if (be.getCondition().getWorldGuardCondition().isConfigured()) {
-                dependency += EDependency.WorldGuard.getValue();
-                break;
+            ICondition[][] allIConds = new ICondition[][] {be.getCommands(), be.getParticles(), be.getSounds(), be.getSpawners()};
+            allConds:
+            for (ICondition[] iconds : allIConds) {
+                for (ICondition cond : iconds) {
+                    if (cond.isWorldGuardConfigured()) {
+                        this.dependency += EDependency.WorldGuard.getValue();
+                        wg = true;
+                        break allConds;
+                    }
+                }
+            }
+
+            if (be.isWorldGuardConfigured() && !wg) {
+                this.dependency += EDependency.WorldGuard.getValue();
+                wg = true;
+            }
+
+            for (ModelSpawner spawner : be.getSpawners()) {
+                if (spawner.isMythicMobsMob() && !mm) {
+                    this.dependency += EDependency.MythicMobs.getValue();
+                    mm = true;
+                    break;
+                }
+            }
+
+            if (wg && mm) {
+                // All dependencies detected.
+                return;
             }
         }
     }
@@ -103,7 +133,7 @@ public class State {
     }
 
     void resumeObservers() {
-        if (pausedTasks.length < 1) {
+        if (pausedTasks.length == 0) {
             return;
         }
         for (UUID uuid : pausedTasks) {

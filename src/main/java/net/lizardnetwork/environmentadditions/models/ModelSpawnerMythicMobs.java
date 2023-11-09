@@ -2,6 +2,7 @@ package net.lizardnetwork.environmentadditions.models;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import io.lumine.mythic.api.adapters.AbstractBossBar.BarColor;
 import io.lumine.mythic.api.adapters.AbstractBossBar.BarStyle;
 import io.lumine.mythic.api.mobs.MythicMob;
@@ -20,12 +21,7 @@ public class ModelSpawnerMythicMobs {
         this.bar = bar;
     }
 
-    public void execute(Player target, ModelSpawner spawner) {
-        if (spawner.getName() == "") {
-            Logging.warn("MythicMob names may not be empty");
-            return;
-        }
-
+    public void execute(Player target, @NotNull ModelSpawner spawner) {
         MythicMob mm = MythicBukkit.inst().getMobManager().getMythicMob(spawner.getName()).orElse(null);
         if (mm == null) {
             Logging.warn("MythicMob with name " + spawner.getName() + " not found");
@@ -34,11 +30,19 @@ public class ModelSpawnerMythicMobs {
         
         if (spawner.getScatter()) {
             for (int i = 0; i < spawner.getAmount(); ++i) {
-                spawn(spawner, mm, target, spawner.getNextLocation(target, target.getLocation()));
+                Location loc = spawner.getNextLocation(target, target.getLocation());
+                if (loc == null) {
+                    return;
+                }
+                spawn(spawner, mm, target, loc);
             }
             return;
         }
+
         Location loc = spawner.getNextLocation(target, target.getLocation());
+        if (loc == null) {
+            return;
+        }
         for (int i = 0; i < spawner.getAmount(); ++i) {
             spawn(spawner, mm, target, loc);
         }

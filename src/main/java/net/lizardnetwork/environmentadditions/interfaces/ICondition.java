@@ -17,4 +17,5 @@ public interface ICondition {
     boolean isInRegion(Location target);
     boolean isNotInRegion(Location target);
     boolean matchesEveryCondition(Player target);
+    boolean isWorldGuardConfigured();
 }

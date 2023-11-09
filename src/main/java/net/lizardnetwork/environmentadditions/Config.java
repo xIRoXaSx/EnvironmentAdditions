@@ -491,23 +491,10 @@ public class Config {
      * @return ModelCommand - The commands.
      */
     private ModelSpawner[] getSpawnersByName(List<?> groups) {
-        ModelCondition condition = ModelCondition.getDefault(false);
-        ModelSpawner spawner = new ModelSpawner(
-            "",
-            0,
-            0,
-            0,
-            0,
-            false,
-            false,
-            0,
-            new ModelPosOffset(0, 0, 0),
-            condition,
-            null
-        );
         if (groups == null || groups.size() == 0) {
-            return List.of(spawner).toArray(new ModelSpawner[0]);
+            return List.of(ModelSpawner.getDefault()).toArray(new ModelSpawner[0]);
         }
+
         if (EnvironmentAdditions.getState().getSettings().isSingleModelMode()) {
             int index = new Random(0, groups.size()).getIntResult();
             groups = List.of(groups.get(index));
@@ -549,48 +536,35 @@ public class Config {
                 Logging.warn("Unable to retrieve spawner object: " + rootKey + ", " +
                     "fallback: disabling event executing!"
                 );
-                return new ModelSpawner[]{spawner};
+                return new ModelSpawner[]{ModelSpawner.getDefault()};
             }
-            String name = Caster.valueOrEmpty(configValues.get(subKeys[0]));
-            int health = Caster.castToInt(configValues.get(subKeys[1]), -1);
-            int amount = Caster.castToInt(configValues.get(subKeys[2]), -1);
-            int radius = Caster.castToInt(configValues.get(subKeys[10]), 0);
-            float vdd = Caster.castToFloat(configValues.get(subKeys[3]));
-            boolean scatter = Caster.castToBoolean(configValues.get(subKeys[11]), false);
-            boolean safeLocationEnabled = Caster.castToBoolean(configValues.get(subKeys[12]), false);
-            int safeLocationHeight = Caster.castToInt(configValues.get(subKeys[13]), 2);
+            
             String barColor = Caster.valueOrEmpty(configValues.get(subKeys[8]));
             String barStyle = Caster.valueOrEmpty(configValues.get(subKeys[9]));
-            ModelCondition cond = getConditionByName(rootKey, configValues.get(subKeys[4]));
             boolean mmEnable = Caster.castToBoolean(configValues.get(subKeys[6]), false);
-            ModelPosOffset offset = new ModelPosOffset(
-                Caster.castToFloat(configValues.get(subKeys[14])),
-                Caster.castToFloat(configValues.get(subKeys[15])),
-                Caster.castToFloat(configValues.get(subKeys[16]))
+            ModelSpawnerMythicMobs mm = !mmEnable ? null : new ModelSpawnerMythicMobs(
+                Caster.castToInt(configValues.get(subKeys[5]), -1),
+                new ModelBossBar(
+                    Caster.valueOrEmpty(configValues.get(subKeys[7])),
+                    barColor == "" ? EBossBarColor.WHITE : EBossBarColor.valueOf(barColor.toUpperCase()),
+                    barStyle == "" ? EBossBarStyle.SOLID : EBossBarStyle.valueOf(barStyle.toUpperCase())
+                )
             );
-            ModelSpawnerMythicMobs mm = null;
-            if (mmEnable) {
-                mm = new ModelSpawnerMythicMobs(
-                    Caster.castToInt(configValues.get(subKeys[5]), -1),
-                    new ModelBossBar(
-                        Caster.valueOrEmpty(configValues.get(subKeys[7])),
-                        barColor == "" ? EBossBarColor.WHITE : EBossBarColor.valueOf(barColor.toUpperCase()),
-                        barStyle == "" ? EBossBarStyle.SOLID : EBossBarStyle.valueOf(barStyle.toUpperCase())
-                    )
-                );
-            }
-
             modelList.add(new ModelSpawner(
-                name,
-                health,
-                amount,
-                radius,
-                vdd,
-                scatter,
-                safeLocationEnabled,
-                safeLocationHeight,
-                offset,
-                cond,
+                Caster.valueOrEmpty(configValues.get(subKeys[0])),
+                Caster.castToInt(configValues.get(subKeys[1]), -1),
+                Caster.castToInt(configValues.get(subKeys[2]), -1),
+                Caster.castToInt(configValues.get(subKeys[10]), 0),
+                Caster.castToFloat(configValues.get(subKeys[3])),
+                Caster.castToBoolean(configValues.get(subKeys[11]), false),
+                Caster.castToBoolean(configValues.get(subKeys[12]), false),
+                Caster.castToInt(configValues.get(subKeys[13]), 2),
+                new ModelPosOffset(
+                    Caster.castToFloat(configValues.get(subKeys[14])),
+                    Caster.castToFloat(configValues.get(subKeys[15])),
+                    Caster.castToFloat(configValues.get(subKeys[16]))
+                ),
+                getConditionByName(rootKey, configValues.get(subKeys[4])),
                 mm
             ));
         }
