@@ -1,0 +1,72 @@
+# ========
+#
+# To be able to spawn MythicMobs, you require the MythicMobs plugin (free / paid):
+#    => https://mythiccraft.io/index.php?ewr-porta/
+#
+# ========
+
+Spawners:
+  MyCustomMob:
+    # The name of the mob to spawn.
+    # If you want to spawn MythicMobs, insert it's name here.
+    Name: "Zombie"
+    # The health of the spawned mob(s).
+    # Set to < 1 to use the default value.
+    Health: 20
+    # The amount of mobs to spawn.
+    Amount: 1
+    # Sometimes spawning locations aren't safe (eg. near a cliff, while crawling ...) when the mobs are spawned.
+    # These options help to mitigate this problem.
+    SafeLocation:
+      # If you want to prevent mobs from falling / stucking inside a block, set this to true.
+      # This will enable an additional y-axis check (+/-10 blocks).
+      IsEnabled: false
+      # The minimum required height for the mob.
+      # To prevent the mob from suffocation (spawning inside blocks), this amount of blocks need to be available (air, ...) to spawn it.
+      # If the original location does not allow the mob to spawn, we will look for the next location along the y-axis.
+      MinimumHeight: 2
+    # Settings for MythicMobs.
+    # Requires MythicMobs to be installed.
+    MythicMobs:
+      # Whether to enable MythicMobs for this spawner.
+      IsEnabled: false
+      # The level of the spawned mob(s).
+      Level: 1
+      # Boss bar styling.
+      Bar:
+        # The title of the boss bar.
+        # Keep empty to use the default title.
+        Title: ""
+        # The color of the boss bar.
+        # Must be one of the following colors (case insensitive).
+        # PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE
+        Color: PURPLE
+        # The style of the boss bar.
+        # Must be one of the following styles (case insensitive).
+        # SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20
+        Style: SEGMENTED_6
+    # Randomizing options.
+    Randomize:
+      # The max area size in which the mobs randomly spawn.
+      # Overwrites the "RelativeOffset" option if set.
+      # Set to < 1 to disable it.
+      RadiusInBlocks: 15
+      # Whether to spawn all mobs at the same location or randomize their positions.
+      # Requires: "RadiusInBlocks" > 0 and "Amount" > 1!
+      ScatterSpawns: false
+    # If you don't know the direction a player faces, you can set the relative distance here.
+    # Otherwise, you can use relative options down below.
+    # Overwrites the "RelativeOffset" option if set.
+    # Set to < 1 to disable it.
+    ViewDirectionDistance: 0
+    # The relative location modifier from the position of the player (feet).
+    RelativeOffset:
+      # X-axis modifier.
+      X: 0.0
+      # Y-axis modifier.
+      Y: 0.0
+      # Z-axis modifier.
+      Z: 0.0
+    # An optional condition, leave empty if no condition should be used.
+    # Keep in mind, that all conditions need to apply before any linked operation will be performed!
+    Condition: ""

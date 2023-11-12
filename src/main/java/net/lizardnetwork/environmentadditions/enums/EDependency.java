@@ -6,7 +6,8 @@ import java.util.List;
 public enum EDependency {
     None(0),
     PlaceholderAPI(1),
-    WordGuard(2);
+    WorldGuard(2),
+    MythicMobs(4);
 
     private final int id;
 
@@ -20,15 +21,18 @@ public enum EDependency {
 
     public static List<EDependency> parse(int id) {
         if (id == 0) {
-            return List.of(EDependency.None);
+            return List.of(None);
         }
 
         List<EDependency> deps = new ArrayList<>();
-        if ((id & EDependency.PlaceholderAPI.getValue()) > 0) {
-            deps.add(EDependency.PlaceholderAPI);
+        if ((id & PlaceholderAPI.getValue()) > 0) {
+            deps.add(PlaceholderAPI);
         }
-        if ((id & EDependency.WordGuard.getValue()) > 0) {
-            deps.add(EDependency.WordGuard);
+        if ((id & WorldGuard.getValue()) > 0) {
+            deps.add(WorldGuard);
+        }
+        if ((id & MythicMobs.getValue()) > 0) {
+            deps.add(MythicMobs);
         }
         return deps;
     }

@@ -41,7 +41,8 @@ This has one huge advantage: You don't need to scroll / search the whole day for
     ├ conditions.yml  => Contains groups of conditions, e.g. time, weather, permission, ...
     ├ config.yml      => The config with its core settings and all referenced groups. 
     ├ particles.yml   => Contains groups of particles, animations, ...
-    └ sounds.yml      => Contains groups of sounds, sound settings, ...
+    ├ sounds.yml      => Contains groups of sounds, sound settings, ...
+    └ spawners.yml    => Contains groups of spawnable vanilla mobs and mythicmobs.
 ```
 The default configs can be found in the [resources](src/main/resources) directory.
 
@@ -50,3 +51,4 @@ The default configs can be found in the [resources](src/main/resources) director
 - Particles: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
 - Sounds: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
 - Sound categories: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/SoundCategory.html
+- MythicMobs: https://mythiccraft.io/index.php?resources/mythicmobs.1/

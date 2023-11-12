@@ -1,6 +1,7 @@
 package net.lizardnetwork.environmentadditions.models;
 
 import net.lizardnetwork.environmentadditions.enums.EProbability;
+import net.lizardnetwork.environmentadditions.helper.Calculation;
 import net.lizardnetwork.environmentadditions.helper.Probability;
 import net.lizardnetwork.environmentadditions.helper.Random;
 import net.lizardnetwork.environmentadditions.interfaces.IModelExecutor;
@@ -9,7 +10,6 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 public class ModelParticle extends ModelCondition implements IModelExecutor {
     private final Particle particle;
@@ -73,11 +73,8 @@ public class ModelParticle extends ModelCondition implements IModelExecutor {
         float relY = (float)posOffset.getRelativeY();
         float relZ = (float)posOffset.getRelativeZ();
         float vdd = animation.getViewDirectionDistance();
-        Location src = target.getLocation();
         Particle.DustOptions dustOpts = getDustOptions();
-        if (vdd > 0) {
-            src = calculateViewDirection(target, vdd);
-        }
+        Location src = vdd > 0 ? Calculation.calculateViewDirection(target, vdd) : target.getLocation();
         ModelBiomeEvent.shift(src, relX, relY, relZ, false);
         spawn(target, target.getWorld(), src, dustOpts);
     }
@@ -140,15 +137,6 @@ public class ModelParticle extends ModelCondition implements IModelExecutor {
 
     private Particle.DustOptions getDustOptions() {
         return particle.equals(Particle.REDSTONE) ? new Particle.DustOptions(color, size) : null;
-    }
-
-    private Location calculateViewDirection(Player target, float vdd) {
-        Location eyeLocation = target.getEyeLocation();
-        Vector nv = eyeLocation.getDirection().normalize();
-        double x = vdd * nv.getX() + eyeLocation.getX();
-        double y = vdd * nv.getY() + eyeLocation.getY();
-        double z = vdd * nv.getZ() + eyeLocation.getZ();
-        return new Location(target.getWorld(), x, y, z);
     }
 
     public ModelCondition getCondition() {

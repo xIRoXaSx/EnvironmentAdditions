@@ -18,13 +18,15 @@ public class Observer {
     }
 
     public void initTimeDrivenObserver(Player player, boolean benchmark) {
+        final String biomePlaceholder = EnvironmentAdditions.getState().getBiomePlaceholder();
+
         observerTask = new BukkitRunnable() {
             @Override
             public void run() {
                 long start = System.nanoTime();
                 ModelBiomeEvent[] be = EnvironmentAdditions.getState().getBiomeEvents();
                 for (ModelBiomeEvent event : be) {
-                    if (!event.hasAnyValueFor(player)) {
+                    if (!event.hasAnyValueFor(player, biomePlaceholder)) {
                         continue;
                     }
 
@@ -49,6 +51,12 @@ public class Observer {
                         model.execute(player);
                     }
 
+                    for (ModelSpawner model : event.getSpawners()) {
+                        if (!model.matchesEveryCondition(player)) {
+                            continue;
+                        }
+                        model.execute(player);
+                    }
                 }
                 long end = System.nanoTime();
                 if (benchmark) {

@@ -1,23 +1,26 @@
 package net.lizardnetwork.environmentadditions.helper;
 
 import net.lizardnetwork.environmentadditions.enums.EDependency;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 
 public class Resolve {
     /**
      * Get dependencies from the installed plugins.
-     * @return Dependency - The enum which represents the installed plugin dependency.
+     * @return int - The dependency value which represents the installed plugins.
      */
-    public static EDependency resolveDependencies() {
-        String lookup = "PlaceholderAPI";
-        Plugin[] availablePlugins = Bukkit.getPluginManager().getPlugins();
+    public static int usableDependencies(PluginManager pm) {
+        int retValue = EDependency.None.getValue();
+        String[] plugins = {"PlaceholderAPI", "WorldGuard", "MythicMobs"};
+        Plugin[] availablePlugins = pm.getPlugins();
         for (Plugin plugin : availablePlugins) {
-            if (!plugin.isEnabled() || !plugin.getName().equals(lookup)) {
-                continue;
+            for (String lookup : plugins) {
+                if (plugin.getName().equals(lookup)) {
+                    retValue += EDependency.valueOf(lookup).getValue();
+                    break;
+                }
             }
-            return EDependency.PlaceholderAPI;
         }
-        return EDependency.None;
+        return retValue;
     }
 }

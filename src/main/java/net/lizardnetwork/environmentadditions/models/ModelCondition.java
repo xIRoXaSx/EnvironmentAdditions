@@ -61,7 +61,7 @@ public class ModelCondition implements ICondition, IRandomized {
     public static ModelCondition getDefault(boolean enabled) {
         ModelConditionBlock condBlock = new ModelConditionBlock(Material.VOID_AIR.toString(), new ModelPosOffset(0,0,0));
         ModelConditionLight condLight = new ModelConditionLight(ELightSource.GENERIC, -1, -1);
-        ModelConditionWorldGuard wgCondition = new ModelConditionWorldGuard(false, new String[]{"global"}, new String[]{"private"});
+        ModelConditionWorldGuard wgCondition = new ModelConditionWorldGuard(false, new String[0], new String[0]);
         ModelConditionDate dateCondition = new ModelConditionDate("", "");
         ModelConditionArea condArea = new ModelConditionArea(
             false,
@@ -162,6 +162,11 @@ public class ModelCondition implements ICondition, IRandomized {
     @Override
     public boolean isBetweenTicks(long current) {
         return fromTimeInTicks < 0 || untilTimeInTicks < 0 || current >= fromTimeInTicks && current <= untilTimeInTicks;
+    }
+
+    @Override
+    public boolean isWorldGuardConfigured() {
+        return wgCondition.isConfigured();
     }
 
     public WeatherType getRealWeatherType(Player target) {

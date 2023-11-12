@@ -51,7 +51,7 @@ public class Placeholder {
         Matcher matcher = pattern.matcher(value);
 
         while (matcher.find()) {
-            String replacement = resolvePlaceholder(target, matcher.group(0), EDependency.PlaceholderAPI);
+            String replacement = resolvePlaceholder(target, matcher.group(0));
             // Edge case %player%, resolve as the target's username.
             if (matcher.group(1).equalsIgnoreCase("player")) {
                 replaced = replaced.replaceAll(matcher.group(0), target.getName());
@@ -66,10 +66,9 @@ public class Placeholder {
      * Get either the corresponding PlaceholderAPI placeholder(s) or the internal one(s).
      * @param target Player - The targeted player for the placeholder(s).
      * @param text String - The text which contains the placeholder.
-     * @param defaultSystem Dependency - The placeholder system to use.
      * @return String - The replaced string.
      */
-    public String resolvePlaceholder(Player target, String text, EDependency defaultSystem) {
+    public String resolvePlaceholder(Player target, String text) {
         int dependencies = EnvironmentAdditions.getState().getDependencies();
         if ((dependencies & EDependency.PlaceholderAPI.getValue()) > 0) {
             // Return the replaced string.

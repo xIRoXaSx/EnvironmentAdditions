@@ -1,14 +1,14 @@
 package net.lizardnetwork.environmentadditions;
 
+import net.lizardnetwork.environmentadditions.enums.EBossBarColor;
+import net.lizardnetwork.environmentadditions.enums.EBossBarStyle;
 import net.lizardnetwork.environmentadditions.enums.ECommandExecutor;
-import net.lizardnetwork.environmentadditions.enums.EDependency;
 import net.lizardnetwork.environmentadditions.enums.ELightSource;
 import net.lizardnetwork.environmentadditions.enums.EParticleLoop;
 import net.lizardnetwork.environmentadditions.enums.EWeatherCondition;
 import net.lizardnetwork.environmentadditions.helper.Caster;
 import net.lizardnetwork.environmentadditions.helper.Parser;
 import net.lizardnetwork.environmentadditions.helper.Random;
-import net.lizardnetwork.environmentadditions.helper.Resolve;
 import net.lizardnetwork.environmentadditions.models.*;
 import org.bukkit.Color;
 import org.bukkit.Particle;
@@ -30,6 +30,7 @@ public class Config {
     private final FileConfiguration conditions = new YamlConfiguration();
     private final FileConfiguration particles = new YamlConfiguration();
     private final FileConfiguration sounds = new YamlConfiguration();
+    private final FileConfiguration spawners = new YamlConfiguration();
 
     public Config() {
         Plugin plugin = EnvironmentAdditions.getInstance();
@@ -44,7 +45,8 @@ public class Config {
             "commands", this.commands,
             "conditions", this.conditions,
             "particles", this.particles,
-            "sounds", this.sounds
+            "sounds", this.sounds,
+            "spawners", this.spawners
         );
         for (Map.Entry<String, FileConfiguration> file : files.entrySet()) {
             createOrLoad(plugin, file);
@@ -93,6 +95,7 @@ public class Config {
         String commandKey = "Commands";
         String particleKey = "Particles";
         String soundKey = "Sounds";
+        String spawnersKey = "Spawners";
         String biomesKey = "EnvironmentAdditions." + biomesGroupKey;
         ConfigurationSection biomeGroups = this.biomes.getConfigurationSection(biomesGroupKey);
         if (biomeGroups == null) {
@@ -100,7 +103,6 @@ public class Config {
             return null;
         }
 
-        boolean wgEnabled = false;
         List<ModelBiomeEvent> configuredBiomeEvents = new ArrayList<>();
         List<?> biomeEvents = config.getList(biomesKey);
         if (biomeEvents == null) {
@@ -128,17 +130,12 @@ public class Config {
             ModelParticle[] particles = getParticlesByName(particleNames);
             List<?> soundNames = (List<?>)wi.get(soundKey);
             ModelSound[] sounds = getSoundsByName(soundNames);
+            List<?> spawnerNames = (List<?>)wi.get(spawnersKey);
+            ModelSpawner[] spawners = getSpawnersByName(spawnerNames);
             configuredBiomeEvents.add(
-                new ModelBiomeEvent(activeBiomes, condition, commands, particles, sounds)
+                new ModelBiomeEvent(activeBiomes, condition, commands, particles, sounds, spawners)
             );
-            wgEnabled |= condition.getWorldGuardCondition().isConfigured();
         }
-
-        int deps = Resolve.resolveDependencies().getValue();
-        if (wgEnabled) {
-            deps += EDependency.WordGuard.getValue();
-        }
-        EnvironmentAdditions.getState().setDependencies(deps);
         return configuredBiomeEvents.toArray(new ModelBiomeEvent[0]);
     }
 
@@ -487,6 +484,91 @@ public class Config {
             ));
         }
         return modelList.toArray(new ModelSound[0]);
+    }
+
+    /**
+     * Get the configured spawners by name.
+     * @return ModelCommand - The commands.
+     */
+    private ModelSpawner[] getSpawnersByName(List<?> groups) {
+        if (groups == null || groups.size() == 0) {
+            return List.of(ModelSpawner.getDefault()).toArray(new ModelSpawner[0]);
+        }
+
+        if (EnvironmentAdditions.getState().getSettings().isSingleModelMode()) {
+            int index = new Random(0, groups.size()).getIntResult();
+            groups = List.of(groups.get(index));
+        }
+
+        String randomizeSubKey = "Randomize";
+        String mythicMobsSubKey = "MythicMobs";
+        String barSubKey = "Bar";
+        String relativeOffsetSubKey = "RelativeOffset";
+        String safeLocationSubKey = "SafeLocation";
+        String[] subKeys = new String[]{
+            "Name",
+            "Health",
+            "Amount",
+            "ViewDirectionDistance",
+            "Condition",
+            combineKeys(mythicMobsSubKey, "Level"),
+            combineKeys(mythicMobsSubKey, "IsEnabled"),
+            combineKeys(mythicMobsSubKey, barSubKey, "Title"),
+            combineKeys(mythicMobsSubKey, barSubKey, "Color"),
+            combineKeys(mythicMobsSubKey, barSubKey, "Style"),
+            combineKeys(randomizeSubKey, "RadiusInBlocks"),
+            combineKeys(randomizeSubKey, "ScatterSpawns"),
+            combineKeys(safeLocationSubKey, "IsEnabled"),
+            combineKeys(safeLocationSubKey, "MinimumHeight"),
+            combineKeys(relativeOffsetSubKey, "X"),
+            combineKeys(relativeOffsetSubKey, "Y"),
+            combineKeys(relativeOffsetSubKey, "Z")
+        };
+        List<ModelSpawner> modelList = new ArrayList<>();
+        for (Object group : groups) {
+            if (Parser.isEmpty(group)) {
+                continue;
+            }
+
+            String rootKey = "Spawners." + group;
+            Map<String, Object> configValues = getConfigValues(this.spawners, rootKey, subKeys);
+            if (configValues.size() == 0) {
+                Logging.warn("Unable to retrieve spawner object: " + rootKey + ", " +
+                    "fallback: disabling event executing!"
+                );
+                return new ModelSpawner[]{ModelSpawner.getDefault()};
+            }
+            
+            String barColor = Caster.valueOrEmpty(configValues.get(subKeys[8]));
+            String barStyle = Caster.valueOrEmpty(configValues.get(subKeys[9]));
+            boolean mmEnable = Caster.castToBoolean(configValues.get(subKeys[6]), false);
+            ModelSpawnerMythicMobs mm = !mmEnable ? null : new ModelSpawnerMythicMobs(
+                Caster.castToInt(configValues.get(subKeys[5]), -1),
+                new ModelBossBar(
+                    Caster.valueOrEmpty(configValues.get(subKeys[7])),
+                    barColor == "" ? EBossBarColor.WHITE : EBossBarColor.valueOf(barColor.toUpperCase()),
+                    barStyle == "" ? EBossBarStyle.SOLID : EBossBarStyle.valueOf(barStyle.toUpperCase())
+                )
+            );
+            modelList.add(new ModelSpawner(
+                Caster.valueOrEmpty(configValues.get(subKeys[0])),
+                Caster.castToInt(configValues.get(subKeys[1]), -1),
+                Caster.castToInt(configValues.get(subKeys[2]), -1),
+                Caster.castToInt(configValues.get(subKeys[10]), 0),
+                Caster.castToFloat(configValues.get(subKeys[3])),
+                Caster.castToBoolean(configValues.get(subKeys[11]), false),
+                Caster.castToBoolean(configValues.get(subKeys[12]), false),
+                Caster.castToInt(configValues.get(subKeys[13]), 2),
+                new ModelPosOffset(
+                    Caster.castToFloat(configValues.get(subKeys[14])),
+                    Caster.castToFloat(configValues.get(subKeys[15])),
+                    Caster.castToFloat(configValues.get(subKeys[16]))
+                ),
+                getConditionByName(rootKey, configValues.get(subKeys[4])),
+                mm
+            ));
+        }
+        return modelList.toArray(new ModelSpawner[0]);
     }
 
     private String combineKeys(String... keys) {
