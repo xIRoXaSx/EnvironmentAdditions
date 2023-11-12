@@ -11,6 +11,7 @@ import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.bukkit.adapters.bossbars.BukkitBossBar;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import net.lizardnetwork.environmentadditions.Logging;
+import net.lizardnetwork.environmentadditions.helper.Parser;
 
 public class ModelSpawnerMythicMobs {
     private final int level;
@@ -31,10 +32,9 @@ public class ModelSpawnerMythicMobs {
         if (spawner.getScatter()) {
             for (int i = 0; i < spawner.getAmount(); ++i) {
                 Location loc = spawner.getNextLocation(target, target.getLocation());
-                if (loc == null) {
-                    return;
+                if (loc != null) {
+                    spawn(spawner, mm, target, loc);
                 }
-                spawn(spawner, mm, target, loc);
             }
             return;
         }
@@ -62,38 +62,10 @@ public class ModelSpawnerMythicMobs {
     }
 
     private BarColor toMythicBossColor() {
-        switch (this.bar.getColor()) {
-            case BLUE:
-                return BarColor.BLUE;
-            case GREEN:
-                return BarColor.GREEN;
-            case PINK:
-                return BarColor.PINK;
-            case PURPLE:
-                return BarColor.PURPLE;
-            case RED:
-                return BarColor.RED;
-            case YELLOW:
-                return BarColor.YELLOW;
-            case WHITE:
-            default:
-                return BarColor.WHITE;
-        }
+        return Parser.valueOf(BarColor.class, this.bar.getColor().name().toUpperCase());
     }
 
     private BarStyle toMythicBossStyle() {
-        switch (this.bar.getStyle()) {
-            case SEGMENTED_6:
-                return BarStyle.SEGMENTED_6;
-            case SEGMENTED_10:
-                return BarStyle.SEGMENTED_10;
-            case SEGMENTED_12:
-                return BarStyle.SEGMENTED_12;
-            case SEGMENTED_20:
-                return BarStyle.SEGMENTED_20;
-            case SOLID:
-            default:
-                return BarStyle.SOLID;
-        }
+        return Parser.valueOf(BarStyle.class, this.bar.getStyle().name().toUpperCase());
     }
 }

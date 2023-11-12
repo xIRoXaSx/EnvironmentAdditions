@@ -16,7 +16,7 @@ Spawners:
     # The amount of mobs to spawn.
     Amount: 1
     # Sometimes spawning locations aren't safe (eg. near a cliff, while crawling ...) when the mobs are spawned.
-    # These options help mitigating that.
+    # These options help to mitigate this problem.
     SafeLocation:
       # If you want to prevent mobs from falling / stucking inside a block, set this to true.
       # This will enable an additional y-axis check (+/-10 blocks).

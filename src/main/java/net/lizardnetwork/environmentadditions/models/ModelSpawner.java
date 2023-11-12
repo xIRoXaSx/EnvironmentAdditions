@@ -131,17 +131,17 @@ public class ModelSpawner extends ModelCondition implements IModelExecutor {
         Location l = loc;
         if (this.getRadius() > 1) {
             l = loc.add(
-                new Random(-this.getRadius(), this.getRadius()).getFloatResult(),
+                new Random(-this.radius, this.radius).getFloatResult(),
                 0,
-                new Random(-this.getRadius(), this.getRadius()).getFloatResult()
+                new Random(-this.radius, this.radius).getFloatResult()
             );
         } else if (this.getViewDirectionDistance() > 0) {
             l = Calculation.calculateViewDirection(targeted, this.getViewDirectionDistance());
-        } else if (this.getOffset() != null) {
+        } else if (this.offset != null) {
             l = loc.add(
-                this.getOffset().getRelativeX(),
-                this.getOffset().getRelativeY(),
-                this.getOffset().getRelativeZ()
+                this.offset.getRelativeX(),
+                this.offset.getRelativeY(),
+                this.offset.getRelativeZ()
             );
         }
         return this.safeLocation ? nextSafeLocation(l) : l;

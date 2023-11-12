@@ -73,11 +73,8 @@ public class ModelParticle extends ModelCondition implements IModelExecutor {
         float relY = (float)posOffset.getRelativeY();
         float relZ = (float)posOffset.getRelativeZ();
         float vdd = animation.getViewDirectionDistance();
-        Location src = target.getLocation();
         Particle.DustOptions dustOpts = getDustOptions();
-        if (vdd > 0) {
-            src = Calculation.calculateViewDirection(target, vdd);
-        }
+        Location src = vdd > 0 ? Calculation.calculateViewDirection(target, vdd) : target.getLocation();
         ModelBiomeEvent.shift(src, relX, relY, relZ, false);
         spawn(target, target.getWorld(), src, dustOpts);
     }
